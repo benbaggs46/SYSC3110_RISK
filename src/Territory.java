@@ -5,9 +5,11 @@ public class Territory {
     private List<Territory> neighbours;
     private Player owner;
     private int numArmies;
+    private String name;
 
-    public Territory(){
+    public Territory(String name){
         neighbours = new ArrayList<>();
+        this.name = name;
     }
 
     public List<Territory> getNeighbours() {
@@ -40,5 +42,9 @@ public class Territory {
 
     public void addArmies(int numArmies) {
         this.numArmies += numArmies;
+    }
+
+    public String getName(){
+        return name;
     }
 }

@@ -1,10 +1,11 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
     private List<Player> players;
     private Player currentPlayer;
-    private Board board;
+    private static Board board;
 
     public Game() {
         players = new ArrayList<>();
@@ -26,7 +27,10 @@ public class Game {
         }
     }
 
-    public static void main(String args[]){
+    public static void main(String args[]) {
+
+        BoardConstructor boardConstructor = new BoardConstructor();
+        board = boardConstructor.createMap();
 
         Game game = new Game();
         game.addPlayer(new Player());
