@@ -17,7 +17,7 @@ public class Board {
 
     public Territory findTerritoryByName(String name){
         for(Territory t: getTerritoryList()){
-            if(t.getName().equals(name)) return t;
+            if(t.getName().toLowerCase().equals(name.toLowerCase())) return t;
         }
         return null;
     }
@@ -87,6 +87,48 @@ public class Board {
         territory.setOwner(owner);
         if(prevOwner.getNumTerritories() == 0) { //prevOwner is eliminated
             System.out.println(prevOwner + " was eliminated!");
+        }
+    }
+
+    public void fillTerritory(Territory t, Player p){
+        p.gainTerritory(t);
+        t.addArmies(1);
+        t.setOwner(p);
+    }
+
+    public void populateBoard(List<Player> players, int numArmiesEach){
+        Random r = new Random();
+        int numPlayers = players.size();
+        int[] armiesLeftEach = new int[numPlayers];
+        for(int i = 0; i < numPlayers; i++){
+            armiesLeftEach[i] = numArmiesEach;
+        }
+        List<Territory> unfilledTerritories = getTerritoryList();
+        while(!unfilledTerritories.isEmpty()) {
+            for (int playerIndex = 0; playerIndex < numPlayers; playerIndex++) {
+                if(unfilledTerritories.isEmpty()) break;
+                int territoryIndex = r.nextInt(unfilledTerritories.size());
+                Territory t = unfilledTerritories.remove(territoryIndex);
+                Player p = players.get(playerIndex);
+                fillTerritory(t, p);
+                armiesLeftEach[playerIndex]--;
+            }
+        }
+
+        boolean donePlacing = false;
+        while(!donePlacing){
+            for(int playerIndex = 0; playerIndex < numPlayers; playerIndex++){
+                if(armiesLeftEach[playerIndex] <= 0) continue;
+                Player p = players.get(playerIndex);
+                int territoryIndex = r.nextInt(p.getNumTerritories());
+                Territory t = p.getControlledTerritories().get(territoryIndex);
+                fillTerritory(t,p);
+                armiesLeftEach[playerIndex]--;
+            }
+            donePlacing = true;
+            for(int i = 0; i < numPlayers; i++){
+                if(armiesLeftEach[i] > 0) donePlacing = false;
+            }
         }
     }
 }

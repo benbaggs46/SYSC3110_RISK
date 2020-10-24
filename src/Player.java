@@ -26,6 +26,10 @@ public class Player {
         return controlledTerritories.size();
     }
 
+    public List<Territory> getControlledTerritories(){
+        return controlledTerritories;
+    }
+
     public String getName(){
         return name;
     }

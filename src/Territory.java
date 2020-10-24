@@ -10,6 +10,7 @@ public class Territory {
     public Territory(String name){
         neighbours = new ArrayList<>();
         this.name = name;
+        numArmies = 0;
     }
 
     public String toString(){
