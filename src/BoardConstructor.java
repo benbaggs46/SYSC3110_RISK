@@ -9,12 +9,12 @@ import java.io.File;
 
 public class BoardConstructor {
 
-    public void joinTerritories(Territory t1, Territory t2){
+    public static void joinTerritories(Territory t1, Territory t2){
         t1.addNeighbour(t2);
         t2.addNeighbour(t1);
     }
 
-    public Board createMapFromFile(String filename){
+    public static Board createMapFromFile(String filename){
         Board board = new Board();
         try
         {

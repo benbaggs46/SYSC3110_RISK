@@ -6,11 +6,26 @@ public class Territory {
     private Player owner;
     private int numArmies;
     private String name;
+    private int tempArmies;
 
     public Territory(String name){
         neighbours = new ArrayList<>();
         this.name = name;
         numArmies = 0;
+        tempArmies = 0;
+    }
+
+    public int getTempArmies(){
+        return tempArmies;
+    }
+
+    public void addTempArmies(int amount){
+        tempArmies += amount;
+    }
+
+    public void confirmTempArmies(){
+        addArmies(tempArmies);
+        tempArmies = 0;
     }
 
     public String toString(){

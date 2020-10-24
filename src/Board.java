@@ -2,6 +2,7 @@ import java.util.*;
 
 public class Board {
     private List<Continent> continents;
+    public static final int MAX_DICE_ROLL = 6;
 
     public Board(){
         continents = new ArrayList<>();
@@ -34,68 +35,27 @@ public class Board {
         continents.add(continent);
     }
 
-    /*
-    public int calcDiceNum(Country c){
-        int x = c.getArmyNum() / 3;
-    }
+    public static int attackResult(int attackerDiceNum, int defenderDiceNum){
 
-    */
+        int result = 0;
 
+        //roll dice and collect the results into lists
+        Random r = new Random();
+        List<Integer> attackDice = new ArrayList<>();
+        List<Integer> defendDice = new ArrayList<>();
+        for(int i=0; i<attackerDiceNum; i++ ){ attackDice.add(r.nextInt(MAX_DICE_ROLL));}
+        for(int i=0; i<defenderDiceNum; i++ ){ defendDice.add(r.nextInt(MAX_DICE_ROLL));}
 
-    /**
-     *Generates a number between 1 and 6, as many times as we want.
-     * @param numDie is the number od fice being rolled.
-     * @return sum, which is the sum of all the dice roll results.
-     */
-    public  List<Integer> rollDice(Integer numDie) {
-        List<Integer> sum = null;
-        Random random = new Random();
-        for (int i = 0; i < (numDie -1); i++){
-            int x = random.nextInt(5) + 1;
-            sum.add(x);
-        }
-        return sum;
-    }
-
-
-    public int attackResult(int attackerDiceNum, int defenderDiceNum){
-        List<Integer> ADice = rollDice(attackerDiceNum);
-        List<Integer> DDice = rollDice(defenderDiceNum);
-        int Awins = 0;
-        int Dwins = 0;
-        for (int i = 0; i <= Math.max(attackerDiceNum, defenderDiceNum); i++){
-            int x = Math.max(ADice.get(i), DDice.get(i));
-            if (x == ADice.get(i)){
-                Awins += 1;
-            }
-            else if (ADice.get(i) == DDice.get(i)){
-                //do nothing, delete later
-            }
-            else if (x == DDice.get(i)){
-                Dwins += 1;
-            }
-
-        }
-        int ADiceSum = 0;
-        for (int i = 0; i<= ADice.size(); i++){
-            ADiceSum += ADice.get(i);
-        }
-        int DDiceSum = 0;
-        for (int i = 0; i<= DDice.size(); i++){
-            DDiceSum += DDice.get(i);
+        //matches up the highest rolls from attacker and defender, modifies the result accordingly, and repeats
+        for(int i = Math.min(attackerDiceNum, defenderDiceNum); i > 0; i--){
+            int topAttackDie = Collections.max(attackDice);
+            int topDefendDie = Collections.max(defendDice);
+            attackDice.remove(attackDice.indexOf(topAttackDie));
+            defendDice.remove(defendDice.indexOf(topDefendDie));
+            result += topAttackDie > topDefendDie? 1: -1;
         }
 
-        if(Awins == Dwins){
-            return -1;
-        }
-        else if (Awins > Dwins){
-            return (ADiceSum);
-        }
-        else if (Awins < Dwins){
-            return (ADiceSum);
-        }
-    return 0;
-
+        return result;
     }
 
     public void attack(Territory attackingTerritory, Territory defendingTerritory, int attackerDiceNum, int defenderDiceNum){
