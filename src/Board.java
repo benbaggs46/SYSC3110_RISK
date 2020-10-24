@@ -15,12 +15,17 @@ public class Board {
         return string;
     }
 
+    public Territory findTerritoryByName(String name){
+        for(Territory t: getTerritoryList()){
+            if(t.getName().equals(name)) return t;
+        }
+        return null;
+    }
+
     public List<Territory> getTerritoryList(){
         List<Territory> list = new ArrayList<>();
         for(Continent c: continents) {
-            for(Territory t: c.getTerritoryList()) {
-                list.addAll(c.getTerritoryList());
-            }
+            list.addAll(c.getTerritoryList());
         }
         return list;
     }
@@ -128,11 +133,6 @@ public class Board {
             }
         }
         return false;
-    }
-
-    public void joinTerritories(Territory t1, Territory t2){
-        t1.addNeighbour(t2);
-        t2.addNeighbour(t1);
     }
 
     public void moveArmies(Territory source, Territory destination, int numArmies){

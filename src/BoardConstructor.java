@@ -1,61 +1,77 @@
-import java.util.List;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
 
 public class BoardConstructor {
 
-    private String filename;
-
-    public void setMap(String filename){
-        this.filename = filename;
+    public void joinTerritories(Territory t1, Territory t2){
+        t1.addNeighbour(t2);
+        t2.addNeighbour(t1);
     }
 
-    public Board createMap() {
+    public Board createMapFromFile(String filename){
         Board board = new Board();
-        Continent northAmerica = new Continent("North America");
-        northAmerica.setArmyBonus(5);
+        try
+        {
+//creating a constructor of file class and parsing an XML file
+            File file = new File("src\\" + filename);
+//an instance of factory that gives a document builder
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+//an instance of builder to parse the specified xml file
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(file);
+            doc.getDocumentElement().normalize();
+            //System.out.println("Root element: " + doc.getDocumentElement().getNodeName());
+            NodeList continentList = doc.getElementsByTagName("continent");
+            NodeList borderList = doc.getElementsByTagName("border");
+// nodeList is not iterable, so we are using for loop
+            //continent loop
+            for (int itr = 0; itr < continentList.getLength(); itr++)
+            {
+                Node node = continentList.item(itr);
+                if (node.getNodeType() == Node.ELEMENT_NODE)
+                {
+                    Element eElement = (Element) node;
+                    //System.out.println("Continent: "+ eElement.getElementsByTagName("name").item(0).getTextContent());
+                    //System.out.println("Bonus: " + eElement.getElementsByTagName("bonus").item(0).getTextContent());
 
-        Territory alaska = new Territory("Alaska");
-        Territory alberta = new Territory("Alberta");
-        Territory ontario = new Territory("Ontario");
-        Territory quebec = new Territory("Quebec");
-        Territory westernUnitedStates = new Territory("Western United States");
-        Territory easternUnitedStates = new Territory("Eastern United States");
-        Territory centralAmerica = new Territory("Central America");
-        Territory northwestTerritories = new Territory("Northwest Territories");
-        Territory greenland = new Territory("Greenland");
+                    Continent c = new Continent(eElement.getElementsByTagName("name").item(0).getTextContent(),Integer.parseInt(eElement.getElementsByTagName("bonus").item(0).getTextContent()));
+                    board.addContinent(c);
 
-        northAmerica.addTerritory(alaska);
-        northAmerica.addTerritory(alberta);
-        northAmerica.addTerritory(ontario);
-        northAmerica.addTerritory(quebec);
-        northAmerica.addTerritory(westernUnitedStates);
-        northAmerica.addTerritory(easternUnitedStates);
-        northAmerica.addTerritory(centralAmerica);
-        northAmerica.addTerritory(northwestTerritories);
-        northAmerica.addTerritory(greenland);
+                    for(int i = eElement.getElementsByTagName("territory").getLength(); i > 0; i--) {
+                        //System.out.println("Territory: " + eElement.getElementsByTagName("territory").item(i-1).getTextContent());
 
-        board.joinTerritories(alaska, alberta);
-        board.joinTerritories(alaska, northwestTerritories);
-        board.joinTerritories(alberta, northwestTerritories);
-        board.joinTerritories(alberta, westernUnitedStates);
-        board.joinTerritories(alberta, ontario);
-        board.joinTerritories(quebec, ontario);
-        board.joinTerritories(greenland, ontario);
-        board.joinTerritories(quebec, easternUnitedStates);
-        board.joinTerritories(quebec, greenland);
-        board.joinTerritories(northwestTerritories, greenland);
-        board.joinTerritories(westernUnitedStates, ontario);
-        board.joinTerritories(easternUnitedStates, ontario);
-        board.joinTerritories(westernUnitedStates, centralAmerica);
-        board.joinTerritories(easternUnitedStates, centralAmerica);
+                        Territory t = new Territory(eElement.getElementsByTagName("territory").item(i-1).getTextContent());
+                        c.addTerritory(t);
+                    }
+                }
+            }
+            //border loop
+            for (int itr = 0; itr < borderList.getLength(); itr++)
+            {
+                Node node = borderList.item(itr);
+                if (node.getNodeType() == Node.ELEMENT_NODE)
+                {
+                    Element eElement = (Element) node;
+                    NodeList nodeList = eElement.getElementsByTagName("territory");
+                    //System.out.println("Border: "+ nodeList.item(0).getTextContent() + " <-> " + nodeList.item(1).getTextContent());
 
-        board.addContinent(northAmerica);
+                    Territory t1 = board.findTerritoryByName(nodeList.item(0).getTextContent());
+                    Territory t2 = board.findTerritoryByName(nodeList.item(1).getTextContent());
 
-        return board;
-    }
-
-    public void populateBoard(Board board, List<Player> players){
-        for(Territory t: board.getTerritoryList()){
-            t.setOwner(players.get(0));
+                    if(t1 != null && t2 != null && !t1.getNeighbours().contains(t2)) joinTerritories(t1, t2);
+                }
+            }
         }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return board;
     }
 }
