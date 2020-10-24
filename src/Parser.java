@@ -5,13 +5,23 @@ import java.util.Scanner;
 public class Parser {
 
     public static final String DIVIDER_CHAR = " ";
+    public static final String PROMPT_STRING = ">>> ";
+    public static Scanner in = new Scanner(System.in);
 
-    public Parser(){
-        Scanner in = new Scanner(System.in);
+    public static void begin(){
         while(true){
-            System.out.println(">>> ");
-            parseInputString(in.nextLine());
+            parseInputString(getBlankPrompt());
         }
+    }
+
+    public static String getPrompt(String promptMessage){
+        System.out.println(promptMessage);
+        return getBlankPrompt();
+    }
+
+    public static String getBlankPrompt(){
+        System.out.print(PROMPT_STRING);
+        return in.nextLine();
     }
 
     public static void parseInputString(String input){

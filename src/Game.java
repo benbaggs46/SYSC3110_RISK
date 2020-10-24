@@ -11,5 +11,7 @@ public class Game {
         Board board = boardConstructor.createMapFromFile("DEFAULT_MAP.xml");
 
         System.out.println(board);
+
+        Parser.begin();
     }
 }
