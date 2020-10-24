@@ -60,6 +60,9 @@ public class Board {
 
     public void attack(Territory attackingTerritory, Territory defendingTerritory, int attackerDiceNum, int defenderDiceNum){
         int result = attackResult(attackerDiceNum, defenderDiceNum);
+
+        Parser.displayMessage(result == 0? "Both players lost an army": (result > 0)? defendingTerritory.getOwner()+" lost "+result +" armies": attackingTerritory.getOwner()+" lost "+ (-result) +" armies");
+
         if(result == 0){ //both players lose one army
             attackingTerritory.addArmies(-1);
             defendingTerritory.addArmies(-1);
@@ -71,6 +74,8 @@ public class Board {
             attackingTerritory.addArmies(result);
         }
         if(defendingTerritory.getNumArmies() <= 0 ) { //defending territory has no armies left
+            Parser.displayMessage(defendingTerritory.getName()+" was conquered!");
+
             transferTerritory(defendingTerritory, attackingTerritory.getOwner());
             moveArmies(attackingTerritory, defendingTerritory, attackerDiceNum);
         }
@@ -106,7 +111,7 @@ public class Board {
         owner.gainTerritory(territory);
         territory.setOwner(owner);
         if(prevOwner.getNumTerritories() == 0) { //prevOwner is eliminated
-            System.out.println(prevOwner + " was eliminated!");
+            Parser.displayMessage(prevOwner + " was eliminated!");
         }
     }
 

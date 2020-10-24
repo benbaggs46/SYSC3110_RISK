@@ -17,8 +17,12 @@ public class Parser {
         }
     }
 
+    public static void displayMessage(String message){
+        System.out.println(message);
+    }
+
     public static String getPrompt(String promptMessage){
-        System.out.println(promptMessage);
+        displayMessage(promptMessage);
         return getBlankPrompt();
     }
 
@@ -29,7 +33,7 @@ public class Parser {
 
     public static int getIntPrompt(String promptMessage){
         try{
-            System.out.println(promptMessage);
+            displayMessage(promptMessage);
             return Integer.parseInt(getBlankPrompt());
         }
         catch(Exception e) {
@@ -47,10 +51,10 @@ public class Parser {
                 CommandWord commandWord = CommandWord.valueOf(args[0].toUpperCase());
                 List<String> argsList = new ArrayList<>();
                 for(int i = 1; i < length; i++) argsList.add(args[i].toLowerCase());
-                System.out.println(boardController.processCommand(new Command(commandWord, argsList)));
+                boardController.processCommand(new Command(commandWord, argsList));
             }
             catch (Exception e){
-                System.out.println("Invalid command word");
+                displayMessage("Exception thrown in Parser.parseInputString()");
             }
         }
     }
