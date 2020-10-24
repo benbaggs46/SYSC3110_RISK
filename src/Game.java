@@ -7,7 +7,9 @@ public class Game {
 
     public static void main(String[] args) {
         BoardConstructor boardConstructor = new BoardConstructor();
-        Board board = boardConstructor.createMap();
+
+        Board board = boardConstructor.createMapFromFile("DEFAULT_MAP.xml");
+
         System.out.println(board);
     }
 }

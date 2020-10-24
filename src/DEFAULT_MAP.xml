@@ -1,0 +1,408 @@
+<map>
+    <name>Default Map</name>
+
+    <continent>
+        <name>North America</name>
+        <bonus>5</bonus>
+        <territory>Alaska</territory>
+        <territory>Alberta</territory>
+        <territory>Ontario</territory>
+        <territory>Quebec</territory>
+        <territory>Eastern United States</territory>
+        <territory>Western United States</territory>
+        <territory>Greenland</territory>
+        <territory>Northwest Territory</territory>
+        <territory>Central America</territory>
+    </continent>
+
+    <continent>
+        <name>South America</name>
+        <bonus>2</bonus>
+        <territory>Peru</territory>
+        <territory>Brazil</territory>
+        <territory>Venezuela</territory>
+        <territory>Argentina</territory>
+    </continent>
+
+    <continent>
+        <name>Europe</name>
+        <bonus>5</bonus>
+        <territory>Great Britain</territory>
+        <territory>Scandinavia</territory>
+        <territory>Iceland</territory>
+        <territory>Northern Europe</territory>
+        <territory>Western Europe</territory>
+        <territory>Southern Europe</territory>
+        <territory>Ukraine</territory>
+    </continent>
+
+    <continent>
+        <name>Africa</name>
+        <bonus>3</bonus>
+        <territory>Egypt</territory>
+        <territory>North Africa</territory>
+        <territory>East Africa</territory>
+        <territory>South Africa</territory>
+        <territory>Congo</territory>
+        <territory>Madagascar</territory>
+    </continent>
+
+    <continent>
+        <name>Asia</name>
+        <bonus>7</bonus>
+        <territory>Afghanistan</territory>
+        <territory>Middle East</territory>
+        <territory>Siam</territory>
+        <territory>India</territory>
+        <territory>China</territory>
+        <territory>Japan</territory>
+        <territory>Mongolia</territory>
+        <territory>Ural</territory>
+        <territory>Siberia</territory>
+        <territory>Kamchatka</territory>
+        <territory>Irkutsk</territory>
+        <territory>Yakutsk</territory>
+    </continent>
+
+    <continent>
+        <name>Oceania</name>
+        <bonus>2</bonus>
+        <territory>Indonesia</territory>
+        <territory>New Guinea</territory>
+        <territory>Eastern Australia</territory>
+        <territory>Western Australia</territory>
+    </continent>
+
+    <border>
+        <territory>Alaska</territory>
+        <territory>Alberta</territory>
+    </border>
+    <border>
+        <territory>Alberta</territory>
+        <territory>Northwest Territory</territory>
+    </border>
+    <border>
+        <territory>Northwest Territory</territory>
+        <territory>Alaska</territory>
+    </border>
+    <border>
+        <territory>Alaska</territory>
+        <territory>Kamchatka</territory>
+    </border>
+    <border>
+        <territory>Alberta</territory>
+        <territory>Western United States</territory>
+    </border>
+    <border>
+        <territory>Northwest Territory</territory>
+        <territory>Greenland</territory>
+    </border>
+    <border>
+        <territory>Northwest Territory</territory>
+        <territory>Ontario</territory>
+    </border>
+    <border>
+        <territory>Ontario</territory>
+        <territory>Greenland</territory>
+    </border>
+    <border>
+        <territory>Ontario</territory>
+        <territory>Quebec</territory>
+    </border>
+    <border>
+        <territory>Quebec</territory>
+        <territory>Greenland</territory>
+    </border>
+    <border>
+        <territory>Ontario</territory>
+        <territory>Western United States</territory>
+    </border>
+    <border>
+        <territory>Ontario</territory>
+        <territory>Eastern United States</territory>
+    </border>
+    <border>
+        <territory>Quebec</territory>
+        <territory>Eastern United States</territory>
+    </border>
+    <border>
+        <territory>Western United States</territory>
+        <territory>Eastern United States</territory>
+    </border>
+    <border>
+        <territory>Western United States</territory>
+        <territory>Central America</territory>
+    </border>
+    <border>
+        <territory>Eastern United States</territory>
+        <territory>Central America</territory>
+    </border>
+    <border>
+        <territory>Alberta</territory>
+        <territory>Ontario</territory>
+    </border>
+    <border>
+        <territory>Greenland</territory>
+        <territory>Iceland</territory>
+    </border>
+    <border>
+        <territory>Central America</territory>
+        <territory>Venezuela</territory>
+    </border>
+    <border>
+        <territory>Venezuela</territory>
+        <territory>Peru</territory>
+    </border>
+    <border>
+        <territory>Venezuela</territory>
+        <territory>Brazil</territory>
+    </border>
+    <border>
+        <territory>Brazil</territory>
+        <territory>Peru</territory>
+    </border>
+    <border>
+        <territory>Peru</territory>
+        <territory>Argentina</territory>
+    </border>
+    <border>
+        <territory>Brazil</territory>
+        <territory>Argentina</territory>
+    </border>
+    <border>
+        <territory>Brazil</territory>
+        <territory>North Africa</territory>
+    </border>
+    <border>
+        <territory>North Africa</territory>
+        <territory>Egypt</territory>
+    </border>
+    <border>
+        <territory>North Africa</territory>
+        <territory>Congo</territory>
+    </border>
+    <border>
+        <territory>North Africa</territory>
+        <territory>East Africa</territory>
+    </border>
+    <border>
+        <territory>Egypt</territory>
+        <territory>East Africa</territory>
+    </border>
+    <border>
+        <territory>East Africa</territory>
+        <territory>Congo</territory>
+    </border>
+    <border>
+        <territory>South Africa</territory>
+        <territory>Congo</territory>
+    </border>
+    <border>
+        <territory>South Africa</territory>
+        <territory>East Africa</territory>
+    </border>
+    <border>
+        <territory>South Africa</territory>
+        <territory>Madagascar</territory>
+    </border>
+    <border>
+        <territory>Madagascar</territory>
+        <territory>East Africa</territory>
+    </border>
+    <border>
+        <territory>East Africa</territory>
+        <territory>Middle East</territory>
+    </border>
+    <border>
+        <territory>Egypt</territory>
+        <territory>Middle East</territory>
+    </border>
+    <border>
+        <territory>Egypt</territory>
+        <territory>Southern Europe</territory>
+    </border>
+    <border>
+        <territory>North Africa</territory>
+        <territory>Southern Europe</territory>
+    </border>
+    <border>
+        <territory>North Africa</territory>
+        <territory>Western Europe</territory>
+    </border>
+    <border>
+        <territory>Western Europe</territory>
+        <territory>Southern Europe</territory>
+    </border>
+    <border>
+        <territory>Southern Europe</territory>
+        <territory>Middle East</territory>
+    </border>
+    <border>
+        <territory>Western Europe</territory>
+        <territory>Northern Europe</territory>
+    </border>
+    <border>
+        <territory>Northern Europe</territory>
+        <territory>Southern Europe</territory>
+    </border>
+    <border>
+        <territory>Northern Europe</territory>
+        <territory>Scandinavia</territory>
+    </border>
+    <border>
+        <territory>Scandinavia</territory>
+        <territory>Great Britain</territory>
+    </border>
+    <border>
+        <territory>Scandinavia</territory>
+        <territory>Iceland</territory>
+    </border>
+    <border>
+        <territory>Great Britain</territory>
+        <territory>Iceland</territory>
+    </border>
+    <border>
+        <territory>Great Britain</territory>
+        <territory>Northern Europe</territory>
+    </border>
+    <border>
+        <territory>Great Britain</territory>
+        <territory>Western Europe</territory>
+    </border>
+    <border>
+        <territory>Ukraine</territory>
+        <territory>Scandinavia</territory>
+    </border>
+    <border>
+        <territory>Ukraine</territory>
+        <territory>Northern Europe</territory>
+    </border>
+    <border>
+        <territory>Ukraine</territory>
+        <territory>Southern Europe</territory>
+    </border>
+    <border>
+        <territory>Ukraine</territory>
+        <territory>Middle East</territory>
+    </border>
+    <border>
+        <territory>Ukraine</territory>
+        <territory>Ural</territory>
+    </border>
+    <border>
+        <territory>Ukraine</territory>
+        <territory>Afghanistan</territory>
+    </border>
+    <border>
+        <territory>Ural</territory>
+        <territory>Afghanistan</territory>
+    </border>
+    <border>
+        <territory>Afghanistan</territory>
+        <territory>Middle East</territory>
+    </border>
+    <border>
+        <territory>Ural</territory>
+        <territory>Siberia</territory>
+    </border>
+    <border>
+        <territory>Siberia</territory>
+        <territory>Yakutsk</territory>
+    </border>
+    <border>
+        <territory>Yakutsk</territory>
+        <territory>Kamchatka</territory>
+    </border>
+    <border>
+        <territory>Kamchatka</territory>
+        <territory>Mongolia</territory>
+    </border>
+    <border>
+        <territory>Kamchatka</territory>
+        <territory>Japan</territory>
+    </border>
+    <border>
+        <territory>Japan</territory>
+        <territory>Mongolia</territory>
+    </border>
+    <border>
+        <territory>Kamchatka</territory>
+        <territory>Irkutsk</territory>
+    </border>
+    <border>
+        <territory>Irkutsk</territory>
+        <territory>Yakutsk</territory>
+    </border>
+    <border>
+        <territory>Irkutsk</territory>
+        <territory>Siberia</territory>
+    </border>
+    <border>
+        <territory>Mongolia</territory>
+        <territory>Irkutsk</territory>
+    </border>
+    <border>
+        <territory>Mongolia</territory>
+        <territory>Siberia</territory>
+    </border>
+    <border>
+        <territory>China</territory>
+        <territory>Mongolia</territory>
+    </border>
+    <border>
+        <territory>China</territory>
+        <territory>Siberia</territory>
+    </border>
+    <border>
+        <territory>China</territory>
+        <territory>Ural</territory>
+    </border>
+    <border>
+        <territory>China</territory>
+        <territory>Afghanistan</territory>
+    </border>
+    <border>
+        <territory>China</territory>
+        <territory>India</territory>
+    </border>
+    <border>
+        <territory>China</territory>
+        <territory>Siam</territory>
+    </border>
+    <border>
+        <territory>Middle East</territory>
+        <territory>India</territory>
+    </border>
+    <border>
+        <territory>Afghanistan</territory>
+        <territory>India</territory>
+    </border>
+    <border>
+        <territory>India</territory>
+        <territory>Siam</territory>
+    </border>
+    <border>
+        <territory>Indonesia</territory>
+        <territory>Siam</territory>
+    </border>
+    <border>
+        <territory>Indonesia</territory>
+        <territory>New Guinea</territory>
+    </border>
+    <border>
+        <territory>Indonesia</territory>
+        <territory>Western Australia</territory>
+    </border>
+    <border>
+        <territory>New Guinea</territory>
+        <territory>Western Australia</territory>
+    </border>
+    <border>
+        <territory>Eastern Australia</territory>
+        <territory>Western Australia</territory>
+    </border>
+    <border>
+        <territory>Eastern Australia</territory>
+        <territory>New Guinea</territory>
+    </border>
+</map>

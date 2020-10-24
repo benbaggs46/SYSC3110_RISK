@@ -6,8 +6,9 @@ public class Continent {
     private int armyBonus;
     private String name;
 
-    public Continent(String name){
+    public Continent(String name, int armyBonus){
         this.name = name;
+        this.armyBonus = armyBonus;
         territories = new ArrayList<>();
     }
 
@@ -21,10 +22,6 @@ public class Continent {
             string += t + "\n";
         }
         return string;
-    }
-
-    public void setArmyBonus(int bonus){
-        armyBonus = bonus;
     }
 
     public int getArmyBonus(){

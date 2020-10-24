@@ -15,6 +15,13 @@ public class Board {
         return string;
     }
 
+    public Territory findTerritoryByName(String name){
+        for(Territory t: getTerritoryList()){
+            if(t.getName().equals(name)) return t;
+        }
+        return null;
+    }
+
     public List<Territory> getTerritoryList(){
         List<Territory> list = new ArrayList<>();
         for(Continent c: continents) {
