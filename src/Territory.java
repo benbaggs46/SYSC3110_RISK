@@ -2,7 +2,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Territory {
+    /**
+     * List of territories that are beside this territory
+     */
     private List<Territory> neighbours;
+
+    /**
+     * The player who owns the territory
+     */
     private Player owner;
     private int numArmies;
     private String name;
