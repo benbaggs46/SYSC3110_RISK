@@ -77,11 +77,6 @@ public class Board {
         return false;
     }
 
-    public void joinTerritories(Territory t1, Territory t2){
-        t1.addNeighbour(t2);
-        t2.addNeighbour(t1);
-    }
-
     public void moveArmies(Territory source, Territory destination, int numArmies){
         destination.addArmies(numArmies);
         source.addArmies(-numArmies);

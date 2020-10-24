@@ -6,10 +6,13 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BoardConstructor {
+
+    public void joinTerritories(Territory t1, Territory t2){
+        t1.addNeighbour(t2);
+        t2.addNeighbour(t1);
+    }
 
     public Board createMapFromFile(String filename){
         Board board = new Board();
@@ -61,7 +64,7 @@ public class BoardConstructor {
                     Territory t1 = board.findTerritoryByName(nodeList.item(0).getTextContent());
                     Territory t2 = board.findTerritoryByName(nodeList.item(1).getTextContent());
 
-                    if(t1 != null && t2 != null) board.joinTerritories(t1, t2);
+                    if(t1 != null && t2 != null && !t1.getNeighbours().contains(t2)) joinTerritories(t1, t2);
                 }
             }
         }
@@ -70,11 +73,5 @@ public class BoardConstructor {
             e.printStackTrace();
         }
         return board;
-    }
-
-    public void populateBoard(Board board, List<Player> players){
-        for(Territory t: board.getTerritoryList()){
-            t.setOwner(players.get(0));
-        }
     }
 }
