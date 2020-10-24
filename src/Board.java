@@ -1,12 +1,24 @@
 import java.util.*;
 
 public class Board {
-    private List<Continent> continents;
 
+    /**
+     * List of continents that are apart of the board
+     */
+    private List<Continent> continents;//
+
+    /**
+     * The constructor for board. An array list is used to implement continents
+     */
     public Board(){
         continents = new ArrayList<>();
     }
 
+    /**
+     * Gives a string that contains the output of calling toString on each of
+     * the continents in the continents list
+     * @return a string containing the return from each continent.toString()
+     */
     public String toString(){
         String string = "";
         for(Continent c: continents){
@@ -15,6 +27,11 @@ public class Board {
         return string;
     }
 
+    /**
+     * Searches for a territory with the same name as the one given
+     * @param name The territory to look for
+     * @return the territory object corresponding to the name. Null if territory not found
+     */
     public Territory findTerritoryByName(String name){
         for(Territory t: getTerritoryList()){
             if(t.getName().toLowerCase().equals(name.toLowerCase())) return t;
@@ -22,6 +39,11 @@ public class Board {
         return null;
     }
 
+    /**
+     * Goes through the continents list finding all the Territory objects in
+     * each continent.
+     * @return List of all Territory objects
+     */
     public List<Territory> getTerritoryList(){
         List<Territory> list = new ArrayList<>();
         for(Continent c: continents) {
@@ -30,6 +52,10 @@ public class Board {
         return list;
     }
 
+    /**
+     * Adds a continent to the continent list
+     * @param continent the continent to add to the continent list
+     */
     public void addContinent(Continent continent){
         continents.add(continent);
     }
@@ -43,7 +69,7 @@ public class Board {
 
 
     /**
-     *Generates a number between 1 and 6, as many times as we want.
+     * Generates a number between 1 and 6, as many times as we want.
      * @param numDie is the number od fice being rolled.
      * @return sum, which is the sum of all the dice roll results.
      */
@@ -57,7 +83,12 @@ public class Board {
         return sum;
     }
 
-
+    /**
+     *
+     * @param attackerDiceNum The number of dice the attacker starts with
+     * @param defenderDiceNum The number of dice the defender starts with
+     * @return
+     */
     public int attackResult(int attackerDiceNum, int defenderDiceNum){
         List<Integer> ADice = rollDice(attackerDiceNum);
         List<Integer> DDice = rollDice(defenderDiceNum);
@@ -94,10 +125,17 @@ public class Board {
         else if (Awins < Dwins){
             return (ADiceSum);
         }
-    return 0;
+        return 0;
 
     }
 
+    /**
+     *
+     * @param attackingTerritory
+     * @param defendingTerritory
+     * @param attackerDiceNum
+     * @param defenderDiceNum
+     */
     public void attack(Territory attackingTerritory, Territory defendingTerritory, int attackerDiceNum, int defenderDiceNum){
         int result = attackResult(attackerDiceNum, defenderDiceNum);
         if(result == 0){ //both players lose one army
@@ -116,6 +154,12 @@ public class Board {
         }
     }
 
+    /**
+     *
+     * @param t1
+     * @param t2
+     * @return
+     */
     public boolean areConnected(Territory t1, Territory t2){
         Set<Territory> visited = new HashSet<>();
         Queue<Territory> queue = new LinkedList<>();
@@ -135,11 +179,22 @@ public class Board {
         return false;
     }
 
+    /**
+     *
+     * @param source
+     * @param destination
+     * @param numArmies
+     */
     public void moveArmies(Territory source, Territory destination, int numArmies){
         destination.addArmies(numArmies);
         source.addArmies(-numArmies);
     }
 
+    /**
+     *
+     * @param territory
+     * @param owner
+     */
     public void transferTerritory(Territory territory, Player owner){
         Player prevOwner = territory.getOwner();
         prevOwner.loseTerritory(territory);
@@ -150,12 +205,22 @@ public class Board {
         }
     }
 
+    /**
+     *
+     * @param t
+     * @param p
+     */
     public void fillTerritory(Territory t, Player p){
         p.gainTerritory(t);
         t.addArmies(1);
         t.setOwner(p);
     }
 
+    /**
+     *
+     * @param players
+     * @param numArmiesEach
+     */
     public void populateBoard(List<Player> players, int numArmiesEach){
         Random r = new Random();
         int numPlayers = players.size();
@@ -192,4 +257,3 @@ public class Board {
         }
     }
 }
-
