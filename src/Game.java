@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Scanner;
 
 public class Game {
     private List<Player> players;
@@ -30,5 +31,21 @@ public class Game {
         }
     }
 
+    public void isGameOver () {
+        Territory t;
+        if (players.size() == 1) {
+            if (players.get(0).getNumTerritories() == 42){
+                endGame();
+            }
+        }
+    }
+
+    public void endGame(){
+        System.out.println("Congratulations!! " + players.get(0).getName() + " has come out on top!");
+        System.out.println("Would you like to start another match or quit?");
+        Parser p = new Parser();
+        p.begin();
+    }
 
 }
+
