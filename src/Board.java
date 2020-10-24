@@ -7,6 +7,24 @@ public class Board {
         continents = new ArrayList<>();
     }
 
+    public String toString(){
+        String string = "";
+        for(Continent c: continents){
+            string += c + "\n";
+        }
+        return string;
+    }
+
+    public List<Territory> getTerritoryList(){
+        List<Territory> list = new ArrayList<>();
+        for(Continent c: continents) {
+            for(Territory t: c.getTerritoryList()) {
+                list.addAll(c.getTerritoryList());
+            }
+        }
+        return list;
+    }
+
     public void addContinent(Continent continent){
         continents.add(continent);
     }

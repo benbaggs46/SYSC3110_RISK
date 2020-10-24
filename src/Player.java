@@ -10,6 +10,10 @@ public class Player {
         this.name = name;
     }
 
+    public String toString(){
+        return name;
+    }
+
     public void gainTerritory(Territory territory){
         controlledTerritories.add(territory);
     }

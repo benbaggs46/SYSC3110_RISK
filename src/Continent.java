@@ -11,6 +11,18 @@ public class Continent {
         territories = new ArrayList<>();
     }
 
+    public List<Territory> getTerritoryList(){
+        return territories;
+    }
+
+    public String toString(){
+        String string = name + "\n";
+        for(Territory t: territories){
+            string += t + "\n";
+        }
+        return string;
+    }
+
     public void setArmyBonus(int bonus){
         armyBonus = bonus;
     }

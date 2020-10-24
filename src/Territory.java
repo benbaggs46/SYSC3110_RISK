@@ -12,6 +12,10 @@ public class Territory {
         this.name = name;
     }
 
+    public String toString(){
+        return name + "\nOwner: " + owner + "\nArmies: " + numArmies;
+    }
+
     public List<Territory> getNeighbours() {
         return neighbours;
     }
