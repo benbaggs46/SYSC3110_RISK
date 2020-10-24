@@ -5,6 +5,8 @@ public class Game {
     private Player currentPlayer;
     private Board board;
 
+
+
     public static void main(String[] args) {
         BoardConstructor boardConstructor = new BoardConstructor();
 
@@ -14,4 +16,19 @@ public class Game {
 
         Parser.begin();
     }
+
+    public void eliminatePlayer( String name){
+        Player p = null;
+        for(int i = 0; i<players.size(); i++){
+            if (players.get(i).getName() == name){
+                p = players.get(i);
+                break;
+            }
+        }
+        if (p != null) {
+            players.remove(p);
+        }
+    }
+
+
 }
