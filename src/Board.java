@@ -25,9 +25,7 @@ public class Board {
     public List<Territory> getTerritoryList(){
         List<Territory> list = new ArrayList<>();
         for(Continent c: continents) {
-            for(Territory t: c.getTerritoryList()) {
-                list.addAll(c.getTerritoryList());
-            }
+            list.addAll(c.getTerritoryList());
         }
         return list;
     }
