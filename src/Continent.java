@@ -41,7 +41,7 @@ public class Continent {
      * @return the name of the continent and a list of territories in the continent
      */
     public String toString(){
-        String string = name + "\n";
+        String string = name + "\nTerritories:\n";
         for(Territory t: territories){
             string += t + "\n";
         }
