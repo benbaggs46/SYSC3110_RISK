@@ -19,6 +19,7 @@ public class Board {
 
     public void goToNextTurn(){
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
+        armiesToPlace = getArmyBonusForPlayer(currentPlayer);
     }
 
     public void goToNextTurnStage(){

@@ -7,6 +7,15 @@ public class BoardController {
         this.board = board;
     }
 
+    public static int getNumArmiesEachForNumPlayers(int numPlayers){
+        if(numPlayers == 2) return 50;
+        else if(numPlayers == 3) return 35;
+        else if(numPlayers == 4) return 30;
+        else if(numPlayers == 5) return 25;
+        else if(numPlayers == 6) return 20;
+        else return -1;
+    }
+
     public void processCommand(Command c){
         CommandWord word = c.getCommandWord();
         List<String> args = c.getArgs();
@@ -14,17 +23,22 @@ public class BoardController {
             switch (word) {
                 case PLAY -> {
                     int numPlayers = Integer.parseInt(args.get(0));
-                    if(numPlayers <= 0 || numPlayers > 6) {Parser.displayMessage("Invalid number of players"); return;}
+                    int numArmiesEach = BoardController.getNumArmiesEachForNumPlayers(numPlayers);
+                    if(numArmiesEach < 0) {Parser.displayMessage("Number of players must be between 2 and 6"); return;}
                     board = BoardConstructor.createMapFromFile("DEFAULT_MAP.xml");
 
                     for(int i=0;i<numPlayers;i++){
                         board.addPlayer(new Player(Parser.getPrompt("Enter a name for player "+ (i+1))));
                     }
 
+                    if(numPlayers > board.getTerritoryList().size()) {Parser.displayMessage("The selected map doesn't have enough territories for "+numPlayers+" players"); return;}
+                    if(numPlayers * numArmiesEach < board.getTerritoryList().size()) {Parser.displayMessage("The selected map has too many territories"); return;}
+
+                    board.populateBoard(board.getPlayerList(),numArmiesEach);
+
                     board.setCurrentPlayer(board.getPlayerList().get(0));
                     board.setTurnStage(TurnStage.PLACEMENT);
 
-                    board.populateBoard(board.getPlayerList(), 30);
                     Parser.displayMessage("New board created with " + numPlayers + " players");
                 }
 
@@ -104,6 +118,9 @@ public class BoardController {
 
                         board.moveArmies(t2, t1, armies);
                         Parser.displayMessage("Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
+                        board.goToNextTurn();
+                        board.goToNextTurnStage();
+                        Parser.displayMessage("It is now "+board.getCurrentPlayer().getName() +"'s turn\nYou are in the " + board.getTurnStage() +" phase");
                 }
 
                 case PROCEED -> {

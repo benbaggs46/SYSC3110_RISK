@@ -29,7 +29,7 @@ public class Territory {
     }
 
     public String toString(){
-        return name + "\nOwner: " + owner + "\nArmies: " + numArmies;
+        return name + "\nOwner: " + owner.getName() + "\nArmies: " + numArmies;
     }
 
     public List<Territory> getNeighbours() {
@@ -38,10 +38,6 @@ public class Territory {
 
     public void addNeighbour(Territory neighbour) {
         neighbours.add(neighbour);
-    }
-
-    public void removeNeighbour(Territory neighbour) {
-        neighbours.remove(neighbour);
     }
 
     public Player getOwner() {
@@ -54,10 +50,6 @@ public class Territory {
 
     public int getNumArmies() {
         return numArmies;
-    }
-
-    public void setNumArmies(int numArmies) {
-        this.numArmies = numArmies;
     }
 
     public void addArmies(int numArmies) {
