@@ -63,7 +63,9 @@ public class Territory {
      * @return the name of the territory with its owner and number of armies
      */
     public String toString(){
-        return name + "\nOwner: " + owner.getName() + "\nArmies: " + numArmies;
+        String string = name + "\nOwner: " + owner.getName() + "\nArmies: " + numArmies;
+        if(tempArmies > 0) string += "\nUnconfirmed armies: "+ tempArmies;
+        return string;
     }
 
     /**
