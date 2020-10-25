@@ -50,7 +50,7 @@ public class BoardController {
                     if(numPlayers > board.getTerritoryList().size()) {Parser.displayMessage("The selected map doesn't have enough territories for "+numPlayers+" players"); return;}
                     if(numPlayers * numArmiesEach < board.getTerritoryList().size()) {Parser.displayMessage("The selected map has too many territories"); return;}
 
-                    board.populateBoard(board.getPlayerList(),numArmiesEach);
+                    board.populateBoard(numArmiesEach);
 
                     board.setCurrentPlayer(board.getPlayerList().get(0));
                     board.setTurnStage(TurnStage.PLACEMENT);

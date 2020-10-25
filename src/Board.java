@@ -359,12 +359,9 @@ public class Board {
 
     /**
      * Assigns all the territories to players at the start of the game
-     * @param players The list of players playing
      * @param numArmiesEach The number of armies that the players start with
-     *
-     * TODO: remove players parameter
      */
-    public void populateBoard(List<Player> players, int numArmiesEach){
+    public void populateBoard(int numArmiesEach){
         Random r = new Random();
         int numPlayers = players.size();
         int[] armiesLeftEach = new int[numPlayers];
