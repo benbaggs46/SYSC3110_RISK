@@ -10,14 +10,14 @@
 No changes as of now
 
 ### Table of Contents:
-- [Quick start](###Quick-start:)
-- [Deliverables](###Deliverables:)
-- [Issues](###Issues:)
-- [User manual](###Complete-User-manual)
-    * [Valid commands and syntax](####Valid-commands-and-syntax:)
-    * [Playing the game](####Playing-the-game)
-- [Important design descisions](###Important-design-decisions:)
-- [Roadmap](###Roadmap:)
+- [Quick start](#quick-start)
+- [Deliverables](#deliverables)
+- [Issues](#issues)
+- [User manual](#complete-user-manual)
+    * [Valid commands and syntax](#valid-commands-and-syntax)
+    * [Playing the game](#playing-the-game)
+- [Important design descisions](#important-design-decisions)
+- [Roadmap](#roadmap)
 
 ### Quick start:
 To play risk run the main function in Parser.java or if running from the jar file type
