@@ -101,8 +101,8 @@ This may only be done once.
 9. Once only one player is left, the game is over and the only remaining player is the winner. 
 
 ### Important design decisions:
-- MVC -> Board becoming a model
-- Comma over spaces,  Choose the easier method to implement on out behind as the console version of this class was going to be overshadows later on by the GUI implementation. This was easier as it allowed us to not have to change the xml file or any of the logic that was required to parse it.
-- Reading a file vs Hardcoding in the map. We chose to make our first deliverable read a xml file as it avoided hardcoding and fulfilled a future. They currently are not enabled as it is currently always using the default map, however this allows us to easily update the project to what we need later on.
+- Using Model View Controller Design Pattern.   We decided to build our console based orject off this format in order to future proof it foir when we would be adding GUI on top of the console version. 
+- Comma over spaces.   We choose the easier method to implement on out behind as the console version of this class was going to be overshadows later on by the GUI implementation. This was easier as it allowed us to not have to change the xml file or any of the logic that was required to parse it.
+- Reading a file vs Hardcoding in the map.   We chose to make our first deliverable read a xml file as it avoided hardcoding and fulfilled a future. They currently are not enabled as it is currently always using the default map, however this allows us to easily update the project to what we need later on.
 - Removing Game -> Splitting functions into board and parser -> Parser becomes our view / "Main" class.   There was limited use for game that did warrant the entire class for it. Once we switched to using MVC, It was clear that Parser was our view and that is where the user input was coming from, so it became our main.
-- Removing Dice ^^, moved functions to board
+- Removing Dic.   We moved the functions it had to board in order to remove a class that would be responsible for doing next to nothing in the project. 
