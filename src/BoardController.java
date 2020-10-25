@@ -1,12 +1,24 @@
 import java.util.List;
 
 public class BoardController {
+    /**
+     * The board that the controller belongs too
+     */
     private Board board;
 
+    /**
+     * Constructor for the board controller
+     * @param board the board that the constructor will belong too
+     */
     public BoardController(Board board){
         this.board = board;
     }
 
+    /**
+     * Determines how many armies the players start with based of how many players there are
+     * @param numPlayers the number of players playing
+     * @return the number of armies each player will start with
+     */
     public static int getNumArmiesEachForNumPlayers(int numPlayers){
         if(numPlayers == 2) return 50;
         else if(numPlayers == 3) return 35;
@@ -16,6 +28,10 @@ public class BoardController {
         else return -1;
     }
 
+    /**
+     * Determines if the command that is being passed in is completely valid and then if it is preforms that action
+     * @param c the command to be executed
+     */
     public void processCommand(Command c){
         CommandWord word = c.getCommandWord();
         List<String> args = c.getArgs();
