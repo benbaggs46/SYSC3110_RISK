@@ -268,10 +268,9 @@ public class Board {
      * Fills the board with the specified players and armies, making it ready for play.
      * Each player is given an equal amount of territories, distributed randomly around the board.
      * Each player is given an equal number of armies, distributed randomly throughout their territories, with a minimum of 1 on any territory.
-     * @param players The list of players to play on the board
      * @param numArmiesEach The number of armies given to each player
      */
-    public void populateBoard(List<Player> players, int numArmiesEach){
+    public void populateBoard(int numArmiesEach){
         Random r = new Random();
         int numPlayers = players.size();
         int[] armiesLeftEach = new int[numPlayers];
