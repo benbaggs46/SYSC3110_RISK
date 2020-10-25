@@ -22,16 +22,23 @@ public class Territory {
      */
     private String name;
     private int tempArmies;
+    private Continent continent;
 
     /**
      * The constructor of territory sets neighbours to an empty array list, name to the value of the parameter and numArmies to 0
      * @param name the name of the territory
      */
-    public Territory(String name){
+    public Territory(String name, Continent continent){
         neighbours = new ArrayList<>();
         this.name = name;
         numArmies = 0;
         tempArmies = 0;
+        this.continent = continent;
+        continent.addTerritory(this);
+    }
+
+    public Continent getContinent(){
+        return continent;
     }
 
     /**
