@@ -1,3 +1,8 @@
+/**
+ * This class is used to construct a board based on an XML file.
+ * Currently, the board will always be based on DEFAULT_MAP.xml in the source files.
+ */
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

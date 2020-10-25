@@ -1,3 +1,8 @@
+/**
+ * Receives user commands from the Parser class and modifies the game board.
+ * The class will determine if commands make sense given the current game state, and if so, make changes to the board model.
+ */
+
 import java.util.*;
 
 public class BoardController {

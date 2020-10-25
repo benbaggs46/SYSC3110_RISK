@@ -1,3 +1,6 @@
+/**
+ * Represents all possible user commands and contains description information about each.
+ */
 public enum CommandWord {
     PLAY("PLAY,<player_number:int>","- Starts a new game of RISK with the specified number of players\n" +
             "- The number of players must be between 2 and 6\n"),

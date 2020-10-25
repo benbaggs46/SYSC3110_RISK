@@ -1,3 +1,8 @@
+/**
+ * This class represents a command from the user.
+ * Every command contains a command word and a list of String arguments.
+ */
+
 import java.util.List;
 
 public class Command {

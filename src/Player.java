@@ -1,3 +1,8 @@
+/**
+ * Models a RISK player.
+ * Each player controls a list of territories.
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 

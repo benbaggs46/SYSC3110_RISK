@@ -1,3 +1,7 @@
+/**
+ * Continuously prompts the user for commands and sends them to the associated BoardConstructor object to be processed.
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;

@@ -1,3 +1,8 @@
+/**
+ * Models a RISK territory.
+ * Each territory is part of a continent, has a list of territories as neighbours, is controlled by a player, and contains a certain number of armies.
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 

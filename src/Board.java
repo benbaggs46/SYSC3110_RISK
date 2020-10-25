@@ -1,3 +1,7 @@
+/**
+ * Models the RISK game board, including all players, continents, territories, armies, and turn phases.
+ */
+
 import java.util.*;
 
 public class Board {
