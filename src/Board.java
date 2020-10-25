@@ -2,10 +2,66 @@ import java.util.*;
 
 public class Board {
     private List<Continent> continents;
+    private List<Player> players;
+    private Player currentPlayer;
+    private int armiesToPlace;
+    private TurnStage turnStage;
     public static final int MAX_DICE_ROLL = 6;
 
     public Board(){
         continents = new ArrayList<>();
+        players = new ArrayList<>();
+    }
+
+    public TurnStage getTurnStage() {
+        return turnStage;
+    }
+
+    public void goToNextTurn(){
+        currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
+    }
+
+    public void goToNextTurnStage(){
+        turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
+    }
+
+    public void setTurnStage(TurnStage turnStage) {
+        this.turnStage = turnStage;
+    }
+
+    public int getArmiesToPlace() {
+        return armiesToPlace;
+    }
+
+    public void addArmiesToPlace(int armiesToPlace) {
+        this.armiesToPlace += armiesToPlace;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    public int getArmyBonusForPlayer(Player player){
+        return Math.max((player.getNumTerritories() / 3) + getContinentBonusForPlayer(player), 3);
+    }
+
+    private int getContinentBonusForPlayer(Player player){
+        int sum = 0;
+        for(Continent c: continents){
+            boolean controlsContinent = true;
+            for(Territory t: c.getTerritoryList()){
+                if(t.getOwner() != player) {
+                    controlsContinent = false;
+                    break;
+                }
+            }
+            if(controlsContinent) sum += c.getArmyBonus();
+        }
+        return sum;
     }
 
     public String toString(){
@@ -23,6 +79,20 @@ public class Board {
         return null;
     }
 
+    public Continent findContinentByName(String name){
+        for(Continent c: continents){
+            if(c.getName().toLowerCase().equals(name.toLowerCase())) return c;
+        }
+        return null;
+    }
+
+    public Player findPlayerByName(String name){
+        for(Player p: players){
+            if(p.getName().toLowerCase().equals(name.toLowerCase())) return p;
+        }
+        return null;
+    }
+
     public List<Territory> getTerritoryList(){
         List<Territory> list = new ArrayList<>();
         for(Continent c: continents) {
@@ -30,6 +100,12 @@ public class Board {
         }
         return list;
     }
+
+    public List<Player> getPlayerList(){
+        return players;
+    }
+
+    public void addPlayer(Player player) {players.add(player);}
 
     public void addContinent(Continent continent){
         continents.add(continent);
@@ -50,8 +126,8 @@ public class Board {
         for(int i = Math.min(attackerDiceNum, defenderDiceNum); i > 0; i--){
             int topAttackDie = Collections.max(attackDice);
             int topDefendDie = Collections.max(defendDice);
-            attackDice.remove(attackDice.indexOf(topAttackDie));
-            defendDice.remove(defendDice.indexOf(topDefendDie));
+            attackDice.remove((Integer) topAttackDie);
+            defendDice.remove((Integer) topDefendDie);
             result += topAttackDie > topDefendDie? 1: -1;
         }
 
@@ -115,10 +191,8 @@ public class Board {
         }
     }
 
-    public void fillTerritory(Territory t, Player p){
-        p.gainTerritory(t);
-        t.addArmies(1);
-        t.setOwner(p);
+    public boolean isEmpty(){
+        return continents.isEmpty();
     }
 
     public void populateBoard(List<Player> players, int numArmiesEach){
@@ -135,7 +209,9 @@ public class Board {
                 int territoryIndex = r.nextInt(unfilledTerritories.size());
                 Territory t = unfilledTerritories.remove(territoryIndex);
                 Player p = players.get(playerIndex);
-                fillTerritory(t, p);
+                p.gainTerritory(t);
+                t.addArmies(1);
+                t.setOwner(p);
                 armiesLeftEach[playerIndex]--;
             }
         }
@@ -147,7 +223,8 @@ public class Board {
                 Player p = players.get(playerIndex);
                 int territoryIndex = r.nextInt(p.getNumTerritories());
                 Territory t = p.getControlledTerritories().get(territoryIndex);
-                fillTerritory(t,p);
+                t.addArmies(1);
+                t.setOwner(p);
                 armiesLeftEach[playerIndex]--;
             }
             donePlacing = true;
