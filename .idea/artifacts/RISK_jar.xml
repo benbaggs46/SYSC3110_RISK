@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="RISK:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RISK_jar</output-path>
+    <root id="archive" name="RISK.jar">
+      <element id="module-output" name="RISK" />
+      <element id="module-source" name="RISK" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/DEFAULT_MAP.xml" />
+    </root>
+  </artifact>
+</component>
