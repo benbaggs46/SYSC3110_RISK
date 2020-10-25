@@ -36,6 +36,14 @@ public class Continent {
         return territories;
     }
 
+    public boolean isConquered(){
+        Player p = territories.get(0).getOwner();
+        for(Territory t: territories){
+            if(t.getOwner() != p) return false;
+        }
+        return true;
+    }
+
     /**
      * creates a string representation of the continent
      * @return the name of the continent and a list of territories in the continent

@@ -56,8 +56,7 @@ public class BoardConstructor {
                     for(int i = eElement.getElementsByTagName("territory").getLength(); i > 0; i--) {
                         //System.out.println("Territory: " + eElement.getElementsByTagName("territory").item(i-1).getTextContent());
 
-                        Territory t = new Territory(eElement.getElementsByTagName("territory").item(i-1).getTextContent());
-                        c.addTerritory(t);
+                        Territory t = new Territory(eElement.getElementsByTagName("territory").item(i-1).getTextContent(), c);
                     }
                 }
             }
