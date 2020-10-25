@@ -30,7 +30,9 @@ public class Parser {
      */
     public static void main(String[] args){
         boardController = new BoardController();
-        Parser.displayMessage("Welcome to RISK!\nEnter HELP for a list of commands");
+        Parser.displayMessage("Welcome to RISK!\n" +
+                "Made by Ben Baggs, Imran Latif, Liam Ballantyne, and Vijay Ramalingom for SYSC 3110 A" +
+                "\nEnter HELP for a list of commands");
         while(true){
             parseInputString(getBlankPrompt());
         }
