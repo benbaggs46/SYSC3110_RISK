@@ -53,7 +53,7 @@ public class Parser {
                 boardController.processCommand(new Command(commandWord, argsList));
             }
             catch (Exception e){
-                displayMessage("Exception thrown in Parser.parseInputString()");
+                displayMessage("Invalid Command");
             }
         }
     }
