@@ -18,18 +18,18 @@ public class BoardConstructor {
         Board board = new Board();
         try
         {
-//creating a constructor of file class and parsing an XML file
+            //creating a constructor of file class and parsing an XML file
             File file = new File("src\\" + filename);
-//an instance of factory that gives a document builder
+            //an instance of factory that gives a document builder
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-//an instance of builder to parse the specified xml file
+            //an instance of builder to parse the specified xml file
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(file);
             doc.getDocumentElement().normalize();
             //System.out.println("Root element: " + doc.getDocumentElement().getNodeName());
             NodeList continentList = doc.getElementsByTagName("continent");
             NodeList borderList = doc.getElementsByTagName("border");
-// nodeList is not iterable, so we are using for loop
+            // nodeList is not iterable, so we are using for loop
             //continent loop
             for (int itr = 0; itr < continentList.getLength(); itr++)
             {
