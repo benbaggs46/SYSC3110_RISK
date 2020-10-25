@@ -34,14 +34,25 @@ public class Territory {
         tempArmies = 0;
     }
 
+    /**
+     * Gives the number of tempArmies the territory has
+     * @return number of temp armies
+     */
     public int getTempArmies(){
         return tempArmies;
     }
 
+    /**
+     * Adds temp armies to the territory
+     * @param amount number of temp armies to add
+     */
     public void addTempArmies(int amount){
         tempArmies += amount;
     }
 
+    /**
+     * Adds the temp armies to the total number of armies, then clears the tempArmies
+     */
     public void confirmTempArmies(){
         addArmies(tempArmies);
         tempArmies = 0;

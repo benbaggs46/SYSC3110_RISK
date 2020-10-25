@@ -45,6 +45,10 @@ public class Player {
         return controlledTerritories.size();
     }
 
+    /**
+     * Gets the total number of armies that the player has
+     * @return the total number of armies the player has
+     */
     public int getNumArmies(){
         int sum = 0;
         for(Territory t: controlledTerritories) sum += t.getNumArmies();
@@ -67,6 +71,10 @@ public class Player {
         return name;
     }
 
+    /**
+     * Gives a string describing all the territories the player controls including how many armies each has
+     * @return string containing the status of the player territories and armies
+     */
     public String toString(){
         String string = name+ " controls " + getNumTerritories() + " territories with " + getNumArmies() + " armies";
         for (Territory t: controlledTerritories){
