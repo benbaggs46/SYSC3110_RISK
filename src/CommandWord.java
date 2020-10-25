@@ -7,5 +7,6 @@ public enum CommandWord {
     PROCEED,
     FORTIFY,
     PRINT,
-    INFO
+    INFO,
+    HELP
 }

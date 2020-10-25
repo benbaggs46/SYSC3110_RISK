@@ -6,7 +6,6 @@ public class Parser {
 
     public static final String DIVIDER_CHAR = ",";
     public static final String PROMPT_STRING = ">>> ";
-    public static final String INVALID_COMMAND_MESSAGE = "Invalid Command";
     public static Scanner in = new Scanner(System.in);
     public static BoardController boardController;
 

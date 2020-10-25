@@ -45,7 +45,7 @@ public class Board {
     /**
      * Goes to the next players turn and gives them armies
      */
-    public void goToNextTurn(){
+    public void incrementTurn(){
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
         armiesToPlace = getArmyBonusForPlayer(currentPlayer);
     }
@@ -53,7 +53,7 @@ public class Board {
     /**
      * Sets turnStage to the next turn stage
      */
-    public void goToNextTurnStage(){
+    public void incrementTurnStage(){
         turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
     }
 
@@ -248,7 +248,7 @@ public class Board {
      * @param attackerDiceNum
      * @param defenderDiceNum
      */
-    public void attack(Territory attackingTerritory, Territory defendingTerritory, int attackerDiceNum, int defenderDiceNum){
+    /*public void attack(Territory attackingTerritory, Territory defendingTerritory, int attackerDiceNum, int defenderDiceNum){
         int result = attackResult(attackerDiceNum, defenderDiceNum);
 
         Parser.displayMessage(result == 0? "Both players lost an army": (result > 0)? defendingTerritory.getOwner()+" lost "+result +" armies": attackingTerritory.getOwner()+" lost "+ (-result) +" armies");
@@ -269,7 +269,7 @@ public class Board {
             transferTerritory(defendingTerritory, attackingTerritory.getOwner());
             moveArmies(attackingTerritory, defendingTerritory, attackerDiceNum);
         }
-    }
+    }*/
 
     /**
      *
@@ -312,7 +312,7 @@ public class Board {
      * @param territory
      * @param owner
      */
-    public void transferTerritory(Territory territory, Player owner){
+    /*public void transferTerritory(Territory territory, Player owner){
         Player prevOwner = territory.getOwner();
         prevOwner.loseTerritory(territory);
         owner.gainTerritory(territory);
@@ -331,6 +331,10 @@ public class Board {
         }
 
         //ask owner how many armies they want to move
+    }*/
+
+    public void removePlayer(Player player){
+        players.remove(player);
     }
 
     public void clearBoard(){ //empties the current board
@@ -344,8 +348,8 @@ public class Board {
         should still be freed. Java's garbage collection handles cyclic references*/
     }
 
-    public boolean isEmpty(){
-        return continents.isEmpty();
+    public boolean isUsable(){
+        return continents.isEmpty() || players.isEmpty() || currentPlayer == null || turnStage == null;
     }
 
     /**
