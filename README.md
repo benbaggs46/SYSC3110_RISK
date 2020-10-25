@@ -9,6 +9,15 @@
 ### Changelog:
 No changes as of now
 
+### Table of Contents:
+- [Quick start](###Quick-start:)
+- [Deliverables](###Deliverables:)
+- [Issues](###Issues:)
+- [User manual](###Complete-User-manual)
+    * [Valid commands and syntax](####Valid-commands-and-syntax:)
+    * [Playing the game](####Playing-the-game)
+- [Important design descisions](###Important-design-decisions:)
+
 ### Quick start:
 To play risk run the main function in Parser.java or if running from the jar file type
 ```
