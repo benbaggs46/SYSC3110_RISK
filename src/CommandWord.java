@@ -15,15 +15,35 @@ public enum CommandWord {
     HELP("HELP","- Displays a help message detailing all commands\n"),
     QUIT("QUIT","- Quits the game\n");
 
+    /**
+     * The command signature of the command type, to be displayed by the HELP command
+     */
     private String description;
+
+    /**
+     * A description of the command's functionality, to be displayed by the HELP command
+     */
     private String signature;
 
+    /**
+     * Constructor for CommandWord
+     * @param signature The command signature of the command type, to be displayed by the HELP command
+     * @param description A description of the command's functionality, to be displayed by the HELP command
+     */
     CommandWord(final String signature, final String description){
         this.signature = signature;
         this.description = description;
     }
 
+    /**
+     * Returns the signature of the command word
+     * @return A String containing a signature of the command
+     */
     public String getSignature(){return signature;}
 
+    /**
+     * Returns the description of the command word
+     * @return A String containing a description of the command
+     */
     public String getDescription(){return description;}
 }

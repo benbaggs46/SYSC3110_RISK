@@ -21,7 +21,16 @@ public class Territory {
      * The name of the territory
      */
     private String name;
+
+    /**
+     * The number of armies placed on the territory, but not confirmed.
+     * For use during the PLACEMENT turn phase
+     */
     private int tempArmies;
+
+    /**
+     * The continent that the territory is a part of
+     */
     private Continent continent;
 
     /**
@@ -37,6 +46,10 @@ public class Territory {
         continent.addTerritory(this);
     }
 
+    /**
+     * Returns the continent that the territory is a part of
+     * @return The continent that the territory is a part of
+     */
     public Continent getContinent(){
         return continent;
     }

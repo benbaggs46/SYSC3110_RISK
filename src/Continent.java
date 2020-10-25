@@ -30,12 +30,16 @@ public class Continent {
 
     /**
      * gets the territories within the  continent
-     * @return
+     * @return A list of the territories of the continent
      */
     public List<Territory> getTerritoryList(){
         return territories;
     }
 
+    /**
+     * Tests whether the specified continent is controlled by a single player
+     * @return A boolean indicating whether the continent is controlled by a single player
+     */
     public boolean isConquered(){
         Player p = territories.get(0).getOwner();
         for(Territory t: territories){
