@@ -30,7 +30,7 @@ public class BoardController {
     /**
      * A map between any valid number of players and how many armies each player should start the game with
      */
-    public static final Map<Integer, Integer> initialArmiesForNumPlayers = Map.of(
+    public static final Map<Integer, Integer> STARTING_ARMIES_FOR_NUM_PLAYERS = Map.of(
             2, 50,
             3, 35,
             4, 30,
@@ -163,7 +163,7 @@ public class BoardController {
         if(word == CommandWord.PLAY){
             int numPlayers = Integer.parseInt(args.get(0));
             if(numPlayers > MAX_PLAYERS || numPlayers < MIN_PLAYERS) {Parser.displayMessage("Number of players must be between 2 and 6"); return;}
-            int numArmiesEach = initialArmiesForNumPlayers.get(numPlayers);
+            int numArmiesEach = STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers);
             board = BoardConstructor.createMapFromFile("DEFAULT_MAP.xml");
 
             if(board == null) {Parser.displayMessage("Error encountered constructing board, please try again"); return;}
