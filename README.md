@@ -1,10 +1,10 @@
 # SYSC3110 RISK
 ### Version: 1.0.0
 ### Authors:
-- Ben Baggs: benbaggs46
-- Liam Ballantyne: ljjb97
-- Imran Latif: imran1503
-- Vijay Ramalingom: vijayramalingom12
+- Ben Baggs: @benbaggs46
+- Liam Ballantyne: @ljjb97
+- Imran Latif: @imran1503
+- Vijay Ramalingom: @vijayramalingom12
 
 ### Changelog:
 No changes as of now
@@ -17,6 +17,7 @@ No changes as of now
     * [Valid commands and syntax](####Valid-commands-and-syntax:)
     * [Playing the game](####Playing-the-game)
 - [Important design descisions](###Important-design-decisions:)
+- [Roadmap](###Roadmap:)
 
 ### Quick start:
 To play risk run the main function in Parser.java or if running from the jar file type
@@ -115,3 +116,9 @@ This may only be done once.
 - Reading a file vs Hardcoding in the map.   We chose to make our first deliverable read a xml file as it avoided hardcoding and fulfilled a future. They currently are not enabled as it is currently always using the default map, however this allows us to easily update the project to what we need later on.
 - Removing Game -> Splitting functions into board and parser -> Parser becomes our view / "Main" class.   There was limited use for game that did warrant the entire class for it. Once we switched to using MVC, It was clear that Parser was our view and that is where the user input was coming from, so it became our main.
 - Removing Dice.   We moved the functions it had to board in order to remove a class that would be responsible for doing next to nothing in the project. This was also inspired by using the MVC design pattern as we were giving the model more control over itself. 
+
+### Roadmap:
+- Implement a gui to allow the game to played with only a mouse (keyboard needed to input names)
+- Add testing capabilities to enable us to find more issues we might be missing
+- Add the option to have AI players
+- Enable loading and saving the game
