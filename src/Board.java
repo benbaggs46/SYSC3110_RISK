@@ -242,11 +242,13 @@ public class Board {
     }
 
     /**
-     *
-     * @param attackingTerritory
-     * @param defendingTerritory
-     * @param attackerDiceNum
-     * @param defenderDiceNum
+     * Conducts a single dice battle. Takes the results of that battle and then removes the armies from the territory(s)
+     * that lost them. If after removing armies the defender is out armies the attacker takes control of the defending
+     * territory.
+     * @param attackingTerritory the territory that is attacking
+     * @param defendingTerritory the territory that is defending
+     * @param attackerDiceNum the number of dice the attacker will use
+     * @param defenderDiceNum the number of dice the defender will use
      */
     public void attack(Territory attackingTerritory, Territory defendingTerritory, int attackerDiceNum, int defenderDiceNum){
         int result = attackResult(attackerDiceNum, defenderDiceNum);
@@ -272,10 +274,10 @@ public class Board {
     }
 
     /**
-     *
-     * @param t1
-     * @param t2
-     * @return
+     * Checks to see if two territories are neighbours
+     * @param t1 the first territory
+     * @param t2 the second territory
+     * @return true if they are neighbours, else false
      */
     public boolean areConnected(Territory t1, Territory t2){
         Set<Territory> visited = new HashSet<>();
@@ -297,10 +299,10 @@ public class Board {
     }
 
     /**
-     *
-     * @param source
-     * @param destination
-     * @param numArmies
+     * Moves specified number of armies from one territory to another territory
+     * @param source The territory to take armies from
+     * @param destination The territory to give the armies to
+     * @param numArmies The number of armies to transfer
      */
     public void moveArmies(Territory source, Territory destination, int numArmies){
         destination.addArmies(numArmies);
@@ -308,9 +310,9 @@ public class Board {
     }
 
     /**
-     *
-     * @param territory
-     * @param owner
+     * Transfers the ownership of one territory to a new player
+     * @param territory the territory to transfer
+     * @param owner the player to transfer the territory too
      */
     public void transferTerritory(Territory territory, Player owner){
         Player prevOwner = territory.getOwner();
@@ -333,6 +335,9 @@ public class Board {
         //ask owner how many armies they want to move
     }
 
+    /**
+     * Clears all the attributes of the current board
+     */
     public void clearBoard(){ //empties the current board
         continents.clear();
         players.clear();
@@ -344,14 +349,20 @@ public class Board {
         should still be freed. Java's garbage collection handles cyclic references*/
     }
 
+    /**
+     * Check to see if there are any continents in the list of continents
+     * @return true if there is no continents in the list, else false
+     */
     public boolean isEmpty(){
         return continents.isEmpty();
     }
 
     /**
+     * Assigns all the territories to players at the start of the game
+     * @param players The list of players playing
+     * @param numArmiesEach The number of armies that the players start with
      *
-     * @param players
-     * @param numArmiesEach
+     * TODO: remove players parameter
      */
     public void populateBoard(List<Player> players, int numArmiesEach){
         Random r = new Random();
