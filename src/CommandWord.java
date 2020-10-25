@@ -1,12 +1,29 @@
 public enum CommandWord {
-    PLAY,
-    QUIT,
-    ATTACK,
-    PLACE,
-    RETRACT,
-    PROCEED,
-    FORTIFY,
-    PRINT,
-    INFO,
-    HELP
+    PLAY("PLAY,<player_number:int>","- Starts a new game of RISK with the specified number of players\n" +
+            "- The number of players must be between 2 and 6\n"),
+    PROCEED("PROCEED","- Moves to the next phase of the player's turn, or to the next player's turn\n"),
+    PLACE("PLACE,<territory:String>,<army_number:int>","- During the FORTIFY phase, places new armies in the specified territory\n" +
+            "- This is not a permanent action, and can be undone by the RETRACT command\n" +
+            "- Army placements become confirmed once the player ends the fortify phase\n"),
+    RETRACT("RETRACT,<territory:String>,<army_number:int>","- Removes armies placed using the PLACE command, allowing them to be placed elsewhere\n"),
+    ATTACK("ATTACK,<defending_territory:String>,<attacking_territory:String>,<attacker_number:int>","- During the ATTACK phase, performs an attack between the specified territories\n" +
+            "- The attacker will attempt to roll with the specified number of dice (between 1 and 3)\n"),
+    FORTIFY("FORTIFY,<to_territory:String>,<from_territory:String>,<army_number:int>","- During the FORTIFY phase, moves armies between the specified territories\n" +
+            "- Once a successful fortification is completed, the players turn will end automatically\n"),
+    PRINT("PRINT","- Prints a description of the entire board\n"),
+    INFO("INFO,<object_name:String>","- Shows more information about the specified object (Continent, Territory, or Player)\n"),
+    HELP("HELP","- Displays a help message detailing all commands\n"),
+    QUIT("QUIT","- Quits the game\n");
+
+    private String description;
+    private String signature;
+
+    CommandWord(final String signature, final String description){
+        this.signature = signature;
+        this.description = description;
+    }
+
+    public String getSignature(){return signature;}
+
+    public String getDescription(){return description;}
 }

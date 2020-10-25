@@ -9,8 +9,9 @@ public class Parser {
     public static Scanner in = new Scanner(System.in);
     public static BoardController boardController;
 
-    public static void begin(BoardController bc){
-        boardController = bc;
+    public static void main(String[] args){
+        boardController = new BoardController();
+        Parser.displayMessage("Welcome to RISK!\nEnter HELP for a list of commands");
         while(true){
             parseInputString(getBlankPrompt());
         }

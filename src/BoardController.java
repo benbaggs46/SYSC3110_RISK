@@ -3,12 +3,6 @@ import java.util.List;
 public class BoardController {
     private Board board;
 
-    public BoardController(Board board){
-        this.board = board;
-
-        Parser.displayMessage("Welcome to RISK!\nEnter HELP for a list of commands");
-    }
-
     public static int getNumArmiesEachForNumPlayers(int numPlayers){
         if(numPlayers == 2) return 50;
         else if(numPlayers == 3) return 35;
@@ -50,6 +44,7 @@ public class BoardController {
                     //game is over
                     Parser.displayMessage(attackingTerritory.getOwner().getName() + " has won!");
                     board.clearBoard();
+                    Parser.displayMessage("Enter PLAY,<number_of_players> to start a new game");
                 }
             }
 
@@ -81,22 +76,16 @@ public class BoardController {
         try {
             switch (word) {
                 case HELP -> {
-                    Parser.displayMessage("Separate all command words and arguments with commas (',')\n" +
-                            "<argument:int> signifies an integer argument\n" +
-                            "<argument:String> signifies a string argument\n\n" +
-                            "PLAY,<player_number:int>\n" +
-                            "- Starts a new game of RISK with the specified number of players\n" +
-                            "- The number of players must be between 2 and 6\n\n" +
-                            "PLACE,<territory:String>,<army_number:int>\n" +
-                            "- During the fortify phase, places the specified number of new armies in the specified territory\n" +
-                            "- This is not a permanent action, and can be undone by the RETRACT command\n" +
-                            "- Army placements become confirmed once the player ends the fortify phase\n\n" +
-                            "RETRACT,<territory:String>,<army_number:int>\n" +
-                            "- Removes armies placed using the PLACE command, allowing them to be placed elsewhere\n\n" +
-                            "ATTACK,<defending_territory:String>,<attacking_territory:String>,<attacker_number:int>\n" +
-                            "- During the attack phase, performs an attack between the specified territories\n" +
-                            "- The attacker will attempt to roll with the specified number of dice (between 1 and 3)\n\n" +
-                            "FORTIFY,<");
+                    Parser.displayMessage("- Separate all command words and arguments with commas only (',')\n" +
+                            "- All names are case insensitive\n" +
+                            "- Extra arguments after commands will be ignored\n" +
+                            "- <argument:int> signifies an integer argument\n" +
+                            "- <argument:String> signifies a name as a string argument\n");
+
+                    for(CommandWord commandWord: CommandWord.values()) {
+                        Parser.displayMessage(commandWord.getSignature());
+                        Parser.displayMessage(commandWord.getDescription());
+                    }
                 }
                 case PLAY -> {
                     int numPlayers = Integer.parseInt(args.get(0));
