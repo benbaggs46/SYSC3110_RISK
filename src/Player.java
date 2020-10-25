@@ -22,14 +22,6 @@ public class Player {
     }
 
     /**
-     * Returns the name of the player in a string
-     * @return the player's name
-     */
-    public String toString(){
-        return name;
-    }
-
-    /**
      * Adds a territory to the controlledTerritories list once a player conquers that territory
      * @param territory the territory which the player conquers
      */
@@ -53,6 +45,12 @@ public class Player {
         return controlledTerritories.size();
     }
 
+    public int getNumArmies(){
+        int sum = 0;
+        for(Territory t: controlledTerritories) sum += t.getNumArmies();
+        return sum;
+    }
+
     /**
      * get the list of territories the player owns
      * @return the controlledTerritories list
@@ -68,4 +66,13 @@ public class Player {
     public String getName(){
         return name;
     }
+
+    public String toString(){
+        String string = name+ " controls " + getNumTerritories() + " territories with " + getNumArmies() + " armies";
+        for (Territory t: controlledTerritories){
+            string += "\n" + t.getName() + "\nArmies: " + t.getNumArmies();
+        }
+        return string;
+    }
+
 }

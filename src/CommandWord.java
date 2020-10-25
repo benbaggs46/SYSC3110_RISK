@@ -5,5 +5,7 @@ public enum CommandWord {
     PLACE,
     RETRACT,
     PROCEED,
-    FORTIFY
+    FORTIFY,
+    PRINT,
+    INFO
 }

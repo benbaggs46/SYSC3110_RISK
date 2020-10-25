@@ -1,17 +1,67 @@
 import java.util.*;
 
 public class Board {
+    private List<Continent> continents;
+    private List<Player> players;
+    private Player currentPlayer;
+    private int armiesToPlace;
+    private TurnStage turnStage;
+    public static final int MAX_DICE_ROLL = 6;
 
-    /**
-     * List of continents that are apart of the board
-     */
-    private List<Continent> continents;//
-
-    /**
-     * The constructor for board. An array list is used to implement continents
-     */
     public Board(){
         continents = new ArrayList<>();
+        players = new ArrayList<>();
+    }
+
+    public TurnStage getTurnStage() {
+        return turnStage;
+    }
+
+    public void goToNextTurn(){
+        currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
+    }
+
+    public void goToNextTurnStage(){
+        turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
+    }
+
+    public void setTurnStage(TurnStage turnStage) {
+        this.turnStage = turnStage;
+    }
+
+    public int getArmiesToPlace() {
+        return armiesToPlace;
+    }
+
+    public void addArmiesToPlace(int armiesToPlace) {
+        this.armiesToPlace += armiesToPlace;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    public int getArmyBonusForPlayer(Player player){
+        return Math.max((player.getNumTerritories() / 3) + getContinentBonusForPlayer(player), 3);
+    }
+
+    private int getContinentBonusForPlayer(Player player){
+        int sum = 0;
+        for(Continent c: continents){
+            boolean controlsContinent = true;
+            for(Territory t: c.getTerritoryList()){
+                if(t.getOwner() != player) {
+                    controlsContinent = false;
+                    break;
+                }
+            }
+            if(controlsContinent) sum += c.getArmyBonus();
+        }
+        return sum;
     }
 
     /**
@@ -39,6 +89,20 @@ public class Board {
         return null;
     }
 
+    public Continent findContinentByName(String name){
+        for(Continent c: continents){
+            if(c.getName().toLowerCase().equals(name.toLowerCase())) return c;
+        }
+        return null;
+    }
+
+    public Player findPlayerByName(String name){
+        for(Player p: players){
+            if(p.getName().toLowerCase().equals(name.toLowerCase())) return p;
+        }
+        return null;
+    }
+
     /**
      * Goes through the continents list finding all the Territory objects in
      * each continent.
@@ -52,81 +116,37 @@ public class Board {
         return list;
     }
 
-    /**
-     * Adds a continent to the continent list
-     * @param continent the continent to add to the continent list
-     */
+    public List<Player> getPlayerList(){
+        return players;
+    }
+
+    public void addPlayer(Player player) {players.add(player);}
+
     public void addContinent(Continent continent){
         continents.add(continent);
     }
 
-    /*
-    public int calcDiceNum(Country c){
-        int x = c.getArmyNum() / 3;
-    }
+    public static int attackResult(int attackerDiceNum, int defenderDiceNum){
 
-    */
+        int result = 0;
 
+        //roll dice and collect the results into lists
+        Random r = new Random();
+        List<Integer> attackDice = new ArrayList<>();
+        List<Integer> defendDice = new ArrayList<>();
+        for(int i=0; i<attackerDiceNum; i++ ){ attackDice.add(r.nextInt(MAX_DICE_ROLL));}
+        for(int i=0; i<defenderDiceNum; i++ ){ defendDice.add(r.nextInt(MAX_DICE_ROLL));}
 
-    /**
-     * Generates a number between 1 and 6, as many times as we want.
-     * @param numDie is the number od fice being rolled.
-     * @return sum, which is the sum of all the dice roll results.
-     */
-    public  List<Integer> rollDice(Integer numDie) {
-        List<Integer> sum = null;
-        Random random = new Random();
-        for (int i = 0; i < (numDie -1); i++){
-            int x = random.nextInt(5) + 1;
-            sum.add(x);
-        }
-        return sum;
-    }
-
-    /**
-     *
-     * @param attackerDiceNum The number of dice the attacker starts with
-     * @param defenderDiceNum The number of dice the defender starts with
-     * @return
-     */
-    public int attackResult(int attackerDiceNum, int defenderDiceNum){
-        List<Integer> ADice = rollDice(attackerDiceNum);
-        List<Integer> DDice = rollDice(defenderDiceNum);
-        int Awins = 0;
-        int Dwins = 0;
-        for (int i = 0; i <= Math.max(attackerDiceNum, defenderDiceNum); i++){
-            int x = Math.max(ADice.get(i), DDice.get(i));
-            if (x == ADice.get(i)){
-                Awins += 1;
-            }
-            else if (ADice.get(i) == DDice.get(i)){
-                //do nothing, delete later
-            }
-            else if (x == DDice.get(i)){
-                Dwins += 1;
-            }
-
-        }
-        int ADiceSum = 0;
-        for (int i = 0; i<= ADice.size(); i++){
-            ADiceSum += ADice.get(i);
-        }
-        int DDiceSum = 0;
-        for (int i = 0; i<= DDice.size(); i++){
-            DDiceSum += DDice.get(i);
+        //matches up the highest rolls from attacker and defender, modifies the result accordingly, and repeats
+        for(int i = Math.min(attackerDiceNum, defenderDiceNum); i > 0; i--){
+            int topAttackDie = Collections.max(attackDice);
+            int topDefendDie = Collections.max(defendDice);
+            attackDice.remove((Integer) topAttackDie);
+            defendDice.remove((Integer) topDefendDie);
+            result += topAttackDie > topDefendDie? 1: -1;
         }
 
-        if(Awins == Dwins){
-            return -1;
-        }
-        else if (Awins > Dwins){
-            return (ADiceSum);
-        }
-        else if (Awins < Dwins){
-            return (ADiceSum);
-        }
-        return 0;
-
+        return result;
     }
 
     /**
@@ -138,6 +158,9 @@ public class Board {
      */
     public void attack(Territory attackingTerritory, Territory defendingTerritory, int attackerDiceNum, int defenderDiceNum){
         int result = attackResult(attackerDiceNum, defenderDiceNum);
+
+        Parser.displayMessage(result == 0? "Both players lost an army": (result > 0)? defendingTerritory.getOwner()+" lost "+result +" armies": attackingTerritory.getOwner()+" lost "+ (-result) +" armies");
+
         if(result == 0){ //both players lose one army
             attackingTerritory.addArmies(-1);
             defendingTerritory.addArmies(-1);
@@ -149,6 +172,8 @@ public class Board {
             attackingTerritory.addArmies(result);
         }
         if(defendingTerritory.getNumArmies() <= 0 ) { //defending territory has no armies left
+            Parser.displayMessage(defendingTerritory.getName()+" was conquered!");
+
             transferTerritory(defendingTerritory, attackingTerritory.getOwner());
             moveArmies(attackingTerritory, defendingTerritory, attackerDiceNum);
         }
@@ -201,19 +226,12 @@ public class Board {
         owner.gainTerritory(territory);
         territory.setOwner(owner);
         if(prevOwner.getNumTerritories() == 0) { //prevOwner is eliminated
-            System.out.println(prevOwner + " was eliminated!");
+            Parser.displayMessage(prevOwner + " was eliminated!");
         }
     }
 
-    /**
-     *
-     * @param t
-     * @param p
-     */
-    public void fillTerritory(Territory t, Player p){
-        p.gainTerritory(t);
-        t.addArmies(1);
-        t.setOwner(p);
+    public boolean isEmpty(){
+        return continents.isEmpty();
     }
 
     /**
@@ -235,7 +253,9 @@ public class Board {
                 int territoryIndex = r.nextInt(unfilledTerritories.size());
                 Territory t = unfilledTerritories.remove(territoryIndex);
                 Player p = players.get(playerIndex);
-                fillTerritory(t, p);
+                p.gainTerritory(t);
+                t.addArmies(1);
+                t.setOwner(p);
                 armiesLeftEach[playerIndex]--;
             }
         }
@@ -247,7 +267,8 @@ public class Board {
                 Player p = players.get(playerIndex);
                 int territoryIndex = r.nextInt(p.getNumTerritories());
                 Territory t = p.getControlledTerritories().get(territoryIndex);
-                fillTerritory(t,p);
+                t.addArmies(1);
+                t.setOwner(p);
                 armiesLeftEach[playerIndex]--;
             }
             donePlacing = true;
@@ -257,3 +278,4 @@ public class Board {
         }
     }
 }
+

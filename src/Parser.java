@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Parser {
 
-    public static final String DIVIDER_CHAR = " ";
+    public static final String DIVIDER_CHAR = ",";
     public static final String PROMPT_STRING = ">>> ";
     public static final String INVALID_COMMAND_MESSAGE = "Invalid Command";
     public static Scanner in = new Scanner(System.in);
@@ -17,8 +17,12 @@ public class Parser {
         }
     }
 
+    public static void displayMessage(String message){
+        System.out.println(message);
+    }
+
     public static String getPrompt(String promptMessage){
-        System.out.println(promptMessage);
+        displayMessage(promptMessage);
         return getBlankPrompt();
     }
 
@@ -29,7 +33,8 @@ public class Parser {
 
     public static int getIntPrompt(String promptMessage){
         try{
-            return Integer.parseInt(in.nextLine());
+            displayMessage(promptMessage);
+            return Integer.parseInt(getBlankPrompt());
         }
         catch(Exception e) {
             return getIntPrompt(promptMessage);
@@ -46,10 +51,10 @@ public class Parser {
                 CommandWord commandWord = CommandWord.valueOf(args[0].toUpperCase());
                 List<String> argsList = new ArrayList<>();
                 for(int i = 1; i < length; i++) argsList.add(args[i].toLowerCase());
-                getPrompt(boardController.processCommand(new Command(commandWord, argsList)));
+                boardController.processCommand(new Command(commandWord, argsList));
             }
             catch (Exception e){
-                System.out.println(INVALID_COMMAND_MESSAGE);
+                displayMessage("Exception thrown in Parser.parseInputString()");
             }
         }
     }
