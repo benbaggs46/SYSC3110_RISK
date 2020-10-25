@@ -28,7 +28,7 @@ public class BoardController {
      * @param attackerDiceNum The number of dice the attacker is rolling
      * @param defenderDiceNum The number of dice the defender is rolling
      */
-    public void attack(Territory attackingTerritory, Territory defendingTerritory, int attackerDiceNum, int defenderDiceNum){
+    private void attack(Territory attackingTerritory, Territory defendingTerritory, int attackerDiceNum, int defenderDiceNum){
         int result = Board.attackResult(attackerDiceNum, defenderDiceNum);
 
         Parser.displayMessage(result == 0? "Both players lost an army": (result > 0)? defendingTerritory.getOwner().getName()+" lost "+result +" armies": attackingTerritory.getOwner().getName()+" lost "+ (-result) +" armies");
