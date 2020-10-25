@@ -65,6 +65,11 @@ public class Board {
         return sum;
     }
 
+    /**
+     * Gives a string that contains the output of calling toString on each of
+     * the continents in the continents list
+     * @return a string containing the return from each continent.toString()
+     */
     public String toString(){
         String string = "";
         for(Continent c: continents){
@@ -73,6 +78,11 @@ public class Board {
         return string;
     }
 
+    /**
+     * Searches for a territory with the same name as the one given
+     * @param name The territory to look for
+     * @return the territory object corresponding to the name. Null if territory not found
+     */
     public Territory findTerritoryByName(String name){
         for(Territory t: getTerritoryList()){
             if(t.getName().toLowerCase().equals(name.toLowerCase())) return t;
@@ -94,6 +104,11 @@ public class Board {
         return null;
     }
 
+    /**
+     * Goes through the continents list finding all the Territory objects in
+     * each continent.
+     * @return List of all Territory objects
+     */
     public List<Territory> getTerritoryList(){
         List<Territory> list = new ArrayList<>();
         for(Continent c: continents) {
@@ -135,6 +150,13 @@ public class Board {
         return result;
     }
 
+    /**
+     *
+     * @param attackingTerritory
+     * @param defendingTerritory
+     * @param attackerDiceNum
+     * @param defenderDiceNum
+     */
     public void attack(Territory attackingTerritory, Territory defendingTerritory, int attackerDiceNum, int defenderDiceNum){
         int result = attackResult(attackerDiceNum, defenderDiceNum);
 
@@ -158,6 +180,12 @@ public class Board {
         }
     }
 
+    /**
+     *
+     * @param t1
+     * @param t2
+     * @return
+     */
     public boolean areConnected(Territory t1, Territory t2){
         Set<Territory> visited = new HashSet<>();
         Queue<Territory> queue = new LinkedList<>();
@@ -177,11 +205,22 @@ public class Board {
         return false;
     }
 
+    /**
+     *
+     * @param source
+     * @param destination
+     * @param numArmies
+     */
     public void moveArmies(Territory source, Territory destination, int numArmies){
         destination.addArmies(numArmies);
         source.addArmies(-numArmies);
     }
 
+    /**
+     *
+     * @param territory
+     * @param owner
+     */
     public void transferTerritory(Territory territory, Player owner){
         Player prevOwner = territory.getOwner();
         prevOwner.loseTerritory(territory);
@@ -196,6 +235,11 @@ public class Board {
         return continents.isEmpty();
     }
 
+    /**
+     *
+     * @param players
+     * @param numArmiesEach
+     */
     public void populateBoard(List<Player> players, int numArmiesEach){
         Random r = new Random();
         int numPlayers = players.size();
