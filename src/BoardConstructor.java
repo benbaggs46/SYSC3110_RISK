@@ -47,15 +47,11 @@ public class BoardConstructor {
                 if (node.getNodeType() == Node.ELEMENT_NODE)
                 {
                     Element eElement = (Element) node;
-                    //System.out.println("Continent: "+ eElement.getElementsByTagName("name").item(0).getTextContent());
-                    //System.out.println("Bonus: " + eElement.getElementsByTagName("bonus").item(0).getTextContent());
 
                     Continent c = new Continent(eElement.getElementsByTagName("name").item(0).getTextContent(),Integer.parseInt(eElement.getElementsByTagName("bonus").item(0).getTextContent()));
                     board.addContinent(c);
 
                     for(int i = eElement.getElementsByTagName("territory").getLength(); i > 0; i--) {
-                        //System.out.println("Territory: " + eElement.getElementsByTagName("territory").item(i-1).getTextContent());
-
                         Territory t = new Territory(eElement.getElementsByTagName("territory").item(i-1).getTextContent(), c);
                     }
                 }
@@ -68,7 +64,6 @@ public class BoardConstructor {
                 {
                     Element eElement = (Element) node;
                     NodeList nodeList = eElement.getElementsByTagName("territory");
-                    //System.out.println("Border: "+ nodeList.item(0).getTextContent() + " <-> " + nodeList.item(1).getTextContent());
 
                     Territory t1 = board.findTerritoryByName(nodeList.item(0).getTextContent());
                     Territory t2 = board.findTerritoryByName(nodeList.item(1).getTextContent());
@@ -79,7 +74,7 @@ public class BoardConstructor {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            return null;
         }
         return board;
     }

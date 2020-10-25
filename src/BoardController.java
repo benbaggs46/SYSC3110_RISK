@@ -1,8 +1,17 @@
 import java.util.List;
 
 public class BoardController {
+
+    /**
+     * The Board being controlled by the BoardController
+     */
     private Board board;
 
+    /**
+     * Returns the number of armies given to each player at the start of the game, based on the specified number of players
+     * @param numPlayers The number of players using the board
+     * @return The number of armies to be given to each player
+     */
     public static int getNumArmiesEachForNumPlayers(int numPlayers){
         if(numPlayers == 2) return 50;
         else if(numPlayers == 3) return 35;
@@ -12,6 +21,13 @@ public class BoardController {
         else return -1;
     }
 
+    /**
+     * Performs an attack between two territories
+     * @param attackingTerritory The territory being attacked from
+     * @param defendingTerritory The territory being attacked
+     * @param attackerDiceNum The number of dice the attacker is rolling
+     * @param defenderDiceNum The number of dice the defender is rolling
+     */
     public void attack(Territory attackingTerritory, Territory defendingTerritory, int attackerDiceNum, int defenderDiceNum){
         int result = Board.attackResult(attackerDiceNum, defenderDiceNum);
 
@@ -64,17 +80,27 @@ public class BoardController {
         }
     }
 
+    /**
+     * Moves the board to the next player's turn
+     */
     public void nextTurn(){
         board.incrementTurn();
         Parser.displayMessage("It is now "+board.getCurrentPlayer().getName() +"'s turn");
     }
 
+    /**
+     * Moves the board to the next turn phase
+     */
     public void nextTurnStage(){
         board.incrementTurnStage();
         Parser.displayMessage("You are in the " + board.getTurnStage() +" phase");
         if(board.getTurnStage() == TurnStage.PLACEMENT) Parser.displayMessage("You have "+ board.getArmiesToPlace() +" new armies to place");
     }
 
+    /**
+     * Processes a command given by the Parser, tests if it makes sense, and modifies the board accordingly
+     * @param c The Command given by the Parser
+     */
     public void processCommand(Command c){
         CommandWord word = c.getCommandWord();
         List<String> args = c.getArgs();
@@ -85,12 +111,15 @@ public class BoardController {
             if(numArmiesEach < 0) {Parser.displayMessage("Number of players must be between 2 and 6"); return;}
             board = BoardConstructor.createMapFromFile("DEFAULT_MAP.xml");
 
+            if(board == null) {Parser.displayMessage("Error encountered constructing board, please try again"); return;}
+
             for(int i=0;i<numPlayers;i++){
                 board.addPlayer(new Player(Parser.getPrompt("Enter a name for player "+ (i+1))));
             }
 
-            if(numPlayers > board.getTerritoryList().size()) {Parser.displayMessage("The selected map doesn't have enough territories for "+numPlayers+" players"); return;}
-            if(numPlayers * numArmiesEach < board.getTerritoryList().size()) {Parser.displayMessage("The selected map has too many territories"); return;}
+            int boardSize = board.getTerritoryList().size();
+            if(numPlayers > boardSize) {Parser.displayMessage("The selected map doesn't have enough territories for "+numPlayers+" players"); return;}
+            if(numPlayers * numArmiesEach < boardSize) {Parser.displayMessage("The selected map has too many territories"); return;}
 
             board.populateBoard(board.getPlayerList(),numArmiesEach);
 
@@ -120,6 +149,7 @@ public class BoardController {
         }
         else{
             if(board == null) {Parser.displayMessage("You have to start a new game first!");}
+
             else if(word == CommandWord.PRINT){
                 Parser.displayMessage( board.toString());
             }
@@ -146,149 +176,68 @@ public class BoardController {
                 }
                 Parser.displayMessage("No objects with that name exist");
             }
-            else if(word == CommandWord.PROCEED){
-                if(board.getTurnStage() == TurnStage.PLACEMENT){
-                    if(board.getArmiesToPlace() > 0) {Parser.displayMessage("You still have armies to place"); return;}
-                    for(Territory t: board.getTerritoryList()){
-                        t.confirmTempArmies();
+            else {
+
+                TurnStage currentTurnStage = board.getTurnStage();
+                Player currentPlayer = board.getCurrentPlayer();
+
+                if(word == CommandWord.PROCEED){
+
+                    if(currentTurnStage == TurnStage.PLACEMENT){
+                        if(board.getArmiesToPlace() > 0) {Parser.displayMessage("You still have armies to place"); return;}
+                        for(Territory t: board.getTerritoryList()){
+                            t.confirmTempArmies();
+                        }
                     }
-                }
-                else if(board.getTurnStage() == TurnStage.FORTIFY){
-                    nextTurn();
-                }
-                nextTurnStage();
-            }
-            else if(word == CommandWord.PLACE){
-                if(board.getTurnStage() != TurnStage.PLACEMENT) {Parser.displayMessage("You cannot place armies during the "+ board.getTurnStage() +" phase of your turn"); return;}
-                Territory t = board.findTerritoryByName(args.get(0));
-                int armies = Integer.parseInt(args.get(1));
-
-                if(board.getArmiesToPlace() <= 0) {Parser.displayMessage("You have no more armies to place"); return;}
-                if(t.getOwner() != board.getCurrentPlayer()) {Parser.displayMessage("You do not control that territory"); return;}
-                if(board.getArmiesToPlace() < armies) {Parser.displayMessage("You cannot place that many armies"); return;}
-                if(armies <= 0) {Parser.displayMessage("You cannot place a negative number of armies"); return;}
-
-                t.addTempArmies(armies);
-                board.addArmiesToPlace(-armies);
-
-                Parser.displayMessage("Placed " + armies + " armies in " + t.getName());
-            }
-            else if(word == CommandWord.RETRACT){
-                if(board.getTurnStage() != TurnStage.PLACEMENT) {Parser.displayMessage("You cannot retract armies during the "+ board.getTurnStage() +" phase of your turn"); return;}
-                Territory t = board.findTerritoryByName(args.get(0));
-                int armies = Integer.parseInt(args.get(1));
-
-                if(t.getOwner() != board.getCurrentPlayer()) {Parser.displayMessage("You do not control that territory"); return;}
-                if(t.getTempArmies() < armies) {Parser.displayMessage("You cannot retract that many armies"); return;}
-                if(armies <= 0) {Parser.displayMessage("You cannot retract a negative number of armies"); return;}
-
-                t.addTempArmies(-armies);
-                board.addArmiesToPlace(armies);
-
-                Parser.displayMessage("Retracted " + armies + " armies from " + t.getName());
-            }
-            else if(word == CommandWord.ATTACK){
-                if(board.getTurnStage() != TurnStage.ATTACK) {Parser.displayMessage("You cannot attack during the "+ board.getTurnStage() +" phase of your turn"); return;}
-                Territory t1 = board.findTerritoryByName(args.get(0));
-                Territory t2 = board.findTerritoryByName(args.get(1));
-                int attackDice = Integer.parseInt(args.get(2));
-
-                if(!t1.getNeighbours().contains(t2)) {Parser.displayMessage("Those two territories don't border each other"); return;}
-                if(t2.getOwner() != board.getCurrentPlayer()) {Parser.displayMessage("You cannot attack from that territory. You do not control it"); return;}
-                if(t1.getOwner() == board.getCurrentPlayer()) {Parser.displayMessage("You cannot attack your own territory"); return;}
-                if(attackDice <= 0) {Parser.displayMessage("You must attack with a positive number of armies"); return;}
-                if(attackDice > 3) {Parser.displayMessage("You can't attack with more than 3 armies"); return;}
-                if(t2.getNumArmies() <= attackDice) {Parser.displayMessage("There are not enough armies in " + t2.getName()); return;}
-
-                int defendDice = Parser.getIntPrompt("How many armies would "+t1.getOwner().getName()+" like to defend with?");
-                while(defendDice <= 0 || defendDice > t1.getNumArmies()){
-                    String message = defendDice <= 0? "You must defend with a positive number of armies":"There are not enough armies in "+t1.getName();
-                    defendDice = Parser.getIntPrompt(message);
-                }
-
-                Parser.displayMessage("Attacked " + t1.getName() +" from "+t2.getName()+ " with "+attackDice+" armies. " +defendDice+" armies defended");
-                attack(t2, t1, attackDice, defendDice);
-            }
-            else if(word == CommandWord.FORTIFY){
-                if(board.getTurnStage() != TurnStage.FORTIFY) {Parser.displayMessage("You cannot fortify during the "+ board.getTurnStage() +" phase of your turn"); return;}
-                Territory t1 = board.findTerritoryByName(args.get(0));
-                Territory t2 = board.findTerritoryByName(args.get(1));
-                int armies = Integer.parseInt(args.get(2));
-
-                if (t1.getOwner() != board.getCurrentPlayer() || t2.getOwner() != board.getCurrentPlayer()) {Parser.displayMessage("You do not control both territories"); return;}
-                if (!board.areConnected(t1, t2)) {Parser.displayMessage("Specified territories are not connected"); return;}
-                if (t2.getNumArmies() <= armies) {Parser.displayMessage("You cannot move that many armies from "+t2.getName()); return;}
-
-                board.moveArmies(t2, t1, armies);
-                Parser.displayMessage("Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
-                nextTurn();
-                nextTurnStage();
-            }
-        }
-    }
-
-    /*public void processCommand(Command c){
-        CommandWord word = c.getCommandWord();
-        List<String> args = c.getArgs();
-        try {
-            switch (word) {
-                case HELP -> {
-                    Parser.displayMessage("- Separate all command words and arguments with commas only (',')\n" +
-                            "- All names are case insensitive\n" +
-                            "- Do not use commas in Continent, Territory, or Player names\n" +
-                            "- Extra arguments after commands will be ignored\n" +
-                            "- <argument:int> signifies an integer argument\n" +
-                            "- <argument:String> signifies a name as a string argument\n");
-
-                    for(CommandWord commandWord: CommandWord.values()) {
-                        Parser.displayMessage(commandWord.getSignature());
-                        Parser.displayMessage(commandWord.getDescription());
+                    else if(currentTurnStage == TurnStage.FORTIFY){
+                        nextTurn();
                     }
-                }
-                case PLAY -> {
-                    int numPlayers = Integer.parseInt(args.get(0));
-                    int numArmiesEach = BoardController.getNumArmiesEachForNumPlayers(numPlayers);
-                    if(numArmiesEach < 0) {Parser.displayMessage("Number of players must be between 2 and 6"); return;}
-                    board = BoardConstructor.createMapFromFile("DEFAULT_MAP.xml");
-
-                    for(int i=0;i<numPlayers;i++){
-                        board.addPlayer(new Player(Parser.getPrompt("Enter a name for player "+ (i+1))));
-                    }
-
-                    if(numPlayers > board.getTerritoryList().size()) {Parser.displayMessage("The selected map doesn't have enough territories for "+numPlayers+" players"); return;}
-                    if(numPlayers * numArmiesEach < board.getTerritoryList().size()) {Parser.displayMessage("The selected map has too many territories"); return;}
-
-                    board.populateBoard(board.getPlayerList(),numArmiesEach);
-
-                    board.setCurrentPlayer(board.getPlayerList().get(numPlayers - 1));
-                    board.setTurnStage(TurnStage.FORTIFY);
-
-                    Parser.displayMessage("New board created with " + numPlayers + " players");
-                    nextTurn();
                     nextTurnStage();
                 }
+                else if(word == CommandWord.PLACE){
 
-                case PRINT -> {
-                    if(board == null) {Parser.displayMessage("You have to start a new game first!"); return;}
-                    Parser.displayMessage( board.toString());
+                    int armiesToPlace = board.getArmiesToPlace();
+                    if(currentTurnStage != TurnStage.PLACEMENT) {Parser.displayMessage("You cannot place armies during the "+ currentTurnStage +" phase of your turn"); return;}
+                    Territory t = board.findTerritoryByName(args.get(0));
+                    int armies = Integer.parseInt(args.get(1));
+
+                    if(armiesToPlace <= 0) {Parser.displayMessage("You have no more armies to place"); return;}
+                    if(t.getOwner() != board.getCurrentPlayer()) {Parser.displayMessage("You do not control that territory"); return;}
+                    if(armiesToPlace < armies) {Parser.displayMessage("You cannot place that many armies"); return;}
+                    if(armies <= 0) {Parser.displayMessage("You cannot place a negative number of armies"); return;}
+
+                    t.addTempArmies(armies);
+                    board.addArmiesToPlace(-armies);
+
+                    Parser.displayMessage("Placed " + armies + " armies in " + t.getName());
                 }
+                else if(word == CommandWord.RETRACT){
 
-                case QUIT -> {
-                    Parser.displayMessage("Thank you for playing!");
-                    System.exit(1);
+                    if(currentTurnStage != TurnStage.PLACEMENT) {Parser.displayMessage("You cannot retract armies during the "+ currentTurnStage +" phase of your turn"); return;}
+                    Territory t = board.findTerritoryByName(args.get(0));
+                    int armies = Integer.parseInt(args.get(1));
+
+                    if(t.getOwner() != board.getCurrentPlayer()) {Parser.displayMessage("You do not control that territory"); return;}
+                    if(t.getTempArmies() < armies) {Parser.displayMessage("You cannot retract that many armies"); return;}
+                    if(armies <= 0) {Parser.displayMessage("You cannot retract a negative number of armies"); return;}
+
+                    t.addTempArmies(-armies);
+                    board.addArmiesToPlace(armies);
+
+                    Parser.displayMessage("Retracted " + armies + " armies from " + t.getName());
                 }
+                else if(word == CommandWord.ATTACK){
 
-                case ATTACK -> {
-                    if(board == null) {Parser.displayMessage("You have to start a new game first!"); return;}
-                    if(board.getTurnStage() != TurnStage.ATTACK) {Parser.displayMessage("You cannot attack during the "+ board.getTurnStage() +" phase of your turn"); return;}
+                    if(currentTurnStage != TurnStage.ATTACK) {Parser.displayMessage("You cannot attack during the "+ currentTurnStage +" phase of your turn"); return;}
                     Territory t1 = board.findTerritoryByName(args.get(0));
                     Territory t2 = board.findTerritoryByName(args.get(1));
                     int attackDice = Integer.parseInt(args.get(2));
 
                     if(!t1.getNeighbours().contains(t2)) {Parser.displayMessage("Those two territories don't border each other"); return;}
-                    if(t2.getOwner() != board.getCurrentPlayer()) {Parser.displayMessage("You cannot attack from that territory. You do not control it"); return;}
-                    if(t1.getOwner() == board.getCurrentPlayer()) {Parser.displayMessage("You cannot attack your own territory"); return;}
+                    if(t2.getOwner() != currentPlayer) {Parser.displayMessage("You cannot attack from that territory. You do not control it"); return;}
+                    if(t1.getOwner() == currentPlayer) {Parser.displayMessage("You cannot attack your own territory"); return;}
                     if(attackDice <= 0) {Parser.displayMessage("You must attack with a positive number of armies"); return;}
+                    if(attackDice > 3) {Parser.displayMessage("You can't attack with more than 3 armies"); return;}
                     if(t2.getNumArmies() <= attackDice) {Parser.displayMessage("There are not enough armies in " + t2.getName()); return;}
 
                     int defendDice = Parser.getIntPrompt("How many armies would "+t1.getOwner().getName()+" like to defend with?");
@@ -300,99 +249,23 @@ public class BoardController {
                     Parser.displayMessage("Attacked " + t1.getName() +" from "+t2.getName()+ " with "+attackDice+" armies. " +defendDice+" armies defended");
                     attack(t2, t1, attackDice, defendDice);
                 }
+                else if(word == CommandWord.FORTIFY){
 
-                case RETRACT -> {
-                    if(board == null) {Parser.displayMessage("You have to start a new game first!"); return;}
-                    if(board.getTurnStage() != TurnStage.PLACEMENT) {Parser.displayMessage("You cannot retract armies during the "+ board.getTurnStage() +" phase of your turn"); return;}
-                    Territory t = board.findTerritoryByName(args.get(0));
-                    int armies = Integer.parseInt(args.get(1));
+                    if(currentTurnStage != TurnStage.FORTIFY) {Parser.displayMessage("You cannot fortify during the "+ currentTurnStage +" phase of your turn"); return;}
+                    Territory t1 = board.findTerritoryByName(args.get(0));
+                    Territory t2 = board.findTerritoryByName(args.get(1));
+                    int armies = Integer.parseInt(args.get(2));
 
-                    if(t.getOwner() != board.getCurrentPlayer()) {Parser.displayMessage("You do not control that territory"); return;}
-                    if(t.getTempArmies() < armies) {Parser.displayMessage("You cannot retract that many armies"); return;}
-                    if(armies <= 0) {Parser.displayMessage("You cannot retract a negative number of armies"); return;}
+                    if (t1.getOwner() != currentPlayer || t2.getOwner() != currentPlayer) {Parser.displayMessage("You do not control both territories"); return;}
+                    if (!board.areConnected(t1, t2)) {Parser.displayMessage("Specified territories are not connected"); return;}
+                    if (t2.getNumArmies() <= armies) {Parser.displayMessage("You cannot move that many armies from "+t2.getName()); return;}
 
-                    t.addTempArmies(-armies);
-                    board.addArmiesToPlace(armies);
-
-                    Parser.displayMessage("Retracted " + armies + " from " + t.getName());
-                }
-
-                case PLACE -> {
-                    if(board == null) {Parser.displayMessage("You have to start a new game first!"); return;}
-                    if(board.getTurnStage() != TurnStage.PLACEMENT) {Parser.displayMessage("You cannot place armies during the "+ board.getTurnStage() +" phase of your turn"); return;}
-                    Territory t = board.findTerritoryByName(args.get(0));
-                    int armies = Integer.parseInt(args.get(1));
-
-                    if(board.getArmiesToPlace() <= 0) {Parser.displayMessage("You have no more armies to place"); return;}
-                    if(t.getOwner() != board.getCurrentPlayer()) {Parser.displayMessage("You do not control that territory"); return;}
-                    if(board.getArmiesToPlace() < armies) {Parser.displayMessage("You cannot place that many armies"); return;}
-                    if(armies <= 0) {Parser.displayMessage("You cannot place a negative number of armies"); return;}
-
-                    t.addTempArmies(armies);
-                    board.addArmiesToPlace(-armies);
-
-                    Parser.displayMessage("Placed " + armies + " in " + t.getName());
-                }
-
-                case FORTIFY -> {
-                    if(board == null) {Parser.displayMessage("You have to start a new game first!"); return;}
-                        if(board.getTurnStage() != TurnStage.FORTIFY) {Parser.displayMessage("You cannot fortify during the "+ board.getTurnStage() +" phase of your turn"); return;}
-                        Territory t1 = board.findTerritoryByName(args.get(0));
-                        Territory t2 = board.findTerritoryByName(args.get(1));
-                        int armies = Integer.parseInt(args.get(2));
-
-                        if (t1.getOwner() != board.getCurrentPlayer() || t2.getOwner() != board.getCurrentPlayer()) {Parser.displayMessage("You do not control both territories"); return;}
-                        if (!board.areConnected(t1, t2)) {Parser.displayMessage("Specified territories are not connected"); return;}
-                        if (t2.getNumArmies() <= armies) {Parser.displayMessage("You cannot move that many armies from "+t2.getName()); return;}
-
-                        board.moveArmies(t2, t1, armies);
-                        Parser.displayMessage("Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
-                        nextTurn();
-                        nextTurnStage();
-                        Parser.displayMessage("It is now "+board.getCurrentPlayer().getName() +"'s turn\nYou are in the " + board.getTurnStage() +" phase");
-                }
-
-                case PROCEED -> {
-                    if(board == null) {Parser.displayMessage("You have to start a new game first!"); return;}
-                    if(board.getTurnStage() == TurnStage.PLACEMENT){
-                        if(board.getArmiesToPlace() > 0) {Parser.displayMessage("You still have armies to place"); return;}
-                        for(Territory t: board.getTerritoryList()){
-                            t.confirmTempArmies();
-                        }
-                    }
-                    else if(board.getTurnStage() == TurnStage.FORTIFY){
-                        nextTurn();
-                    }
+                    board.moveArmies(t2, t1, armies);
+                    Parser.displayMessage("Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
+                    nextTurn();
                     nextTurnStage();
-                }
-
-                case INFO -> {
-                    if(board == null) {Parser.displayMessage("You have to start a new game first!"); return;}
-                    String name = args.get(0);
-                    Continent continent = board.findContinentByName(name);
-                    if(continent != null) {
-                        Parser.displayMessage(continent.toString());
-                        return;
-                    }
-                    Territory territory = board.findTerritoryByName(name);
-                    if(territory != null) {
-                        Parser.displayMessage(territory.toString());
-                        Parser.displayMessage("Neighbours:");
-                        for(Territory neighbour: territory.getNeighbours()){
-                            Parser.displayMessage(neighbour.toString());
-                        }
-                        return;
-                    }
-                    Player player = board.findPlayerByName(name);
-                    if(player != null) {
-                        Parser.displayMessage(player.toString());
-                        return;
-                    }
-
-                    Parser.displayMessage("No objects with that name exist");
                 }
             }
         }
-        catch(Exception e){Parser.displayMessage("Command arguments were invalid");}
-    }*/
+    }
 }

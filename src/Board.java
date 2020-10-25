@@ -58,7 +58,7 @@ public class Board {
     }
 
     /**
-     * Sets the objects turnStage to what is given
+     * Sets the object turnStage to what is given
      * @param turnStage the turnStage to go to
      */
     public void setTurnStage(TurnStage turnStage) {
@@ -242,40 +242,10 @@ public class Board {
     }
 
     /**
-     *
-     * @param attackingTerritory
-     * @param defendingTerritory
-     * @param attackerDiceNum
-     * @param defenderDiceNum
-     */
-    /*public void attack(Territory attackingTerritory, Territory defendingTerritory, int attackerDiceNum, int defenderDiceNum){
-        int result = attackResult(attackerDiceNum, defenderDiceNum);
-
-        Parser.displayMessage(result == 0? "Both players lost an army": (result > 0)? defendingTerritory.getOwner()+" lost "+result +" armies": attackingTerritory.getOwner()+" lost "+ (-result) +" armies");
-
-        if(result == 0){ //both players lose one army
-            attackingTerritory.addArmies(-1);
-            defendingTerritory.addArmies(-1);
-        }
-        else if(result > 0) { //defender loses armies
-            defendingTerritory.addArmies(-result);
-        }
-        else { //attacker loses armies
-            attackingTerritory.addArmies(result);
-        }
-        if(defendingTerritory.getNumArmies() <= 0 ) { //defending territory has no armies left
-            Parser.displayMessage(defendingTerritory.getName()+" was conquered!");
-
-            transferTerritory(defendingTerritory, attackingTerritory.getOwner());
-            moveArmies(attackingTerritory, defendingTerritory, attackerDiceNum);
-        }
-    }*/
-
-    /**
-     *
-     * @param t1
-     * @param t2
-     * @return
+     * Tests if the two input territories are connected through territories all owned by the same player
+     * @param t1 The first territory
+     * @param t2 The second territory
+     * @return A boolean indicating whether the two territories are connected
      */
     public boolean areConnected(Territory t1, Territory t2){
         Set<Territory> visited = new HashSet<>();
@@ -297,10 +267,10 @@ public class Board {
     }
 
     /**
-     *
-     * @param source
-     * @param destination
-     * @param numArmies
+     * Moves the specified number of armies from one territory to another
+     * @param source The territory where armies are to be moved from
+     * @param destination The territory where armies are to be moved to
+     * @param numArmies The number of armies to move
      */
     public void moveArmies(Territory source, Territory destination, int numArmies){
         destination.addArmies(numArmies);
@@ -308,35 +278,16 @@ public class Board {
     }
 
     /**
-     *
-     * @param territory
-     * @param owner
+     * Removes a player from the board
+     * @param player The player to be removed
      */
-    /*public void transferTerritory(Territory territory, Player owner){
-        Player prevOwner = territory.getOwner();
-        prevOwner.loseTerritory(territory);
-        owner.gainTerritory(territory);
-        territory.setOwner(owner);
-        if(prevOwner.getNumTerritories() == 0) {
-
-            //prevOwner is eliminated
-            players.remove(prevOwner);
-            Parser.displayMessage(prevOwner.getName() + " was eliminated!");
-
-            if(players.size() > 1){
-                //game is over
-                Parser.displayMessage(owner.getName() + " has won!");
-                clearBoard();
-            }
-        }
-
-        //ask owner how many armies they want to move
-    }*/
-
     public void removePlayer(Player player){
         players.remove(player);
     }
 
+    /**
+     * Clears the board, resetting it to its default state after construction
+     */
     public void clearBoard(){ //empties the current board
         continents.clear();
         players.clear();
@@ -348,14 +299,12 @@ public class Board {
         should still be freed. Java's garbage collection handles cyclic references*/
     }
 
-    public boolean isUsable(){
-        return continents.isEmpty() || players.isEmpty() || currentPlayer == null || turnStage == null;
-    }
-
     /**
-     *
-     * @param players
-     * @param numArmiesEach
+     * Fills the board with the specified players and armies, making it ready for play.
+     * Each player is given an equal amount of territories, distributed randomly around the board.
+     * Each player is given an equal number of armies, distributed randomly throughout their territories, with a minimum of 1 on any territory.
+     * @param players The list of players to play on the board
+     * @param numArmiesEach The number of armies given to each player
      */
     public void populateBoard(List<Player> players, int numArmiesEach){
         Random r = new Random();

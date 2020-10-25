@@ -37,6 +37,10 @@ public class Territory {
         continent.addTerritory(this);
     }
 
+    /**
+     * Returns the continent that the territory is a part of
+     * @return The continent that the territory is a part of
+     */
     public Continent getContinent(){
         return continent;
     }
