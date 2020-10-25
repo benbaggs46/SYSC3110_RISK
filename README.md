@@ -1,15 +1,25 @@
-#SYSC3110 RISK
-###Version: 1.0.0
-###Authors:
-- Ben Baggs: benbaggs46
-- Liam Ballantyne: ljjb97
-- Imran Latif: imran1503
-- Vijay Ramalingom: vijayramalingom12
+# SYSC3110 RISK
+### Version: 1.0.0
+### Authors:
+- Ben Baggs: @benbaggs46
+- Liam Ballantyne: @ljjb97
+- Imran Latif: @imran1503
+- Vijay Ramalingom: @vijayramalingom12
 
-###Changelog:
+### Changelog:
 No changes as of now
 
-###Quick start:
+### Table of Contents:
+- [Quick start](#quick-start)
+- [Deliverables](#deliverables)
+- [Issues](#issues)
+- [User manual](#complete-user-manual)
+    * [Valid commands and syntax](#valid-commands-and-syntax)
+    * [Playing the game](#playing-the-game)
+- [Important design descisions](#important-design-decisions)
+- [Roadmap](#roadmap)
+
+### Quick start:
 To play risk run the main function in Parser.java or if running from the jar file type
 ```
 java -jar risk.jar
@@ -21,22 +31,22 @@ play,<number of player you want>
 ```
 The game will then prompt you for the names of the players and then the game begins!
 
-###Deliverables:
+### Deliverables:
 SYSC3110_RISK_UML.png gives a detailed uml diagram
 The src directory contains all the source files for the project
 
 
-###Issues:
+### Issues:
 There are currently no know issues.
 
-###Complete User manual:
+### Complete User manual:
 To play risk run the main function in Parser.java or if running from the jar file type
 ```
 java -jar risk.jar
 ```
 
 The game will then start! 
-####Valid commands and syntax:
+#### Valid commands and syntax:
 
 - Separate all command words and arguments with commas only (',')
 - All names are case insensitive
@@ -80,7 +90,7 @@ HELP
 QUIT
 - Quits the game
 
-####Playing the game
+#### Playing the game
 1. To start playing type:
     ```
     play,<number of players>
@@ -100,9 +110,15 @@ This may only be done once.
 8. If a player no longer controls any territory they are eliminated from the game.
 9. Once only one player is left, the game is over and the only remaining player is the winner. 
 
-###Important design decisions:
-- MVC -> Board becoming a model
-- Comma over spaces,  Choose the easier method to implement on out behind as the console version of this class was going to be overshadows later on by the GUI implementation. This was easier as it allowed us to not have to change the xml file or any of the logic that was required to parse it.
-- Reading a file vs Hardcoding in the map. We chose to make our first deliverable read a xml file as it avoided hardcoding and fulfilled a future. They currently are not enabled as it is currently always using the default map, however this allows us to easily update the project to what we need later on.
+### Important design decisions:
+- Using Model View Controller Design Pattern.   We decided to build our console based orject off this format in order to future proof it foir when we would be adding GUI on top of the console version. 
+- Comma over spaces.   We choose the easier method to implement on out behind as the console version of this class was going to be overshadows later on by the GUI implementation. This was easier as it allowed us to not have to change the xml file or any of the logic that was required to parse it.
+- Reading a file vs Hardcoding in the map.   We chose to make our first deliverable read a xml file as it avoided hardcoding and fulfilled a future. They currently are not enabled as it is currently always using the default map, however this allows us to easily update the project to what we need later on.
 - Removing Game -> Splitting functions into board and parser -> Parser becomes our view / "Main" class.   There was limited use for game that did warrant the entire class for it. Once we switched to using MVC, It was clear that Parser was our view and that is where the user input was coming from, so it became our main.
-- Removing Dice ^^, moved functions to board
+- Removing Dice.   We moved the functions it had to board in order to remove a class that would be responsible for doing next to nothing in the project. This was also inspired by using the MVC design pattern as we were giving the model more control over itself. 
+
+### Roadmap:
+- Implement a gui to allow the game to played with only a mouse (keyboard needed to input names)
+- Add testing capabilities to enable us to find more issues we might be missing
+- Add the option to have AI players
+- Enable loading and saving the game
