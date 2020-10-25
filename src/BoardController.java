@@ -48,7 +48,6 @@ public class BoardController {
                 }
 
                 case QUIT -> {
-                    if(board.isEmpty()) {Parser.displayMessage("You have to start a new game first!"); return;}
                     Parser.displayMessage("Thank you for playing!");
                     System.exit(1);
                 }

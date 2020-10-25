@@ -187,9 +187,31 @@ public class Board {
         prevOwner.loseTerritory(territory);
         owner.gainTerritory(territory);
         territory.setOwner(owner);
-        if(prevOwner.getNumTerritories() == 0) { //prevOwner is eliminated
-            Parser.displayMessage(prevOwner + " was eliminated!");
+        if(prevOwner.getNumTerritories() == 0) {
+
+            //prevOwner is eliminated
+            players.remove(prevOwner);
+            Parser.displayMessage(prevOwner.getName() + " was eliminated!");
+
+            if(players.size() > 1){
+                //game is over
+                Parser.displayMessage(owner.getName() + " has won!");
+                clearBoard();
+            }
         }
+
+        //ask owner how many armies they want to move
+    }
+
+    public void clearBoard(){ //empties the current board
+        continents.clear();
+        players.clear();
+        currentPlayer = null;
+        armiesToPlace = 0;
+        turnStage = TurnStage.PLACEMENT;
+
+        /*the territories and players still reference each other, but their memory
+        should still be freed. Java's garbage collection handles cyclic references*/
     }
 
     public boolean isEmpty(){
