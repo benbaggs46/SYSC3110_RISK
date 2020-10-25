@@ -21,10 +21,6 @@ public class Board {
      * The stage of the turn the current player is on
      */
     private TurnStage turnStage;
-    /**
-     * The max number of dice rolls
-     */
-    public static final int MAX_DICE_ROLL = 6;
 
     /**
      * Constructor for the board
@@ -208,37 +204,6 @@ public class Board {
      */
     public void addContinent(Continent continent){
         continents.add(continent);
-    }
-
-    /**
-     * Conducts a dice battle with the specified number of dice. Positive return values indicate that the attacker
-     * won the battle. Negative values indicate the defender has won.
-     * @param attackerDiceNum The number of dice the attacker will use
-     * @param defenderDiceNum The number of dice the defender will use
-     * @return the result of the dice battle (positive indicates attacker won, negative indicates defender won)
-     */
-    public static int attackResult(int attackerDiceNum, int defenderDiceNum){
-
-        int result = 0;
-
-        //roll dice and collect the results into lists
-        Random r = new Random();
-        List<Integer> attackDice = new ArrayList<>();
-        List<Integer> defendDice = new ArrayList<>();
-        for(int i=0; i<attackerDiceNum; i++ ){ attackDice.add(r.nextInt(MAX_DICE_ROLL));}
-        for(int i=0; i<defenderDiceNum; i++ ){ defendDice.add(r.nextInt(MAX_DICE_ROLL));}
-
-        //matches up the highest rolls from attacker and defender, modifies the result accordingly, and repeats
-        for(int i = Math.min(attackerDiceNum, defenderDiceNum); i > 0; i--){
-            int topAttackDie = Collections.max(attackDice);
-            int topDefendDie = Collections.max(defendDice);
-            attackDice.remove((Integer) topAttackDie);
-            defendDice.remove((Integer) topDefendDie);
-            //if the attack die is larger than the defend die then add 1 else subtract 1 from result
-            result += topAttackDie > topDefendDie? 1: -1;
-        }
-
-        return result;
     }
 
     /**

@@ -1,6 +1,42 @@
-import java.util.List;
+import java.util.*;
 
 public class BoardController {
+
+    /**
+     * The max number of dice rolls
+     */
+    public static final int MAX_DICE_ROLL = 6;
+
+    /**
+     * The max number of dice that the attacker can roll at once
+     */
+    public static final int MAX_ATTACK_DICE = 3;
+
+    /**
+     * The max number of dice that the defender can roll at once
+     */
+    public static final int MAX_DEFEND_DICE = 2;
+
+    /**
+     * The maximum number of players
+     */
+    public static final int MAX_PLAYERS = 6;
+
+    /**
+     * The minimum number of players
+     */
+    public static final int MIN_PLAYERS = 2;
+
+    /**
+     * A map between any valid number of players and how many armies each player should start the game with
+     */
+    public static final Map<Integer, Integer> initialArmiesForNumPlayers = Map.of(
+            2, 50,
+            3, 35,
+            4, 30,
+            5, 25,
+            6, 20
+    );
 
     /**
      * The Board being controlled by the BoardController
@@ -8,17 +44,34 @@ public class BoardController {
     private Board board;
 
     /**
-     * Returns the number of armies given to each player at the start of the game, based on the specified number of players
-     * @param numPlayers The number of players using the board
-     * @return The number of armies to be given to each player
+     * Conducts a dice battle with the specified number of dice. Positive return values indicate that the attacker
+     * won the battle. Negative values indicate the defender has won.
+     * @param attackerDiceNum The number of dice the attacker will use
+     * @param defenderDiceNum The number of dice the defender will use
+     * @return the result of the dice battle (positive indicates attacker won, negative indicates defender won, 0 indicates both players lose 1 army)
      */
-    public static int getNumArmiesEachForNumPlayers(int numPlayers){
-        if(numPlayers == 2) return 50;
-        else if(numPlayers == 3) return 35;
-        else if(numPlayers == 4) return 30;
-        else if(numPlayers == 5) return 25;
-        else if(numPlayers == 6) return 20;
-        else return -1;
+    public static int attackResult(int attackerDiceNum, int defenderDiceNum){
+
+        int result = 0;
+
+        //roll dice and collect the results into lists
+        Random r = new Random();
+        List<Integer> attackDice = new ArrayList<>();
+        List<Integer> defendDice = new ArrayList<>();
+        for(int i=0; i<attackerDiceNum; i++ ){ attackDice.add(r.nextInt(MAX_DICE_ROLL));}
+        for(int i=0; i<defenderDiceNum; i++ ){ defendDice.add(r.nextInt(MAX_DICE_ROLL));}
+
+        //matches up the highest rolls from attacker and defender, modifies the result accordingly, and repeats
+        for(int i = Math.min(attackerDiceNum, defenderDiceNum); i > 0; i--){
+            int topAttackDie = Collections.max(attackDice);
+            int topDefendDie = Collections.max(defendDice);
+            attackDice.remove((Integer) topAttackDie);
+            defendDice.remove((Integer) topDefendDie);
+            //if the attack die is larger than the defend die then add 1 else subtract 1 from result
+            result += topAttackDie > topDefendDie? 1: -1;
+        }
+
+        return result;
     }
 
     /**
@@ -29,7 +82,7 @@ public class BoardController {
      * @param defenderDiceNum The number of dice the defender is rolling
      */
     private void attack(Territory attackingTerritory, Territory defendingTerritory, int attackerDiceNum, int defenderDiceNum){
-        int result = Board.attackResult(attackerDiceNum, defenderDiceNum);
+        int result = attackResult(attackerDiceNum, defenderDiceNum);
 
         Parser.displayMessage(result == 0? "Both players lost an army": (result > 0)? defendingTerritory.getOwner().getName()+" lost "+result +" armies": attackingTerritory.getOwner().getName()+" lost "+ (-result) +" armies");
 
@@ -98,7 +151,9 @@ public class BoardController {
     }
 
     /**
-     * Processes a command given by the Parser, tests if it makes sense, and modifies the board accordingly
+     * Processes a command given by the Parser, tests if it makes sense given the current game state
+     * If the command is appropriate, modifies the Board accordingly
+     * If the command is inappropriate, displays a message telling the user what the problem is
      * @param c The Command given by the Parser
      */
     public void processCommand(Command c){
@@ -107,8 +162,8 @@ public class BoardController {
 
         if(word == CommandWord.PLAY){
             int numPlayers = Integer.parseInt(args.get(0));
-            int numArmiesEach = BoardController.getNumArmiesEachForNumPlayers(numPlayers);
-            if(numArmiesEach < 0) {Parser.displayMessage("Number of players must be between 2 and 6"); return;}
+            if(numPlayers > MAX_PLAYERS || numPlayers < MIN_PLAYERS) {Parser.displayMessage("Number of players must be between 2 and 6"); return;}
+            int numArmiesEach = initialArmiesForNumPlayers.get(numPlayers);
             board = BoardConstructor.createMapFromFile("DEFAULT_MAP.xml");
 
             if(board == null) {Parser.displayMessage("Error encountered constructing board, please try again"); return;}
@@ -237,12 +292,12 @@ public class BoardController {
                     if(t2.getOwner() != currentPlayer) {Parser.displayMessage("You cannot attack from that territory. You do not control it"); return;}
                     if(t1.getOwner() == currentPlayer) {Parser.displayMessage("You cannot attack your own territory"); return;}
                     if(attackDice <= 0) {Parser.displayMessage("You must attack with a positive number of armies"); return;}
-                    if(attackDice > 3) {Parser.displayMessage("You can't attack with more than 3 armies"); return;}
+                    if(attackDice > MAX_ATTACK_DICE) {Parser.displayMessage("You can't attack with more than "+MAX_ATTACK_DICE+" armies"); return;}
                     if(t2.getNumArmies() <= attackDice) {Parser.displayMessage("There are not enough armies in " + t2.getName()); return;}
 
                     int defendDice = Parser.getIntPrompt("How many armies would "+t1.getOwner().getName()+" like to defend with?");
-                    while(defendDice <= 0 || defendDice > t1.getNumArmies()){
-                        String message = defendDice <= 0? "You must defend with a positive number of armies":"There are not enough armies in "+t1.getName();
+                    while(defendDice <= 0 || defendDice > Math.min(t1.getNumArmies(), MAX_DEFEND_DICE)){
+                        String message = defendDice <= 0? "You must defend with a positive number of armies":(defendDice > MAX_DEFEND_DICE? "You can't defend with more than "+MAX_DEFEND_DICE+" armies":"There are not enough armies in "+t1.getName());
                         defendDice = Parser.getIntPrompt(message);
                     }
 
