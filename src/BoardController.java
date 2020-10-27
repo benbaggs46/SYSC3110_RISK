@@ -3,7 +3,9 @@
  * The class will determine if commands make sense given the current game state, and if so, make changes to the board model.
  */
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class BoardController {
 

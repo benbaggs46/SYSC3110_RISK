@@ -3,6 +3,7 @@
  * Each territory is part of a continent, has a list of territories as neighbours, is controlled by a player, and contains a certain number of armies.
  */
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,11 @@ public class Territory {
      * The continent that the territory is a part of
      */
     private Continent continent;
+
+    /**
+     * Polygon representing the shape and location of the territory when drawn on board
+     */
+    private Polygon polygon;
 
     /**
      * The constructor of territory sets neighbours to an empty array list, name to the value of the parameter and numArmies to 0

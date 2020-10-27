@@ -4,6 +4,7 @@
     <continent>
         <name>North America</name>
         <bonus>5</bonus>
+        <color>FFCC00</color>
         <territory>Alaska</territory>
         <territory>Alberta</territory>
         <territory>Ontario</territory>
@@ -18,6 +19,7 @@
     <continent>
         <name>South America</name>
         <bonus>2</bonus>
+        <color>DD3030</color>
         <territory>Peru</territory>
         <territory>Brazil</territory>
         <territory>Venezuela</territory>
@@ -27,6 +29,7 @@
     <continent>
         <name>Europe</name>
         <bonus>5</bonus>
+        <color>40AABB</color>
         <territory>Great Britain</territory>
         <territory>Scandinavia</territory>
         <territory>Iceland</territory>
@@ -39,6 +42,7 @@
     <continent>
         <name>Africa</name>
         <bonus>3</bonus>
+        <color>907030</color>
         <territory>Egypt</territory>
         <territory>North Africa</territory>
         <territory>East Africa</territory>
@@ -50,6 +54,7 @@
     <continent>
         <name>Asia</name>
         <bonus>7</bonus>
+        <color>50AA30</color>
         <territory>Afghanistan</territory>
         <territory>Middle East</territory>
         <territory>Siam</territory>
@@ -67,6 +72,7 @@
     <continent>
         <name>Oceania</name>
         <bonus>2</bonus>
+        <color>DD60AA</color>
         <territory>Indonesia</territory>
         <territory>New Guinea</territory>
         <territory>Eastern Australia</territory>

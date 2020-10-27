@@ -3,6 +3,7 @@
  * Each continent is comprised of territories and gives an army per turn bonus to any player who controls all of its territories.
  */
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +24,20 @@ public class Continent {
     private String name;
 
     /**
+     * The color used to indicate the continent when drawn on board
+     */
+    private Color color;
+
+    /**
      * constructor for Continent sets the name and army bonus and creates an empty list of territories
      * @param name name of the continent
      * @param armyBonus number of bonus armies the continent gives
      */
-    public Continent(String name, int armyBonus){
+    public Continent(String name, int armyBonus, Color color){
         this.name = name;
         this.armyBonus = armyBonus;
         territories = new ArrayList<>();
+        this.color = color;
     }
 
     /**

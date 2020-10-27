@@ -10,6 +10,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.awt.*;
 import java.io.InputStream;
 
 public class BoardConstructor {
@@ -25,6 +26,18 @@ public class BoardConstructor {
     public static void joinTerritories(Territory t1, Territory t2){
         t1.addNeighbour(t2);
         t2.addNeighbour(t1);
+    }
+
+    /**
+     * Creates a Color object from a hexadecimal string
+     * @param colorString String representing a hexadecimal color code, formatted like "FFFFFF"
+     * @return A Color object representing the input string
+     */
+    public static Color hex2RGB(String colorString) {
+        return new Color(
+                Integer.valueOf( colorString.substring( 0, 2 ), 16 ),
+                Integer.valueOf( colorString.substring( 2, 4 ), 16 ),
+                Integer.valueOf( colorString.substring( 4, 6 ), 16 ) );
     }
 
     /**
@@ -46,7 +59,7 @@ public class BoardConstructor {
             Document doc = db.parse(in);
 
             doc.getDocumentElement().normalize();
-            //System.out.println("Root element: " + doc.getDocumentElement().getNodeName());
+
             NodeList continentList = doc.getElementsByTagName("continent");
             NodeList borderList = doc.getElementsByTagName("border");
             // nodeList is not iterable, so we are using for loop
@@ -58,7 +71,7 @@ public class BoardConstructor {
                 {
                     Element eElement = (Element) node;
 
-                    Continent c = new Continent(eElement.getElementsByTagName("name").item(0).getTextContent(),Integer.parseInt(eElement.getElementsByTagName("bonus").item(0).getTextContent()));
+                    Continent c = new Continent(eElement.getElementsByTagName("name").item(0).getTextContent(),Integer.parseInt(eElement.getElementsByTagName("bonus").item(0).getTextContent()),hex2RGB(eElement.getElementsByTagName("color").item(0).getTextContent()));
                     board.addContinent(c);
 
                     for(int i = eElement.getElementsByTagName("territory").getLength(); i > 0; i--) {
