@@ -2,12 +2,13 @@
  * Continuously prompts the user for commands and sends them to the associated BoardConstructor object to be processed.
  */
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Parser {
+public class Parser{
 
     /**
      * The character used to divide arguments of a command
@@ -34,7 +35,6 @@ public class Parser {
      * @param args ---
      */
     public static void main(String[] args){
-        System.out.println(Color.getColor("0xFFFFFF"));
         boardController = new BoardController();
         Parser.displayMessage("Welcome to RISK!\n" +
                 "Made by Ben Baggs, Imran Latif, Liam Ballantyne, and Vijay Ramalingom for SYSC 3110 A" +
