@@ -2,8 +2,6 @@
  * Continuously prompts the user for commands and sends them to the associated BoardConstructor object to be processed.
  */
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -31,10 +29,9 @@ public class Parser{
     public static BoardController boardController;
 
     /**
-     * The main method of Parser, and the entire program
-     * @param args ---
+     * Initializes the parser, and starts prompting the user for console commands
      */
-    public static void main(String[] args){
+    public static void begin(){
         boardController = new BoardController();
         Parser.displayMessage("Welcome to RISK!\n" +
                 "Made by Ben Baggs, Imran Latif, Liam Ballantyne, and Vijay Ramalingom for SYSC 3110 A" +
