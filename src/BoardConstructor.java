@@ -86,6 +86,8 @@ public class BoardConstructor {
 
                             NodeList pointList = territoryElement.getElementsByTagName("point");
 
+                            //if(pointList.getLength() == 0) return null; //return no board to caller, indicating that something went wrong
+
                             int[] xPoints = new int[pointList.getLength()];
                             int[] yPoints = new int[pointList.getLength()];
 
@@ -95,9 +97,7 @@ public class BoardConstructor {
                                 yPoints[k] = Integer.parseInt(point[1]);
                             }
 
-                            Polygon polygon = pointList.getLength() > 0? new Polygon(xPoints, yPoints, xPoints.length): null;
-
-                           Territory t = new Territory(territoryElement.getElementsByTagName("name").item(0).getTextContent(), c, polygon);
+                           Territory t = new Territory(territoryElement.getElementsByTagName("name").item(0).getTextContent(), c, new Polygon(xPoints, yPoints, xPoints.length));
                        }
                    }
                 }
