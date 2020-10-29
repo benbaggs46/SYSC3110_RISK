@@ -5,78 +5,165 @@
         <name>North America</name>
         <bonus>5</bonus>
         <color>FFCC00</color>
-        <territory>Alaska</territory>
-        <territory>Alberta</territory>
-        <territory>Ontario</territory>
-        <territory>Quebec</territory>
-        <territory>Eastern United States</territory>
-        <territory>Western United States</territory>
-        <territory>Greenland</territory>
-        <territory>Northwest Territory</territory>
-        <territory>Central America</territory>
+        <territory>
+            <name>Alaska</name>
+            <point>0,0</point>
+            <point>100,200</point>
+            <point>300,150</point>
+        </territory>
+        <territory>
+            <name>Alberta</name>
+        </territory>
+        <territory>
+            <name>Ontario</name>
+        </territory>
+        <territory>
+            <name>Quebec</name>
+        </territory>
+        <territory>
+            <name>Eastern United States</name>
+        </territory>
+        <territory>
+            <name>Western United States</name>
+        </territory>
+        <territory>
+            <name>Greenland</name>
+        </territory>
+        <territory>
+            <name>Northwest Territory</name>
+        </territory>
+        <territory>
+            <name>Central America</name>
+        </territory>
     </continent>
 
     <continent>
         <name>South America</name>
         <bonus>2</bonus>
         <color>DD3030</color>
-        <territory>Peru</territory>
-        <territory>Brazil</territory>
-        <territory>Venezuela</territory>
-        <territory>Argentina</territory>
+        <territory>
+            <name>Peru</name>
+        </territory>
+        <territory>
+            <name>Brazil</name>
+        </territory>
+        <territory>
+            <name>Venezuela</name>
+        </territory>
+        <territory>
+            <name>Argentina</name>
+        </territory>
     </continent>
 
     <continent>
         <name>Europe</name>
         <bonus>5</bonus>
         <color>40AABB</color>
-        <territory>Great Britain</territory>
-        <territory>Scandinavia</territory>
-        <territory>Iceland</territory>
-        <territory>Northern Europe</territory>
-        <territory>Western Europe</territory>
-        <territory>Southern Europe</territory>
-        <territory>Ukraine</territory>
+        <territory>
+            <name>Great Britain</name>
+        </territory>
+        <territory>
+            <name>Scandinavia</name>
+        </territory>
+        <territory>
+            <name>Iceland</name>
+        </territory>
+        <territory>
+            <name>Northern Europe</name>
+        </territory>
+        <territory>
+            <name>Western Europe</name>
+        </territory>
+        <territory>
+            <name>Southern Europe</name>
+        </territory>
+        <territory>
+            <name>Ukraine</name>
+        </territory>
     </continent>
 
     <continent>
         <name>Africa</name>
         <bonus>3</bonus>
         <color>907030</color>
-        <territory>Egypt</territory>
-        <territory>North Africa</territory>
-        <territory>East Africa</territory>
-        <territory>South Africa</territory>
-        <territory>Congo</territory>
-        <territory>Madagascar</territory>
+        <territory>
+            <name>Egypt</name>
+        </territory>
+        <territory>
+            <name>North Africa</name>
+        </territory>
+        <territory>
+            <name>East Africa</name>
+        </territory>
+        <territory>
+            <name>South Africa</name>
+        </territory>
+        <territory>
+            <name>Congo</name>
+        </territory>
+        <territory>
+            <name>Madagascar</name>
+        </territory>
     </continent>
 
     <continent>
         <name>Asia</name>
         <bonus>7</bonus>
         <color>50AA30</color>
-        <territory>Afghanistan</territory>
-        <territory>Middle East</territory>
-        <territory>Siam</territory>
-        <territory>India</territory>
-        <territory>China</territory>
-        <territory>Japan</territory>
-        <territory>Mongolia</territory>
-        <territory>Ural</territory>
-        <territory>Siberia</territory>
-        <territory>Kamchatka</territory>
-        <territory>Irkutsk</territory>
-        <territory>Yakutsk</territory>
+        <territory>
+            <name>Afghanistan</name>
+        </territory>
+        <territory>
+            <name>Middle East</name>
+        </territory>
+        <territory>
+            <name>Siam</name>
+        </territory>
+        <territory>
+            <name>India</name>
+        </territory>
+        <territory>
+            <name>China</name>
+        </territory>
+        <territory>
+            <name>Japan</name>
+        </territory>
+        <territory>
+            <name>Mongolia</name>
+        </territory>
+        <territory>
+            <name>Ural</name>
+        </territory>
+        <territory>
+            <name>Siberia</name>
+        </territory>
+        <territory>
+            <name>Kamchatka</name>
+        </territory>
+        <territory>
+            <name>Irkutsk</name>
+        </territory>
+        <territory>
+            <name>Yakutsk</name>
+        </territory>
     </continent>
 
     <continent>
         <name>Oceania</name>
         <bonus>2</bonus>
         <color>DD60AA</color>
-        <territory>Indonesia</territory>
-        <territory>New Guinea</territory>
-        <territory>Eastern Australia</territory>
-        <territory>Western Australia</territory>
+        <territory>
+            <name>Indonesia</name>
+        </territory>
+        <territory>
+            <name>New Guinea</name>
+        </territory>
+        <territory>
+            <name>Eastern Australia</name>
+        </territory>
+        <territory>
+            <name>Western Australia</name>
+        </territory>
     </continent>
 
     <border>

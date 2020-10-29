@@ -48,13 +48,22 @@ public class Territory {
      * The constructor of territory sets neighbours to an empty array list, name to the value of the parameter and numArmies to 0
      * @param name the name of the territory
      */
-    public Territory(String name, Continent continent){
+    public Territory(String name, Continent continent, Polygon polygon){
         neighbours = new ArrayList<>();
         this.name = name;
         numArmies = 0;
         tempArmies = 0;
         this.continent = continent;
+        this.polygon = polygon;
         continent.addTerritory(this);
+    }
+
+    /**
+     * Returns the polygon representing the territory's shape and location on the board
+     * @return The polygon of the territory
+     */
+    public Polygon getPolygon() {
+        return polygon;
     }
 
     /**

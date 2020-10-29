@@ -41,6 +41,14 @@ public class Continent {
     }
 
     /**
+     * Returns the color used to draw the continent on the board
+     * @return The continent's color
+     */
+    public Color getColor() {
+        return color;
+    }
+
+    /**
      * gets the territories within the  continent
      * @return A list of the territories of the continent
      */

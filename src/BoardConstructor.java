@@ -12,6 +12,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.*;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BoardConstructor {
 
@@ -62,24 +64,46 @@ public class BoardConstructor {
 
             NodeList continentList = doc.getElementsByTagName("continent");
             NodeList borderList = doc.getElementsByTagName("border");
-            // nodeList is not iterable, so we are using for loop
-            //continent loop
+
+            //iterates through continents
             for (int itr = 0; itr < continentList.getLength(); itr++)
             {
-                Node node = continentList.item(itr);
-                if (node.getNodeType() == Node.ELEMENT_NODE)
+                Node continentNode = continentList.item(itr);
+                if (continentNode.getNodeType() == Node.ELEMENT_NODE)
                 {
-                    Element eElement = (Element) node;
+                    Element continentElement = (Element) continentNode;
 
-                    Continent c = new Continent(eElement.getElementsByTagName("name").item(0).getTextContent(),Integer.parseInt(eElement.getElementsByTagName("bonus").item(0).getTextContent()),hex2RGB(eElement.getElementsByTagName("color").item(0).getTextContent()));
+                    Continent c = new Continent(continentElement.getElementsByTagName("name").item(0).getTextContent(),Integer.parseInt(continentElement.getElementsByTagName("bonus").item(0).getTextContent()),hex2RGB(continentElement.getElementsByTagName("color").item(0).getTextContent()));
                     board.addContinent(c);
 
-                    for(int i = eElement.getElementsByTagName("territory").getLength(); i > 0; i--) {
-                        Territory t = new Territory(eElement.getElementsByTagName("territory").item(i-1).getTextContent(), c);
-                    }
+                   NodeList territoryList = continentElement.getElementsByTagName("territory");
+
+                   //iterates through territories in each continent
+                   for(int j = 0; j < territoryList.getLength(); j++){
+                       Node territoryNode = territoryList.item(j);
+                       if (territoryNode.getNodeType() == Node.ELEMENT_NODE){
+                           Element territoryElement = (Element) territoryNode;
+
+                            NodeList pointList = territoryElement.getElementsByTagName("point");
+
+                            int[] xPoints = new int[pointList.getLength()];
+                            int[] yPoints = new int[pointList.getLength()];
+
+                            for(int k = 0; k < pointList.getLength(); k++){
+                                String[] point = pointList.item(k).getTextContent().split(",");
+                                xPoints[k] = Integer.parseInt(point[0]);
+                                yPoints[k] = Integer.parseInt(point[1]);
+                            }
+
+                            Polygon polygon = pointList.getLength() > 0? new Polygon(xPoints, yPoints, xPoints.length): null;
+
+                           Territory t = new Territory(territoryElement.getElementsByTagName("name").item(0).getTextContent(), c, polygon);
+                       }
+                   }
                 }
             }
-            //border loop
+
+            //iterates through borders
             for (int itr = 0; itr < borderList.getLength(); itr++)
             {
                 Node node = borderList.item(itr);
