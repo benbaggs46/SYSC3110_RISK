@@ -26,12 +26,24 @@ public class Board {
      */
     private TurnStage turnStage;
 
+    private Set<Territory> selectedTerritories;
+
     /**
      * Constructor for the board
      */
     public Board(){
         continents = new ArrayList<>();
         players = new ArrayList<>();
+        selectedTerritories = new HashSet<>();
+    }
+
+    public Set<Territory> getSelectedTerritories(){
+        return selectedTerritories;
+    }
+
+    public void toggleTerritorySelection(Territory t){
+        if(selectedTerritories.contains(t)) selectedTerritories.remove(t);
+        else selectedTerritories.add(t);
     }
 
     /**

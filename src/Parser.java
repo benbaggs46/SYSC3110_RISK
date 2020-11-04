@@ -31,8 +31,8 @@ public class Parser{
     /**
      * Initializes the parser, and starts prompting the user for console commands
      */
-    public static void begin(){
-        boardController = new BoardController();
+    public static void begin(BoardController bc){
+        boardController = bc;
         Parser.displayMessage("Welcome to RISK!\n" +
                 "Made by Ben Baggs, Imran Latif, Liam Ballantyne, and Vijay Ramalingom for SYSC 3110 A" +
                 "\nEnter HELP for a list of commands");

@@ -64,6 +64,16 @@ public class BoardController {
      */
     private Board board;
 
+    private BoardPanel boardPanel;
+
+    public BoardController(BoardPanel boardPanel){
+        this.boardPanel = boardPanel;
+    }
+
+    public Board getBoard(){
+        return board;
+    }
+
     /**
      * Conducts a dice battle with the specified number of dice. Positive return values indicate that the attacker
      * won the battle. Negative values indicate the defender has won.
@@ -201,6 +211,7 @@ public class BoardController {
         int numArmiesEach = STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers);
         BoardConstructor bc = new BoardConstructor();
         board = bc.createMapFromFile("DEFAULT_MAP.xml");
+        boardPanel.setBoard(board);
 
         if(board == null) {Parser.displayMessage("Error encountered constructing board, please try again"); return;}
 
@@ -220,18 +231,6 @@ public class BoardController {
         Parser.displayMessage("New board created with " + numPlayers + " players");
         nextTurn();
         nextTurnStage();
-
-        //FOR TESTING -- REMOVE LATER
-        JFrame jFrame = new JFrame("Polygon Test");
-        jFrame.setSize(1000,700);
-        jFrame.setVisible(true);
-        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        JPanel jPanel = new BoardPanel(board);
-        jFrame.add(jPanel);
-        MouseAdapter ma = new BoardMouseListener(jPanel, board);
-        jPanel.addMouseListener(ma);
-        jFrame.add(jPanel);
-        //FOR TESTING -- REMOVE LATER
     }
 
     /**
