@@ -5,6 +5,7 @@
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.util.*;
 import java.util.List;
 
@@ -44,6 +45,18 @@ public class BoardController {
             4, 30,
             5, 25,
             6, 20
+    );
+
+    /**
+     * A map between each player number and the corresponding colors
+     */
+    public static final Map<Integer, Color> PLAYER_COLOR_FOR_PLAYER_NUM = Map.of(
+            0,Color.RED,
+            1,Color.BLUE,
+            2, Color.YELLOW,
+            3, Color.GREEN,
+            4, Color.MAGENTA,
+            5, Color.GRAY
     );
 
     /**
@@ -192,7 +205,7 @@ public class BoardController {
         if(board == null) {Parser.displayMessage("Error encountered constructing board, please try again"); return;}
 
         for(int i=0;i<numPlayers;i++){
-            board.addPlayer(new Player(Parser.getPrompt("Enter a name for player "+ (i+1))));
+            board.addPlayer(new Player(Parser.getPrompt("Enter a name for player "+ (i+1)), PLAYER_COLOR_FOR_PLAYER_NUM.get(i)));
         }
 
         int boardSize = board.getTerritoryList().size();
@@ -207,6 +220,18 @@ public class BoardController {
         Parser.displayMessage("New board created with " + numPlayers + " players");
         nextTurn();
         nextTurnStage();
+
+        //FOR TESTING -- REMOVE LATER
+        JFrame jFrame = new JFrame("Polygon Test");
+        jFrame.setSize(1000,700);
+        jFrame.setVisible(true);
+        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        JPanel jPanel = new BoardPanel(board);
+        jFrame.add(jPanel);
+        MouseAdapter ma = new BoardMouseListener(jPanel, board);
+        jPanel.addMouseListener(ma);
+        jFrame.add(jPanel);
+        //FOR TESTING -- REMOVE LATER
     }
 
     /**

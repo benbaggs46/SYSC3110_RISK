@@ -3,6 +3,7 @@
  * Each player controls a list of territories.
  */
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +19,22 @@ public class Player {
     private String name;
 
     /**
+     * The color representing the player on the game board
+     */
+    private Color color;
+
+    /**
      * Constructor for the Player object
      * @param name sets the players name to this parameter
      */
-    public Player(String name){
+    public Player(String name, Color color){
         controlledTerritories = new ArrayList<>();
         this.name = name;
+        this.color = color;
+    }
+
+    public Color getColor(){
+        return color;
     }
 
     /**
