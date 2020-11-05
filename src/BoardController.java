@@ -3,9 +3,7 @@
  * The class will determine if commands make sense given the current game state, and if so, make changes to the board model.
  */
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.util.*;
 import java.util.List;
 
@@ -64,10 +62,10 @@ public class BoardController {
      */
     private Board board;
 
-    private BoardPanel boardPanel;
+    private BoardView boardView;
 
-    public BoardController(BoardPanel boardPanel){
-        this.boardPanel = boardPanel;
+    public BoardController(BoardView boardView){
+        this.boardView = boardView;
     }
 
     public Board getBoard(){
@@ -211,7 +209,9 @@ public class BoardController {
         int numArmiesEach = STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers);
         BoardConstructor bc = new BoardConstructor();
         board = bc.createMapFromFile("DEFAULT_MAP.xml");
-        boardPanel.setBoard(board);
+
+        //MAYBE REMOVE THIS
+        boardView.getMapPanel().setBoard(board);
 
         if(board == null) {Parser.displayMessage("Error encountered constructing board, please try again"); return;}
 
