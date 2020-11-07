@@ -5,11 +5,11 @@ import java.util.List;
 
 public class BoardMouseListener extends MouseAdapter {
 
-    private BoardPanel boardPanel;
+    private BoardView boardView;
     private BoardController boardController;
 
-    public BoardMouseListener(BoardPanel boardPanel, BoardController boardController){
-        this.boardPanel = boardPanel;
+    public BoardMouseListener(BoardView boardView, BoardController boardController){
+        this.boardView = boardView;
         this.boardController = boardController;
     }
 
@@ -27,7 +27,7 @@ public class BoardMouseListener extends MouseAdapter {
                 board.toggleTerritorySelection(t);
             }
         }
-        boardPanel.paintAll(boardPanel.getGraphics());
+        boardView.paintAll(boardView.getGraphics());
 
     }
 }
