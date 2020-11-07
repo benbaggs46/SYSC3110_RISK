@@ -14,10 +14,7 @@ public class BoardButtonListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
 
-        if(actionCommand.equals("New Game")) {
-           // boardController.startNewGame(Integer.parseInt(JOptionPane.showInputDialog("Enter the number of players (2-6):")));
-            boardController.createNewGame();
-        }
+        if(actionCommand.equals("New Game")) boardController.createNewGame();
 
         else if(actionCommand.equals("Quit")) boardController.quit();
 

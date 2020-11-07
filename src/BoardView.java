@@ -49,7 +49,6 @@ public class BoardView extends JFrame{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
-        //Parser.begin(bc);
     }
 
     public BoardPanel getMapPanel(){
@@ -66,16 +65,6 @@ public class BoardView extends JFrame{
 
     public static void main(String[] args){
         new BoardView();
-    }
-
-    public void updatePlayerInfo(Board board){
-        Player currentPlayer = board.getCurrentPlayer();
-        infoPanel.setPlayerName(currentPlayer.getName());
-        infoPanel.setTurnStage(board.getTurnStage());
-        infoPanel.setNumArmies(currentPlayer.getNumArmies());
-        infoPanel.setNumTerritories(currentPlayer.getNumTerritories());
-        infoPanel.setCurrentBonus(board.getArmyBonusForPlayer(currentPlayer));
-        infoPanel.setArmiesToPlace(board.getArmiesToPlace());
     }
 
 }
