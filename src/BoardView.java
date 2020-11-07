@@ -7,14 +7,15 @@ public class BoardView extends JFrame{
     private BoardPanel mapPanel;
     private InfoPanel infoPanel;
     private JButton actionButton;
+    private BoardController bc;
 
     public BoardView(){
 
         super("RISK");
-        BoardController bc = new BoardController(this);
-        mapPanel = new BoardPanel(bc);
+        bc = new BoardController(this);
+        mapPanel = new BoardPanel(this);
         add(mapPanel, BorderLayout.CENTER);
-        MouseAdapter ma = new BoardMouseListener(this, bc);
+        MouseAdapter ma = new BoardMouseListener(this);
         mapPanel.addMouseListener(ma);
 
         infoPanel = new InfoPanel();
@@ -24,31 +25,35 @@ public class BoardView extends JFrame{
         add(buttonPanel, BorderLayout.SOUTH);
 
         JButton button = new JButton("New Game");
-        button.addActionListener(new BoardButtonListener(bc));
+        button.addActionListener(new BoardButtonListener(this));
         buttonPanel.add(button);
 
         button = new JButton("Help");
-        button.addActionListener(new BoardButtonListener(bc));
+        button.addActionListener(new BoardButtonListener(this));
         buttonPanel.add(button);
 
         button = new JButton("Quit");
-        button.addActionListener(new BoardButtonListener(bc));
+        button.addActionListener(new BoardButtonListener(this));
         buttonPanel.add(button);
 
         button = new JButton("Proceed");
         button.setActionCommand("Proceed");
-        button.addActionListener(new BoardButtonListener(bc));
+        button.addActionListener(new BoardButtonListener(this));
         buttonPanel.add(button);
 
         actionButton = new JButton("Action");
         actionButton.setActionCommand("Action");
-        actionButton.addActionListener(new BoardButtonListener(bc));
+        actionButton.addActionListener(new BoardButtonListener(this));
         buttonPanel.add(actionButton);
 
         setSize(1200,700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
+    }
+
+    public BoardController getBoardController(){
+        return bc;
     }
 
     public BoardPanel getMapPanel(){

@@ -1,18 +1,19 @@
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class BoardButtonListener implements ActionListener {
 
-    private BoardController boardController;
+    private BoardView boardView;
 
-    public BoardButtonListener(BoardController boardController){
-        this.boardController = boardController;
+    public BoardButtonListener(BoardView boardView){
+        this.boardView = boardView;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         String actionCommand = e.getActionCommand();
+
+        BoardController boardController = boardView.getBoardController();
 
         if(actionCommand.equals("New Game")) boardController.createNewGame();
 

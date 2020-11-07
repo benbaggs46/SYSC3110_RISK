@@ -4,18 +4,16 @@ import java.awt.event.MouseEvent;
 public class BoardMouseListener extends MouseAdapter {
 
     private BoardView boardView;
-    private BoardController boardController;
 
-    public BoardMouseListener(BoardView boardView, BoardController boardController){
+    public BoardMouseListener(BoardView boardView){
         this.boardView = boardView;
-        this.boardController = boardController;
     }
 
     @Override
     public void mouseClicked(MouseEvent me) {
         super.mouseClicked(me);
 
-        Board board = boardController.getBoard();
+        Board board = boardView.getBoardController().getBoard();
 
         if(board == null) return;
 

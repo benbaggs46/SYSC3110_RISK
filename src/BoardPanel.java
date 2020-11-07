@@ -2,20 +2,20 @@ import javax.swing.*;
 import java.awt.*;
 
 public class BoardPanel extends JPanel {
-    private BoardController boardController;
+    private BoardView boardView;
 
     public static final Color TERRITORY_SELECTION_COLOR = Color.RED;
 
     public static final Color TERRITORY_BORDER_COLOR = Color.BLACK;
 
-    public BoardPanel(BoardController boardController){
+    public BoardPanel(BoardView boardView){
         super();
-        this.boardController = boardController;
+        this.boardView = boardView;
     }
 
     public void drawMap(Graphics g){
 
-        Board board = boardController.getBoard();
+        Board board = boardView.getBoardController().getBoard();
 
         if(board == null) return;
 
@@ -29,7 +29,7 @@ public class BoardPanel extends JPanel {
 
     public void drawTerritorySelection(Graphics g){
 
-        Board board = boardController.getBoard();
+        Board board = boardView.getBoardController().getBoard();
 
         if(board == null) return;
 
@@ -69,7 +69,7 @@ public class BoardPanel extends JPanel {
     public void paint(Graphics g) {
         super.paint(g);
 
-        Board board = boardController.getBoard();
+        Board board = boardView.getBoardController().getBoard();
 
         if(board == null) return;
 
