@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class InfoPanel extends JPanel {
     private JLabel playerName;
@@ -8,12 +9,29 @@ public class InfoPanel extends JPanel {
     private JLabel currentBonus;
     private JLabel armiesToPlace;
 
+    private JPanel playerColorPanel;
+    private Color playerColor;
+
     public InfoPanel(){
         super();
         setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 
+        JPanel playerNameBarPanel = new JPanel();
+        add(playerNameBarPanel);
+
+        playerColorPanel = new JPanel(){
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                g.setColor(playerColor);
+                g.fillRect(0,0,10,10);
+            }
+        };
+        playerNameBarPanel.add(playerColorPanel);
+
         playerName = new JLabel();
-        add(playerName);
+        playerNameBarPanel.add(playerName);
+
         turnStage = new JLabel();
         add(turnStage);
         numArmies = new JLabel();
@@ -43,5 +61,9 @@ public class InfoPanel extends JPanel {
     }
     public void setArmiesToPlace(int num){
         armiesToPlace.setText("Armies To Place: " + num);
+    }
+
+    public void setPlayerColorPanel(Color color){
+        this.playerColor = color;
     }
 }

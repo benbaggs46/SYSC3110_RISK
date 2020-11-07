@@ -322,6 +322,7 @@ public class BoardController {
         infoPanel.setNumArmies(player.getNumArmies());
         infoPanel.setNumTerritories(player.getNumTerritories());
         infoPanel.setArmiesToPlace(board.getArmiesToPlace());
+        infoPanel.setPlayerColorPanel(player.getColor());
     }
 
     /**
