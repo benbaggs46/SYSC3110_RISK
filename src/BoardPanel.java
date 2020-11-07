@@ -2,17 +2,20 @@ import javax.swing.*;
 import java.awt.*;
 
 public class BoardPanel extends JPanel {
-    private Board board;
+    private BoardController boardController;
 
-    public BoardPanel(){
+    public static final Color TERRITORY_SELECTION_COLOR = Color.RED;
+
+    public static final Color TERRITORY_BORDER_COLOR = Color.BLACK;
+
+    public BoardPanel(BoardController boardController){
         super();
-    }
-
-    public void setBoard(Board board){
-        this.board = board;
+        this.boardController = boardController;
     }
 
     public void drawMap(Graphics g){
+
+        Board board = boardController.getBoard();
 
         if(board == null) return;
 
@@ -26,16 +29,18 @@ public class BoardPanel extends JPanel {
 
     public void drawTerritorySelection(Graphics g){
 
+        Board board = boardController.getBoard();
+
         if(board == null) return;
 
         for(Territory t: board.getTerritoryList()) {
-            g.setColor(Color.BLACK);
+            g.setColor(TERRITORY_BORDER_COLOR);
             g.drawPolygon(t.getPolygon());
         }
 
         for(Territory t: board.getTerritoryList()) {
             if(board.getSelectedTerritories().contains(t)) {
-                g.setColor(Color.RED);
+                g.setColor(TERRITORY_SELECTION_COLOR);
                 g.drawPolygon(t.getPolygon());
             }
         }
@@ -55,7 +60,7 @@ public class BoardPanel extends JPanel {
 
         g.setColor(Color.WHITE);
         g.fillOval(centerX - 10,centerY - 10, 20,20);
-        g.setColor(Color.BLACK);
+        g.setColor(TERRITORY_BORDER_COLOR);
         g.setFont(new Font("SansSerif", Font.BOLD, 12));
         g.drawString(t.getNumArmies() + (t.getTempArmies() > 0? " + "+ t.getTempArmies(): ""), centerX - g.getFont().getSize() / 2, centerY + g.getFont().getSize() / 2);
     }
@@ -63,6 +68,8 @@ public class BoardPanel extends JPanel {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+
+        Board board = boardController.getBoard();
 
         if(board == null) return;
 

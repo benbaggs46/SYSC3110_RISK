@@ -124,11 +124,11 @@ public class BoardController {
 
         if(t1.getNumArmies() == 1){
             int armiesToFortify = getValidIntegerInput("How many armies would you like to fortify?", 1, t2.getNumArmies() - 1);
-            newFortify(t1, t2, armiesToFortify);
+            fortify(t1, t2, armiesToFortify);
         }
         else if(t2.getNumArmies() == 1){
             int armiesToFortify = getValidIntegerInput("How many armies would you like to fortify?", 1, t1.getNumArmies() - 1);
-            newFortify(t2, t1, armiesToFortify);
+            fortify(t2, t1, armiesToFortify);
         }
         else {
             Object[] options = {t1.getName() + " -> " + t2.getName(), t2.getName() + " -> " + t1.getName()};
@@ -136,10 +136,10 @@ public class BoardController {
                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
                     null, options, options[0]) == 0) {
                 int armiesToFortify = getValidIntegerInput("How many armies would you like to fortify?", 1, t1.getNumArmies() - 1);
-                newFortify(t2, t1, armiesToFortify);
+                fortify(t2, t1, armiesToFortify);
             } else {
                 int armiesToFortify = getValidIntegerInput("How many armies would you like to fortify?", 1, t2.getNumArmies() - 1);
-                newFortify(t1, t2, armiesToFortify);
+                fortify(t1, t2, armiesToFortify);
             }
         }
     }
@@ -155,7 +155,7 @@ public class BoardController {
         Territory t1 = board.getSelectedTerritories().get(0);
         Territory t2 = board.getSelectedTerritories().get(1);
 
-        if(!(t1.getOwner() == currentPlayer ^ t2.getOwner() == currentPlayer)) {
+        if((t1.getOwner() == currentPlayer) == (t2.getOwner() == currentPlayer)) {
             JOptionPane.showMessageDialog(null,"Current player owns neither or both selected territories");
             return;
         }
@@ -164,8 +164,8 @@ public class BoardController {
 
         int defendDice = getValidIntegerInput("How many armies would "+ (t1.getOwner() == currentPlayer? t2.getOwner().getName(): t1.getOwner().getName()) +" like to defend with?", 1, Math.min(t2.getNumArmies(), MAX_DEFEND_DICE));
 
-        if(t1.getOwner() == currentPlayer) newAttack(t2, t1, attackDice, defendDice);
-        else newAttack(t1, t2, attackDice, defendDice);
+        if(t1.getOwner() == currentPlayer) attack(t2, t1, attackDice, defendDice);
+        else attack(t1, t2, attackDice, defendDice);
 
     }
 
@@ -189,12 +189,12 @@ public class BoardController {
             }
             else{
                 int armiesToPlace = getValidIntegerInput("How many armies would you like to place in " + t.getName() + "?", 0, board.getArmiesToPlace());
-                newPlace(t, armiesToPlace);
+                place(t, armiesToPlace);
             }
         }
         else if(board.getArmiesToPlace() == 0){
             int armiesToPlace = getValidIntegerInput("How many armies would you like to retract from " + t.getName() + "?", 0, t.getTempArmies());
-            newPlace(t, -armiesToPlace);
+            place(t, -armiesToPlace);
         }
         else {
             Object[] options = {"Place", "Retract"};
@@ -202,16 +202,16 @@ public class BoardController {
                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
                     null, options, options[0]) == 0) {
                 int armiesToPlace = getValidIntegerInput("How many armies would you like to place in " + t.getName() + "?", 0, board.getArmiesToPlace());
-                newPlace(t, armiesToPlace);
+                place(t, armiesToPlace);
             }
             else{
                 int armiesToPlace = getValidIntegerInput("How many armies would you like to retract from " + t.getName() + "?", 0, t.getTempArmies());
-                newPlace(t, -armiesToPlace);
+                place(t, -armiesToPlace);
             }
         }
     }
 
-    private void newPlace(Territory t, int armies){
+    private void place(Territory t, int armies){
         t.addTempArmies(armies);
         board.addArmiesToPlace(-armies);
 
@@ -231,7 +231,7 @@ public class BoardController {
         else JOptionPane.showMessageDialog(null,"Retracted " + (-armies) + " armies from " + t.getName());
     }
 
-    private void newFortify(Territory t1, Territory t2, int armies){
+    private void fortify(Territory t1, Territory t2, int armies){
         board.moveArmies(t2, t1, armies);
 
         BoardPanel mapPanel = boardView.getMapPanel();
@@ -243,7 +243,7 @@ public class BoardController {
         nextTurnStage();
     }
 
-    private void newAttack(Territory t1, Territory t2, int attackDice, int defendDice){
+    private void attack(Territory t1, Territory t2, int attackDice, int defendDice){
 
         int result = attackResult(attackDice, defendDice);
 
@@ -311,7 +311,7 @@ public class BoardController {
     /**
      * Moves the board to the next player's turn
      */
-    public void nextTurn(){
+    private void nextTurn(){
         board.incrementTurn();
         board.getSelectedTerritories().clear();
 
@@ -327,7 +327,7 @@ public class BoardController {
     /**
      * Moves the board to the next turn phase
      */
-    public void nextTurnStage(){
+    private void nextTurnStage(){
         board.incrementTurnStage();
 
         String buttonText;
@@ -392,8 +392,6 @@ public class BoardController {
             JOptionPane.showMessageDialog(null,"The selected map has too many territories to fill. Please start a new game with more players");
             return;
         }
-
-        boardView.getMapPanel().setBoard(board);
 
         for(int i=0;i<numPlayers;i++){
             board.addPlayer(new Player(JOptionPane.showInputDialog("Please enter a name for player " + (i+1) + ":", "Player "+ (i+1)), PLAYER_COLOR_FOR_PLAYER_NUM.get(i)));

@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 
 public class InfoPanel extends JPanel {
     private JLabel playerName;

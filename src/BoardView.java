@@ -11,9 +11,9 @@ public class BoardView extends JFrame{
     public BoardView(){
 
         super("RISK");
-        mapPanel = new BoardPanel();
-        add(mapPanel, BorderLayout.CENTER);
         BoardController bc = new BoardController(this);
+        mapPanel = new BoardPanel(bc);
+        add(mapPanel, BorderLayout.CENTER);
         MouseAdapter ma = new BoardMouseListener(this, bc);
         mapPanel.addMouseListener(ma);
 
