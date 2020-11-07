@@ -218,7 +218,19 @@ public class BoardController {
         t.addTempArmies(armies);
         board.addArmiesToPlace(-armies);
 
-        boardView.getMapPanel().drawTerritoryInfo(t,boardView.getMapPanel().getGraphics());
+        int sum = 0;
+        for(Territory territory: t.getOwner().getControlledTerritories()){
+            sum += territory.getTempArmies();
+        }
+
+        InfoPanel infoPanel = boardView.getInfoPanel();
+        infoPanel.setArmiesToPlace(board.getArmiesToPlace());
+        infoPanel.setNumArmies(t.getOwner().getNumArmies() + sum);
+
+        BoardPanel mapPanel = boardView.getMapPanel();
+        mapPanel.drawTerritoryInfo(t, mapPanel.getGraphics());
+
+        //boardView.getMapPanel().drawTerritoryInfo(t,boardView.getMapPanel().getGraphics());
 
         if(armies > 0) JOptionPane.showMessageDialog(null,"Placed " + armies + " armies in " + t.getName());
         else JOptionPane.showMessageDialog(null,"Retracted " + (-armies) + " armies from " + t.getName());
@@ -227,8 +239,12 @@ public class BoardController {
     private void newFortify(Territory t1, Territory t2, int armies){
         board.moveArmies(t2, t1, armies);
 
-        boardView.getMapPanel().drawTerritoryInfo(t1,boardView.getMapPanel().getGraphics());
-        boardView.getMapPanel().drawTerritoryInfo(t2,boardView.getMapPanel().getGraphics());
+        BoardPanel mapPanel = boardView.getMapPanel();
+        mapPanel.drawTerritoryInfo(t1, mapPanel.getGraphics());
+        mapPanel.drawTerritoryInfo(t2, mapPanel.getGraphics());
+
+        // .getMapPanel().drawTerritoryInfo(t1,boardView.getMapPanel().getGraphics());
+        //boardView.getMapPanel().drawTerritoryInfo(t2,boardView.getMapPanel().getGraphics());
 
         JOptionPane.showMessageDialog(null,"Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
         nextTurn();
@@ -251,6 +267,14 @@ public class BoardController {
         else { //attacker loses armies
             t2.addArmies(result);
         }
+
+        InfoPanel infoPanel = boardView.getInfoPanel();
+        infoPanel.setNumArmies(t2.getOwner().getNumArmies());
+
+        BoardPanel mapPanel = boardView.getMapPanel();
+        mapPanel.drawTerritoryInfo(t1, mapPanel.getGraphics());
+        mapPanel.drawTerritoryInfo(t2, mapPanel.getGraphics());
+
         if(t1.getNumArmies() <= 0 ) { //defending territory has no armies left
             JOptionPane.showMessageDialog(null, t1.getName()+" was conquered!");
 
@@ -258,6 +282,11 @@ public class BoardController {
             prevOwner.loseTerritory(t1);
             t2.getOwner().gainTerritory(t1);
             t1.setOwner(t2.getOwner());
+
+            infoPanel = boardView.getInfoPanel();
+            infoPanel.setNumTerritories(t2.getOwner().getNumTerritories());
+
+            mapPanel.drawTerritoryInfo(t1, mapPanel.getGraphics());
 
             board.toggleTerritorySelection(t2);
 
@@ -280,11 +309,13 @@ public class BoardController {
 
             board.moveArmies(t2, t1, armiesToMove);
 
+            mapPanel.drawTerritoryInfo(t1, mapPanel.getGraphics());
+            mapPanel.drawTerritoryInfo(t2, mapPanel.getGraphics());
+
             JOptionPane.showMessageDialog(null, "Moved " + armiesToMove + " armies into " + t1.getName());
         }
-
-        boardView.getMapPanel().drawTerritoryInfo(t1,boardView.getMapPanel().getGraphics());
-        boardView.getMapPanel().drawTerritoryInfo(t2,boardView.getMapPanel().getGraphics());
+        //boardView.getMapPanel().drawTerritoryInfo(t1,boardView.getMapPanel().getGraphics());
+        //boardView.getMapPanel().drawTerritoryInfo(t2,boardView.getMapPanel().getGraphics());
     }
 
     /**
@@ -378,6 +409,14 @@ public class BoardController {
         board.incrementTurn();
         board.getSelectedTerritories().clear();
 
+        InfoPanel infoPanel = boardView.getInfoPanel();
+        infoPanel.setCurrentBonus(board.getArmiesToPlace());
+        Player player = board.getCurrentPlayer();
+        infoPanel.setPlayerName(player.getName());
+        infoPanel.setNumArmies(player.getNumArmies());
+        infoPanel.setNumTerritories(player.getNumTerritories());
+        infoPanel.setArmiesToPlace(board.getArmiesToPlace());
+
         Parser.displayMessage("It is now "+board.getCurrentPlayer().getName() +"'s turn");
     }
 
@@ -390,9 +429,18 @@ public class BoardController {
 
         String buttonText;
         if(board.getTurnStage() == TurnStage.FORTIFY) buttonText = "Fortify";
-        else if(board.getTurnStage() == TurnStage.ATTACK) buttonText = "Attack";
+        else if(board.getTurnStage() == TurnStage.ATTACK){
+            buttonText = "Attack";
+            boardView.getMapPanel().repaint();
+        }
         else buttonText = "Place / Retract";
         boardView.setActionButtonText(buttonText);
+
+        boardView.getInfoPanel().setTurnStage(board.getTurnStage());
+
+        board.getSelectedTerritories().clear();
+
+        boardView.getMapPanel().drawTerritorySelection(boardView.getMapPanel().getGraphics());
 
         if(board.getTurnStage() == TurnStage.PLACEMENT) Parser.displayMessage("You have "+ board.getArmiesToPlace() +" new armies to place");
     }
@@ -403,8 +451,10 @@ public class BoardController {
         else if(turnStage == TurnStage.FORTIFY) doFortify();
         else if(turnStage == TurnStage.PLACEMENT) doPlacement();
 
-        boardView.updatePlayerInfo(board);
         boardView.getMapPanel().drawTerritorySelection(boardView.getMapPanel().getGraphics());
+
+        //boardView.updatePlayerInfo(board);
+        //boardView.getMapPanel().drawTerritorySelection(boardView.getMapPanel().getGraphics());
     }
 
     public static boolean isValidIntegerInput(String input, int min, int max){
@@ -467,8 +517,8 @@ public class BoardController {
         nextTurn();
         nextTurnStage();
 
-        boardView.updatePlayerInfo(board);
-        boardView.getMapPanel().repaint();
+        //boardView.updatePlayerInfo(board);
+        //boardView.getMapPanel().repaint();
     }
 
     /**
@@ -581,7 +631,7 @@ public class BoardController {
                 if(t.getTempArmies() == 0) continue;
                 t.confirmTempArmies();
 
-                boardView.getMapPanel().drawTerritoryInfo(t, boardView.getMapPanel().getGraphics());
+                //boardView.getMapPanel().drawTerritoryInfo(t, boardView.getMapPanel().getGraphics());
             }
         }
         else if(currentTurnStage == TurnStage.FORTIFY){
@@ -589,7 +639,7 @@ public class BoardController {
         }
         nextTurnStage();
 
-        boardView.updatePlayerInfo(board);
+        //boardView.updatePlayerInfo(board);
     }
 
     /**
