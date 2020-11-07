@@ -26,7 +26,7 @@ public class Board {
      */
     private TurnStage turnStage;
 
-    private Set<Territory> selectedTerritories;
+    private List<Territory> selectedTerritories;
 
     /**
      * Constructor for the board
@@ -34,10 +34,10 @@ public class Board {
     public Board(){
         continents = new ArrayList<>();
         players = new ArrayList<>();
-        selectedTerritories = new HashSet<>();
+        selectedTerritories = new ArrayList<>();
     }
 
-    public Set<Territory> getSelectedTerritories(){
+    public List<Territory> getSelectedTerritories(){
         return selectedTerritories;
     }
 

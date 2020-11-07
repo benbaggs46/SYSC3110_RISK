@@ -5,6 +5,7 @@
 - Liam Ballantyne: @ljjb97
 - Imran Latif: @imran1503
 - Vijay Ramalingom: @vijayramalingom12
+- Razem Shahin: @razem999
 
 ### Changelog:
 No changes as of now.
