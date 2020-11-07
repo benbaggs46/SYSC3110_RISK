@@ -406,6 +406,8 @@ public class BoardController {
 
         nextTurn();
         nextTurnStage();
+
+        boardView.getMapPanel().repaint();
     }
 
     /**
