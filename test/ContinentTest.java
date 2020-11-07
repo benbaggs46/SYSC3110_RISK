@@ -26,9 +26,6 @@ public class ContinentTest<p1> {
 
 
 
-
-
-
     @Test
     public void getColor() {
         continent = new Continent("NA", 5, col );
