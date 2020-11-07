@@ -3,6 +3,7 @@ import java.awt.*;
 
 public class InfoPanel extends JPanel {
     private JLabel playerName;
+    private JLabel turnStage;
     private JLabel numArmies;
     private JLabel numTerritories;
     private JLabel currentBonus;
@@ -14,6 +15,8 @@ public class InfoPanel extends JPanel {
 
         playerName = new JLabel();
         add(playerName);
+        turnStage = new JLabel();
+        add(turnStage);
         numArmies = new JLabel();
         add(numArmies);
         numTerritories = new JLabel();
@@ -26,6 +29,9 @@ public class InfoPanel extends JPanel {
 
     public void setPlayerName(String string){
         playerName.setText(string);
+    }
+    public void setTurnStage(TurnStage turnStage){
+        this.turnStage.setText("Turn Phase: " + String.valueOf(turnStage));
     }
     public void setNumArmies(int num){
         numArmies.setText("Total Armies: " + num);

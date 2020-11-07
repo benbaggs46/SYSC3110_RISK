@@ -165,7 +165,7 @@ public class BoardController {
 
         int attackDice = getValidIntegerInput("How many armies would "+currentPlayer.getName()+" like to attack with?", 1, Math.min(t1.getNumArmies() - 1, MAX_ATTACK_DICE));
 
-        int defendDice = getValidIntegerInput("How many armies would "+ (t1.getOwner() == currentPlayer? t2.getOwner().getName(): t1.getOwner().getName()) +" like to defend with?", 1, Math.min(t1.getNumArmies(), MAX_DEFEND_DICE));
+        int defendDice = getValidIntegerInput("How many armies would "+ (t1.getOwner() == currentPlayer? t2.getOwner().getName(): t1.getOwner().getName()) +" like to defend with?", 1, Math.min(t2.getNumArmies(), MAX_DEFEND_DICE));
 
         if(t1.getOwner() == currentPlayer) newAttack(t2, t1, attackDice, defendDice);
         else newAttack(t1, t2, attackDice, defendDice);
@@ -218,12 +218,17 @@ public class BoardController {
         t.addTempArmies(armies);
         board.addArmiesToPlace(-armies);
 
+        boardView.getMapPanel().drawTerritoryInfo(t,boardView.getMapPanel().getGraphics());
+
         if(armies > 0) JOptionPane.showMessageDialog(null,"Placed " + armies + " armies in " + t.getName());
         else JOptionPane.showMessageDialog(null,"Retracted " + (-armies) + " armies from " + t.getName());
     }
 
     private void newFortify(Territory t1, Territory t2, int armies){
         board.moveArmies(t2, t1, armies);
+
+        boardView.getMapPanel().drawTerritoryInfo(t1,boardView.getMapPanel().getGraphics());
+        boardView.getMapPanel().drawTerritoryInfo(t2,boardView.getMapPanel().getGraphics());
 
         JOptionPane.showMessageDialog(null,"Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
         nextTurn();
@@ -254,6 +259,8 @@ public class BoardController {
             t2.getOwner().gainTerritory(t1);
             t1.setOwner(t2.getOwner());
 
+            board.toggleTerritorySelection(t2);
+
             Continent continent = t1.getContinent();
             if(continent.isConquered()) JOptionPane.showMessageDialog(null, continent.getName()+" was conquered!");
 
@@ -275,6 +282,9 @@ public class BoardController {
 
             JOptionPane.showMessageDialog(null, "Moved " + armiesToMove + " armies into " + t1.getName());
         }
+
+        boardView.getMapPanel().drawTerritoryInfo(t1,boardView.getMapPanel().getGraphics());
+        boardView.getMapPanel().drawTerritoryInfo(t2,boardView.getMapPanel().getGraphics());
     }
 
     /**
@@ -368,8 +378,6 @@ public class BoardController {
         board.incrementTurn();
         board.getSelectedTerritories().clear();
 
-        boardView.updatePlayerInfo(board);
-
         Parser.displayMessage("It is now "+board.getCurrentPlayer().getName() +"'s turn");
     }
 
@@ -396,7 +404,7 @@ public class BoardController {
         else if(turnStage == TurnStage.PLACEMENT) doPlacement();
 
         boardView.updatePlayerInfo(board);
-        boardView.getMapPanel().paintComponent(boardView.getMapPanel().getGraphics());
+        boardView.getMapPanel().drawTerritorySelection(boardView.getMapPanel().getGraphics());
     }
 
     public static boolean isValidIntegerInput(String input, int min, int max){
@@ -424,35 +432,43 @@ public class BoardController {
         board = null;
         while(board == null) board = bc.createMapFromFile(JOptionPane.showInputDialog("Enter the name of the map file:", "DEFAULT_MAP")+".xml");
 
-        int numPlayers = getValidIntegerInput("Enter the number of players:", MIN_PLAYERS, MAX_PLAYERS);
+        int boardSize = board.getTerritoryList().size();
 
-        if(numPlayers > MAX_PLAYERS || numPlayers < MIN_PLAYERS) {Parser.displayMessage("Number of players must be between 2 and 6"); return;}
+        int numPlayers = getValidIntegerInput("Enter the number of players:", MIN_PLAYERS, Math.min(MAX_PLAYERS, boardSize));
         int numArmiesEach = STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers);
+        if(numPlayers * numArmiesEach < boardSize) {
+            JOptionPane.showMessageDialog(null,"The selected map has too many territories to fill. Please start a new game with more players");
+            return;
+        }
+
+        //if(numPlayers > MAX_PLAYERS || numPlayers < MIN_PLAYERS) {Parser.displayMessage("Number of players must be between 2 and 6"); return;}
+        //int numArmiesEach = STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers);
         //BoardConstructor bc = new BoardConstructor();
         //board = bc.createMapFromFile("DEFAULT_MAP.xml");
 
         //MAYBE REMOVE THIS
         boardView.getMapPanel().setBoard(board);
 
-        if(board == null) {Parser.displayMessage("Error encountered constructing board, please try again"); return;}
-
         for(int i=0;i<numPlayers;i++){
             //board.addPlayer(new Player(Parser.getPrompt("Enter a name for player "+ (i+1)), PLAYER_COLOR_FOR_PLAYER_NUM.get(i)));
             board.addPlayer(new Player(JOptionPane.showInputDialog("Please enter a name for player " + (i+1) + ":", "Player "+ (i+1)), PLAYER_COLOR_FOR_PLAYER_NUM.get(i)));
         }
 
-        int boardSize = board.getTerritoryList().size();
-        if(numPlayers > boardSize) {Parser.displayMessage("The selected map doesn't have enough territories for "+numPlayers+" players"); return;}
-        if(numPlayers * numArmiesEach < boardSize) {Parser.displayMessage("The selected map has too many territories"); return;}
+        //int boardSize = board.getTerritoryList().size();
+        //if(numPlayers > boardSize) {Parser.displayMessage("The selected map doesn't have enough territories for "+numPlayers+" players"); return;}
+        //if(numPlayers * numArmiesEach < boardSize) {Parser.displayMessage("The selected map has too many territories"); return;}
 
         board.populateBoard(numArmiesEach);
 
         board.setCurrentPlayer(board.getPlayerList().get(numPlayers - 1));
         board.setTurnStage(TurnStage.FORTIFY);
 
-        Parser.displayMessage("New board created with " + numPlayers + " players");
+        //Parser.displayMessage("New board created with " + numPlayers + " players");
         nextTurn();
         nextTurnStage();
+
+        boardView.updatePlayerInfo(board);
+        boardView.getMapPanel().repaint();
     }
 
     /**
@@ -562,15 +578,18 @@ public class BoardController {
                 return;
             }
             for(Territory t: board.getTerritoryList()){
+                if(t.getTempArmies() == 0) continue;
                 t.confirmTempArmies();
-            }
 
-            boardView.getMapPanel().paintComponent(boardView.getMapPanel().getGraphics());
+                boardView.getMapPanel().drawTerritoryInfo(t, boardView.getMapPanel().getGraphics());
+            }
         }
         else if(currentTurnStage == TurnStage.FORTIFY){
             nextTurn();
         }
         nextTurnStage();
+
+        boardView.updatePlayerInfo(board);
     }
 
     /**

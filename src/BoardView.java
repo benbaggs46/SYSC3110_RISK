@@ -47,6 +47,7 @@ public class BoardView extends JFrame{
 
         setSize(1200,700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setResizable(false);
         setVisible(true);
         //Parser.begin(bc);
     }
@@ -70,6 +71,7 @@ public class BoardView extends JFrame{
     public void updatePlayerInfo(Board board){
         Player currentPlayer = board.getCurrentPlayer();
         infoPanel.setPlayerName(currentPlayer.getName());
+        infoPanel.setTurnStage(board.getTurnStage());
         infoPanel.setNumArmies(currentPlayer.getNumArmies());
         infoPanel.setNumTerritories(currentPlayer.getNumTerritories());
         infoPanel.setCurrentBonus(board.getArmyBonusForPlayer(currentPlayer));
