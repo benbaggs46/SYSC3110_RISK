@@ -8,61 +8,46 @@ public class BoardPanel extends JPanel {
 
     public static final Color TERRITORY_BORDER_COLOR = Color.BLACK;
 
+    public static final Color ARMY_NUM_FONT_COLOR = Color.BLACK;
+
+    public static final int ARMY_NUM_FONT_SIZE = 14;
+
+    public static final Font ARMY_NUM_FONT = new Font(Font.SANS_SERIF, Font.BOLD, ARMY_NUM_FONT_SIZE);
+
     public BoardPanel(BoardView boardView){
         super();
         this.boardView = boardView;
     }
 
-    public void drawMap(Graphics g){
+    public void drawTerritory(Territory t,Graphics g){
 
         Board board = boardView.getBoardController().getBoard();
 
         if(board == null) return;
 
-        for(Territory t: board.getTerritoryList()) {
-            g.setColor(t.getContinent().getColor());
-            g.fillPolygon(t.getPolygon());
-            g.setColor(Color.BLACK);
-            g.drawPolygon(t.getPolygon());
-        }
-    }
-
-    public void drawTerritorySelection(Graphics g){
-
-        Board board = boardView.getBoardController().getBoard();
-
-        if(board == null) return;
-
-        for(Territory t: board.getTerritoryList()) {
-            g.setColor(TERRITORY_BORDER_COLOR);
-            g.drawPolygon(t.getPolygon());
-        }
-
-        for(Territory t: board.getTerritoryList()) {
-            if(board.getSelectedTerritories().contains(t)) {
-                g.setColor(TERRITORY_SELECTION_COLOR);
-                g.drawPolygon(t.getPolygon());
-            }
-        }
-
-    }
-
-    public void drawTerritoryInfo(Territory t,Graphics g){
-
-        g.setColor(t.getContinent().getColor());
+        g.setColor(board.getSelectedTerritories().contains(t)? TERRITORY_SELECTION_COLOR: t.getContinent().getColor());
         g.fillPolygon(t.getPolygon());
+
+        g.setColor(TERRITORY_BORDER_COLOR);
+        g.drawPolygon(t.getPolygon());
 
         int centerX = (int) t.getPolygon().getBounds().getCenterX();
         int centerY = (int) t.getPolygon().getBounds().getCenterY();
 
-        g.setColor(t.getOwner().getColor());
-        g.fillOval(centerX - 15, centerY - 15, 30,30);
+        g.setFont(ARMY_NUM_FONT);
+        FontMetrics metrics = g.getFontMetrics(ARMY_NUM_FONT);
 
-        g.setColor(Color.WHITE);
-        g.fillOval(centerX - 10,centerY - 10, 20,20);
+        String text = t.getNumArmies() + (t.getTempArmies() > 0? " + "+ t.getTempArmies(): "");
+
+        int textWidth = Math.max(metrics.stringWidth(text), metrics.getHeight());
+
         g.setColor(TERRITORY_BORDER_COLOR);
-        g.setFont(new Font("SansSerif", Font.BOLD, 12));
-        g.drawString(t.getNumArmies() + (t.getTempArmies() > 0? " + "+ t.getTempArmies(): ""), centerX - g.getFont().getSize() / 2, centerY + g.getFont().getSize() / 2);
+        g.fillRect(centerX - textWidth/2 - 1, centerY - textWidth/2 - 1,textWidth + 2,textWidth + 2);
+        g.setColor(t.getOwner().getColor());
+        g.fillRect(centerX - textWidth/2, centerY - textWidth/2, textWidth, textWidth);
+
+        g.setColor(ARMY_NUM_FONT_COLOR);
+        g.drawString(text, centerX - textWidth / 2, centerY + metrics.getHeight() / 3);
     }
 
     @Override
@@ -73,14 +58,10 @@ public class BoardPanel extends JPanel {
 
         if(board == null) return;
 
-        drawMap(g);
-
         for(Territory t: board.getTerritoryList()) {
 
-            drawTerritoryInfo(t,g);
+            drawTerritory(t,g);
         }
-
-        drawTerritorySelection(g);
 
     }
 }

@@ -75,7 +75,7 @@
     <continent>
         <name>South America</name>
         <bonus>2</bonus>
-        <color>DD3030</color>
+        <color>EE9950</color>
         <territory>
             <name>Peru</name>
             <point>205,340</point>

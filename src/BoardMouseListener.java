@@ -20,8 +20,8 @@ public class BoardMouseListener extends MouseAdapter {
         for(Territory t: board.getTerritoryList()) {
             if (t.getPolygon().contains(me.getPoint())) {
                 board.toggleTerritorySelection(t);
+                boardView.getMapPanel().drawTerritory(t, boardView.getMapPanel().getGraphics());
             }
         }
-        boardView.getMapPanel().drawTerritorySelection(boardView.getMapPanel().getGraphics());
     }
 }

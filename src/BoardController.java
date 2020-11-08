@@ -52,7 +52,7 @@ public class BoardController {
             2, Color.YELLOW,
             3, Color.GREEN,
             4, Color.MAGENTA,
-            5, Color.GRAY
+            5, Color.LIGHT_GRAY
     );
 
     /**
@@ -160,6 +160,11 @@ public class BoardController {
             return;
         }
 
+        if((t1.getOwner() == currentPlayer && t1.getNumArmies() < 2) || (t2.getOwner() == currentPlayer && t2.getNumArmies() < 2)) {
+            JOptionPane.showMessageDialog(null,"You don't have enough armies there to attack with");
+            return;
+        }
+
         int attackDice = getValidIntegerInput("How many armies would "+currentPlayer.getName()+" like to attack with?", 1, Math.min(t1.getNumArmies() - 1, MAX_ATTACK_DICE));
 
         int defendDice = getValidIntegerInput("How many armies would "+ (t1.getOwner() == currentPlayer? t2.getOwner().getName(): t1.getOwner().getName()) +" like to defend with?", 1, Math.min(t2.getNumArmies(), MAX_DEFEND_DICE));
@@ -225,7 +230,7 @@ public class BoardController {
         infoPanel.setNumArmies(t.getOwner().getNumArmies() + sum);
 
         BoardPanel mapPanel = boardView.getMapPanel();
-        mapPanel.drawTerritoryInfo(t, mapPanel.getGraphics());
+        mapPanel.drawTerritory(t, mapPanel.getGraphics());
 
         if(armies > 0) JOptionPane.showMessageDialog(null,"Placed " + armies + " armies in " + t.getName());
         else JOptionPane.showMessageDialog(null,"Retracted " + (-armies) + " armies from " + t.getName());
@@ -235,8 +240,8 @@ public class BoardController {
         board.moveArmies(t2, t1, armies);
 
         BoardPanel mapPanel = boardView.getMapPanel();
-        mapPanel.drawTerritoryInfo(t1, mapPanel.getGraphics());
-        mapPanel.drawTerritoryInfo(t2, mapPanel.getGraphics());
+        mapPanel.drawTerritory(t1, mapPanel.getGraphics());
+        mapPanel.drawTerritory(t2, mapPanel.getGraphics());
 
         JOptionPane.showMessageDialog(null,"Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
         nextTurn();
@@ -264,8 +269,8 @@ public class BoardController {
         infoPanel.setNumArmies(t2.getOwner().getNumArmies());
 
         BoardPanel mapPanel = boardView.getMapPanel();
-        mapPanel.drawTerritoryInfo(t1, mapPanel.getGraphics());
-        mapPanel.drawTerritoryInfo(t2, mapPanel.getGraphics());
+        mapPanel.drawTerritory(t1, mapPanel.getGraphics());
+        mapPanel.drawTerritory(t2, mapPanel.getGraphics());
 
         if(t1.getNumArmies() <= 0 ) { //defending territory has no armies left
             JOptionPane.showMessageDialog(null, t1.getName()+" was conquered!");
@@ -278,7 +283,7 @@ public class BoardController {
             infoPanel = boardView.getInfoPanel();
             infoPanel.setNumTerritories(t2.getOwner().getNumTerritories());
 
-            mapPanel.drawTerritoryInfo(t1, mapPanel.getGraphics());
+            mapPanel.drawTerritory(t1, mapPanel.getGraphics());
 
             board.toggleTerritorySelection(t2);
 
@@ -301,8 +306,8 @@ public class BoardController {
 
             board.moveArmies(t2, t1, armiesToMove);
 
-            mapPanel.drawTerritoryInfo(t1, mapPanel.getGraphics());
-            mapPanel.drawTerritoryInfo(t2, mapPanel.getGraphics());
+            mapPanel.drawTerritory(t1, mapPanel.getGraphics());
+            mapPanel.drawTerritory(t2, mapPanel.getGraphics());
 
             JOptionPane.showMessageDialog(null, "Moved " + armiesToMove + " armies into " + t1.getName());
         }
@@ -323,6 +328,10 @@ public class BoardController {
         infoPanel.setNumTerritories(player.getNumTerritories());
         infoPanel.setArmiesToPlace(board.getArmiesToPlace());
         infoPanel.setPlayerColorPanel(player.getColor());
+
+        infoPanel.repaint();
+
+        JOptionPane.showMessageDialog(null, "It is now " + player.getName() + "'s turn");
     }
 
     /**
@@ -344,7 +353,7 @@ public class BoardController {
 
         board.getSelectedTerritories().clear();
 
-        boardView.getMapPanel().drawTerritorySelection(boardView.getMapPanel().getGraphics());
+        boardView.getMapPanel().repaint();
     }
 
     public void doAction(){
@@ -353,7 +362,7 @@ public class BoardController {
         else if(turnStage == TurnStage.FORTIFY) doFortify();
         else if(turnStage == TurnStage.PLACEMENT) doPlacement();
 
-        boardView.getMapPanel().drawTerritorySelection(boardView.getMapPanel().getGraphics());
+        boardView.getMapPanel().repaint();
     }
 
     public static boolean isValidIntegerInput(String input, int min, int max){
