@@ -33,16 +33,25 @@ public class InfoPanel extends JPanel {
         playerName = new JLabel();
         playerNameBarPanel.add(playerName);
 
+        JPanel playerInfoPanel = new JPanel();
+        playerInfoPanel.setLayout(new GridLayout(1,5));
+        add(playerInfoPanel);
+
         turnStage = new JLabel();
-        add(turnStage);
+        turnStage.setHorizontalAlignment(JLabel.CENTER);
+        playerInfoPanel.add(turnStage);
         numArmies = new JLabel();
-        add(numArmies);
+        numArmies.setHorizontalAlignment(JLabel.CENTER);
+        playerInfoPanel.add(numArmies);
         numTerritories = new JLabel();
-        add(numTerritories);
+        numTerritories.setHorizontalAlignment(JLabel.CENTER);
+        playerInfoPanel.add(numTerritories);
         currentBonus = new JLabel();
-        add(currentBonus);
+        currentBonus.setHorizontalAlignment(JLabel.CENTER);
+        playerInfoPanel.add(currentBonus);
         armiesToPlace = new JLabel();
-        add(armiesToPlace);
+        armiesToPlace.setHorizontalAlignment(JLabel.CENTER);
+        playerInfoPanel.add(armiesToPlace);
     }
 
     public void setPlayerName(String string){

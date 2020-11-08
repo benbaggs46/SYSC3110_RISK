@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class BoardPanel extends JPanel {
     private BoardView boardView;
@@ -17,6 +18,18 @@ public class BoardPanel extends JPanel {
     public BoardPanel(BoardView boardView){
         super();
         this.boardView = boardView;
+    }
+
+    public void drawExtraLines(Graphics g){
+        Board board = boardView.getBoardController().getBoard();
+
+        if(board == null) return;
+
+        g.setColor(TERRITORY_BORDER_COLOR);
+
+        for(List<Integer> line: board.getLines()){
+            g.drawLine(line.get(0),line.get(1),line.get(2),line.get(3));
+        }
     }
 
     public void drawTerritory(Territory t,Graphics g){
@@ -58,10 +71,11 @@ public class BoardPanel extends JPanel {
 
         if(board == null) return;
 
+        drawExtraLines(g);
+
         for(Territory t: board.getTerritoryList()) {
 
             drawTerritory(t,g);
         }
-
     }
 }

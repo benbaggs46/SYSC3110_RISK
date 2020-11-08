@@ -19,7 +19,7 @@ public class BoardView extends JFrame{
         mapPanel.addMouseListener(ma);
 
         infoPanel = new InfoPanel();
-        add(infoPanel, BorderLayout.WEST);
+        add(infoPanel, BorderLayout.NORTH);
 
         JPanel buttonPanel = new JPanel();
         add(buttonPanel, BorderLayout.SOUTH);
@@ -46,7 +46,7 @@ public class BoardView extends JFrame{
         actionButton.addActionListener(new BoardButtonListener(this));
         buttonPanel.add(actionButton);
 
-        setSize(1200,700);
+        setSize(1000,725);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);

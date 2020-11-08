@@ -8,11 +8,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.sound.sampled.Line;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.*;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BoardConstructor {
@@ -64,6 +66,7 @@ public class BoardConstructor {
 
             NodeList continentList = doc.getElementsByTagName("continent");
             NodeList borderList = doc.getElementsByTagName("border");
+            NodeList lineList = doc.getElementsByTagName("line");
 
             //iterates through continents
             for (int itr = 0; itr < continentList.getLength(); itr++)
@@ -118,6 +121,24 @@ public class BoardConstructor {
                     if(t1 != null && t2 != null && !t1.getNeighbours().contains(t2)) joinTerritories(t1, t2);
                 }
             }
+
+            for (int itr = 0; itr < lineList.getLength(); itr++)
+            {
+                Node node = lineList.item(itr);
+                if (node.getNodeType() == Node.ELEMENT_NODE)
+                {
+                    Element eElement = (Element) node;
+                    NodeList pointList = eElement.getElementsByTagName("point");
+
+                    String[] point1 = pointList.item(0).getTextContent().split(",");
+                    String[] point2 = pointList.item(1).getTextContent().split(",");
+
+                    List<Integer> line = Arrays.asList(Integer.parseInt(point1[0]), Integer.parseInt(point1[1]), Integer.parseInt(point2[0]), Integer.parseInt(point2[1]));
+
+                    board.addLine(line);
+                }
+            }
+
         }
         catch (Exception e)
         {

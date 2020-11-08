@@ -13,6 +13,9 @@ public class Board {
      * A list of players that are playing on the board
      */
     private List<Player> players;
+
+    private List<List<Integer>> lines;
+
     /**
      * The player who's turn it is currently
      */
@@ -35,6 +38,15 @@ public class Board {
         continents = new ArrayList<>();
         players = new ArrayList<>();
         selectedTerritories = new ArrayList<>();
+        lines = new ArrayList<>();
+    }
+
+    public void addLine(List<Integer> line){
+        if(line.size() == 4) lines.add(line);
+    }
+
+    public List<List<Integer>> getLines(){
+        return lines;
     }
 
     public List<Territory> getSelectedTerritories(){
