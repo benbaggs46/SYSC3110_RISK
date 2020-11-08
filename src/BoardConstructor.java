@@ -1,24 +1,23 @@
-/**
- * This class is used to construct a board based on an XML file.
- * Currently, the board will always be based on DEFAULT_MAP.xml in the source files.
- */
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import javax.sound.sampled.Line;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.*;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class is used to construct a board based on an XML file.
+ * Currently, the board will always be based on DEFAULT_MAP.xml in the source files.
+ */
 public class BoardConstructor {
 
+    /**
+     * Constructor for BoardController
+     */
     public BoardConstructor(){
     }
 

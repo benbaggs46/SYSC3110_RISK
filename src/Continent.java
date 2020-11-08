@@ -1,12 +1,11 @@
-/**
- * Models a continent in RISK.
- * Each continent is comprised of territories and gives an army per turn bonus to any player who controls all of its territories.
- */
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Models a continent in RISK.
+ * Each continent is comprised of territories and gives an army per turn bonus to any player who controls all of its territories.
+ */
 public class Continent {
     /**
      * list of territories in the continent

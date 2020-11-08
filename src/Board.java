@@ -1,9 +1,8 @@
+import java.util.*;
+
 /**
  * Models the RISK game board, including all players, continents, territories, armies, and turn phases.
  */
-
-import java.util.*;
-
 public class Board {
     /**
      * A list of continents that belong to the board
@@ -14,6 +13,10 @@ public class Board {
      */
     private List<Player> players;
 
+    /**
+     * A list of extra lines to be drawn on the game board.
+     * Each line is stored as a List of 4 integers (x1, y1, x2, y2)
+     */
     private List<List<Integer>> lines;
 
     /**
@@ -29,6 +32,9 @@ public class Board {
      */
     private TurnStage turnStage;
 
+    /**
+     * A list containing all territories that the user is currently selecting
+     */
     private List<Territory> selectedTerritories;
 
     /**
@@ -41,18 +47,35 @@ public class Board {
         lines = new ArrayList<>();
     }
 
+    /**
+     * Adds an extra line to the board
+     * @param line The line to be added
+     */
     public void addLine(List<Integer> line){
         if(line.size() == 4) lines.add(line);
     }
 
+    /**
+     * Returns a list of the extra lines to be drawn on the game board
+     * @return A List of all extra lines
+     */
     public List<List<Integer>> getLines(){
         return lines;
     }
 
+    /**
+     * Returns a list of all territories on the Board
+     * @return A List containing all territories on the Board
+     */
     public List<Territory> getSelectedTerritories(){
         return selectedTerritories;
     }
 
+    /**
+     * Selects the specified territory if it is unselected.
+     * Deselects the specified territory if it is selected.
+     * @param t The territory whose selection is to be toggled
+     */
     public void toggleTerritorySelection(Territory t){
         if(selectedTerritories.contains(t)) selectedTerritories.remove(t);
         else selectedTerritories.add(t);

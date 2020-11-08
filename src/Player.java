@@ -1,12 +1,11 @@
-/**
- * Models a RISK player.
- * Each player controls a list of territories.
- */
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Models a RISK player.
+ * Each player controls a list of territories.
+ */
 public class Player {
     /**
      * The list of territories the player owns
@@ -33,6 +32,10 @@ public class Player {
         this.color = color;
     }
 
+    /**
+     * Returns the color of the player
+     * @return The color of the player
+     */
     public Color getColor(){
         return color;
     }

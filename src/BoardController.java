@@ -1,10 +1,11 @@
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+/**
+ * BoardController receives user input from the BoardView, updates the Board model accordingly, and updates the BoardView to reflect the changes to the model
+ */
 public class BoardController {
 
     /**
@@ -60,12 +61,23 @@ public class BoardController {
      */
     private Board board;
 
+    /**
+     * The BoardView displaying the Board model
+     */
     private BoardView boardView;
 
+    /**
+     * Constructor of type BoardController
+     * @param boardView The view responsible for sending input to the BoardController
+     */
     public BoardController(BoardView boardView){
         this.boardView = boardView;
     }
 
+    /**
+     * Returns the Board model controlled by the BoardController
+     * @return The Board model controlled by the BoardController
+     */
     public Board getBoard(){
         return board;
     }
@@ -101,6 +113,9 @@ public class BoardController {
         return result;
     }
 
+    /**
+     * Prompts the user for details when fortifying troops, and calls a method to perform the specified fortification
+     */
     private void doFortify(){
 
         if(board.getSelectedTerritories().size() != 2) {
@@ -122,28 +137,29 @@ public class BoardController {
             return;
         }
 
+        boolean t1IsDestination;
+
         if(t1.getNumArmies() == 1){
-            int armiesToFortify = getValidIntegerInput("How many armies would you like to fortify?", 1, t2.getNumArmies() - 1);
-            fortify(t1, t2, armiesToFortify);
+            t1IsDestination = true;
         }
         else if(t2.getNumArmies() == 1){
-            int armiesToFortify = getValidIntegerInput("How many armies would you like to fortify?", 1, t1.getNumArmies() - 1);
-            fortify(t2, t1, armiesToFortify);
+            t1IsDestination = false;
         }
         else {
             Object[] options = {t1.getName() + " -> " + t2.getName(), t2.getName() + " -> " + t1.getName()};
-            if (JOptionPane.showOptionDialog(null, "In which direction do you want to fortify?", "Input",
+
+            t1IsDestination = JOptionPane.showOptionDialog(null, "In which direction do you want to fortify?", "Input",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-                    null, options, options[0]) == 0) {
-                int armiesToFortify = getValidIntegerInput("How many armies would you like to fortify?", 1, t1.getNumArmies() - 1);
-                fortify(t2, t1, armiesToFortify);
-            } else {
-                int armiesToFortify = getValidIntegerInput("How many armies would you like to fortify?", 1, t2.getNumArmies() - 1);
-                fortify(t1, t2, armiesToFortify);
-            }
+                    null, options, options[0]) > 0;
         }
+
+        int armiesToFortify = getValidIntegerInput("How many armies would you like to fortify?", 1, (t1IsDestination? t2.getNumArmies(): t1.getNumArmies()) - 1);
+        fortify((t1IsDestination? t1: t2), (t1IsDestination? t2: t1), armiesToFortify);
     }
 
+    /**
+     * Prompts the user for details when attacking, and calls a method to perform the specified attack
+     */
     private void doAttack(){
 
         if(board.getSelectedTerritories().size() != 2) {
@@ -174,6 +190,9 @@ public class BoardController {
 
     }
 
+    /**
+     * Prompts the user for details when placing/retracting armies, and calls a method to perform the specified army placement/retraction
+     */
     private void doPlacement(){
         if(board.getSelectedTerritories().size() != 1) {
             JOptionPane.showMessageDialog(null,"Invalid number of territories selected");
@@ -187,35 +206,36 @@ public class BoardController {
             return;
         }
 
+        boolean retracting;
+
         if(t.getTempArmies() == 0){
             if(board.getArmiesToPlace() == 0){
                 JOptionPane.showMessageDialog(null,"You have no more armies to place");
                 return;
             }
             else{
-                int armiesToPlace = getValidIntegerInput("How many armies would you like to place in " + t.getName() + "?", 1, board.getArmiesToPlace());
-                place(t, armiesToPlace);
+                retracting = false;
             }
         }
         else if(board.getArmiesToPlace() == 0){
-            int armiesToPlace = getValidIntegerInput("How many armies would you like to retract from " + t.getName() + "?", 1, t.getTempArmies());
-            place(t, -armiesToPlace);
+            retracting = true;
         }
         else {
             Object[] options = {"Place", "Retract"};
-            if (JOptionPane.showOptionDialog(null, "Would you like to place or retract armies?", "Input",
+
+            retracting = JOptionPane.showOptionDialog(null, "Would you like to place or retract armies?", "Input",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-                    null, options, options[0]) == 0) {
-                int armiesToPlace = getValidIntegerInput("How many armies would you like to place in " + t.getName() + "?", 1, board.getArmiesToPlace());
-                place(t, armiesToPlace);
-            }
-            else{
-                int armiesToPlace = getValidIntegerInput("How many armies would you like to retract from " + t.getName() + "?", 1, t.getTempArmies());
-                place(t, -armiesToPlace);
-            }
+                    null, options, options[0]) > 0;
         }
+        int armiesToPlace = getValidIntegerInput("How many armies would you like to " + (retracting? "retract from ": "place in ") + t.getName() + "?", 1, (retracting? t.getTempArmies(): board.getArmiesToPlace()));
+        place(t, (retracting? -1: 1) * armiesToPlace);
     }
 
+    /**
+     * Places the specified number of armies in the specified territory in the Board model
+     * @param t The territory to place armies in
+     * @param armies The number of armies to place
+     */
     private void place(Territory t, int armies){
         t.addTempArmies(armies);
         board.addArmiesToPlace(-armies);
@@ -236,6 +256,12 @@ public class BoardController {
         else if(armies < 0) JOptionPane.showMessageDialog(null,"Retracted " + (-armies) + " armies from " + t.getName());
     }
 
+    /**
+     * Fortifies the specified number of armies between the specified territories in the Board model
+     * @param t1 The territory armies are to be fortified to
+     * @param t2 The territory armies are to be fortified from
+     * @param armies The number of armies to fortify
+     */
     private void fortify(Territory t1, Territory t2, int armies){
         board.moveArmies(t2, t1, armies);
 
@@ -248,6 +274,13 @@ public class BoardController {
         nextTurnStage();
     }
 
+    /**
+     * Attacks with the specified army numbers between the specified territories in the Board model
+     * @param t1 The defending territory
+     * @param t2 The attacking territory
+     * @param attackDice The number of attacking armies
+     * @param defendDice The number of defending armies
+     */
     private void attack(Territory t1, Territory t2, int attackDice, int defendDice){
 
         int result = attackResult(attackDice, defendDice);
@@ -356,6 +389,10 @@ public class BoardController {
         boardView.getMapPanel().repaint();
     }
 
+    /**
+     * Calls the correct method when the user presses the ACTION button
+     * (labelled as PLACE/RETRACT, ATTACK, or FORTIFY)
+     */
     public void doAction(){
         TurnStage turnStage = board.getTurnStage();
         if(turnStage == TurnStage.ATTACK) doAttack();
@@ -365,6 +402,13 @@ public class BoardController {
         boardView.getMapPanel().repaint();
     }
 
+    /**
+     * Determines if the provided string input is an integer between the specified minimum and maximum (both inclusive)
+     * @param input The input string
+     * @param min The inclusive minimum value
+     * @param max The inclusive maximum value
+     * @return A boolean indicating whether the input represents an integer between the minimum and maximum values
+     */
     public static boolean isValidIntegerInput(String input, int min, int max){
         if(input == null) return false;
         if(input.isEmpty()) return false;
@@ -372,10 +416,18 @@ public class BoardController {
             if(!Character.isDigit(ch)) return false;
         }
         int value = Integer.parseInt(input);
-        if(value < min || value > max) return false;
-        return true;
+
+        return !(value < min || value > max);
     }
 
+    /**
+     * Returns a user input which is an integer between the specified minimum and maximum (both inclusive).
+     * The user will be prompted repeatedly until they enter a valid input
+     * @param message The prompt message to be displayed to the user
+     * @param min The inclusive minimum value
+     * @param max The inclusive maximum value
+     * @return A valid user integer input
+     */
     public static int getValidIntegerInput(String message, int min, int max){
         if(min == max) return min;
         String input = "";
@@ -383,6 +435,9 @@ public class BoardController {
         return Integer.parseInt(input);
     }
 
+    /**
+     * Constructs a new RISK board from the default map file and registers it with the BoardController and BoardView
+     */
     public void createNewGame(){
 
         BoardConstructor bc = new BoardConstructor();
@@ -437,7 +492,8 @@ public class BoardController {
     }
 
     /**
-     * Ends the current phase of the current turn
+     * Ends the current phase of the current turn.
+     * Called when the user presses the PROCEED button
      */
     public void proceed(){
         TurnStage currentTurnStage = board.getTurnStage();
