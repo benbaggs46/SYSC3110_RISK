@@ -193,12 +193,12 @@ public class BoardController {
                 return;
             }
             else{
-                int armiesToPlace = getValidIntegerInput("How many armies would you like to place in " + t.getName() + "?", 0, board.getArmiesToPlace());
+                int armiesToPlace = getValidIntegerInput("How many armies would you like to place in " + t.getName() + "?", 1, board.getArmiesToPlace());
                 place(t, armiesToPlace);
             }
         }
         else if(board.getArmiesToPlace() == 0){
-            int armiesToPlace = getValidIntegerInput("How many armies would you like to retract from " + t.getName() + "?", 0, t.getTempArmies());
+            int armiesToPlace = getValidIntegerInput("How many armies would you like to retract from " + t.getName() + "?", 1, t.getTempArmies());
             place(t, -armiesToPlace);
         }
         else {
@@ -206,11 +206,11 @@ public class BoardController {
             if (JOptionPane.showOptionDialog(null, "Would you like to place or retract armies?", "Input",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
                     null, options, options[0]) == 0) {
-                int armiesToPlace = getValidIntegerInput("How many armies would you like to place in " + t.getName() + "?", 0, board.getArmiesToPlace());
+                int armiesToPlace = getValidIntegerInput("How many armies would you like to place in " + t.getName() + "?", 1, board.getArmiesToPlace());
                 place(t, armiesToPlace);
             }
             else{
-                int armiesToPlace = getValidIntegerInput("How many armies would you like to retract from " + t.getName() + "?", 0, t.getTempArmies());
+                int armiesToPlace = getValidIntegerInput("How many armies would you like to retract from " + t.getName() + "?", 1, t.getTempArmies());
                 place(t, -armiesToPlace);
             }
         }
@@ -233,7 +233,7 @@ public class BoardController {
         mapPanel.drawTerritory(t, mapPanel.getGraphics());
 
         if(armies > 0) JOptionPane.showMessageDialog(null,"Placed " + armies + " armies in " + t.getName());
-        else JOptionPane.showMessageDialog(null,"Retracted " + (-armies) + " armies from " + t.getName());
+        else if(armies < 0) JOptionPane.showMessageDialog(null,"Retracted " + (-armies) + " armies from " + t.getName());
     }
 
     private void fortify(Territory t1, Territory t2, int armies){
