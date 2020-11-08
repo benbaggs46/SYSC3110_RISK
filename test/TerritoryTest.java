@@ -84,11 +84,33 @@ public class TerritoryTest {
 
     @org.junit.Test
     public void testToString() {
-        terr.setOwner(p1);
-        p1.gainTerritory(terr);
-        String string = "North America" + "\nOwner: " + "John Doe" + "\nArmies: " + 0;
-        //assertEquals(string, terr.toString());
-        // Need Help!
+        terr1.setOwner(p1);
+        p1.gainTerritory(terr1);
+        String string1 = "Ontario" + "\nOwner: " + "John Doe" + "\nArmies: " + 0;
+        assertEquals(string1, terr1.toString());
+        terr.setOwner(p2);
+        p2.gainTerritory(terr);
+        String string = "Alaska" + "\nOwner: " + "Jane Doe" + "\nArmies: " + 0;
+        assertEquals(string, terr.toString());
+        assertNotEquals(string1, terr.toString());
+        terr.addTempArmies(3);
+        terr1.addTempArmies(4);
+        assertNotEquals(string1, terr1.toString());
+        assertNotEquals(string, terr.toString());
+        string1 = "Ontario" + "\nOwner: " + "John Doe" + "\nArmies: " + 0
+                + "\nUnconfirmed armies: "+ terr1.getTempArmies();
+        string = "Alaska" + "\nOwner: " + "Jane Doe" + "\nArmies: " + 0
+                + "\nUnconfirmed armies: "+ terr.getTempArmies();
+        assertEquals(string1, terr1.toString());
+        assertEquals(string, terr.toString());
+        terr.confirmTempArmies();
+        terr1.confirmTempArmies();
+        assertNotEquals(string1, terr1.toString());
+        assertNotEquals(string, terr.toString());
+        string1 = "Ontario" + "\nOwner: " + "John Doe" + "\nArmies: " + 4;
+        string = "Alaska" + "\nOwner: " + "Jane Doe" + "\nArmies: " + 3;
+        assertEquals(string1, terr1.toString());
+        assertEquals(string, terr.toString());
     }
 
     @org.junit.Test
@@ -98,7 +120,6 @@ public class TerritoryTest {
         assertEquals(1, terr1.getNeighbours().size());
         terr1.addNeighbour(terr2);
         assertEquals(2, terr1.getNeighbours().size());
-
     }
 
     @org.junit.Test
@@ -108,7 +129,7 @@ public class TerritoryTest {
 
     @org.junit.Test
     public void getOwner() {
-        assertEquals(null, terr.getOwner());
+        assertNull(terr.getOwner());
         terr.setOwner(p1);
         p1.gainTerritory(terr);
         assertEquals(p1, terr.getOwner());
