@@ -423,17 +423,7 @@ public class BoardController {
      */
     public void displayHelpMessage(){
 
-        String message = "- Separate all command words and arguments with commas only (',')\n" +
-                "- All names are case insensitive\n" +
-                "- Do not use commas in Continent, Territory, or Player names\n" +
-                "- Extra arguments after commands will be ignored\n" +
-                "- <argument:int> signifies an integer argument\n" +
-                "- <argument:String> signifies a name as a string argument\n";
-
-        for(CommandWord commandWord: CommandWord.values()) {
-            message += commandWord.getSignature();
-            message += commandWord.getDescription();
-        }
+        String message = "NEED A NEW HELP MESSAGE";
 
         JOptionPane.showMessageDialog(null, message,
                 "Help", JOptionPane.INFORMATION_MESSAGE);
