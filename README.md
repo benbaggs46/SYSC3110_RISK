@@ -1,5 +1,5 @@
 # SYSC3110 RISK
-### Version: 1.0.0
+### Version: 2.0.0
 ### Authors:
 - Ben Baggs: @benbaggs46
 - Liam Ballantyne: @ljjb97
@@ -36,10 +36,16 @@ The game will then prompt you for the names of the players and then the game beg
 ### Deliverables:
 SYSC3110_RISK_UML.png gives a detailed uml diagram
 The src directory contains all the source files for the project.
+The diagram directory contains the class and sequence diagrams.
 
 ### Issues:
 There are currently no known issues.
 
+### Solved Issues:
+- Added sequence diagrams that midel the events that occur over a turn for both the console and GUI based verions. 
+- Removed the ability to place or retract 0 armies from a territory during the PLACEMENT phase.
+
+…uring the PLACEMENT phase
 ### Complete User Manual:
 To play RISK run the main function in Parser.java, or if running from the jar file type:
 ```
@@ -48,70 +54,23 @@ java -jar risk.jar
 
 The game will then start! 
 
-#### Valid Commands and Syntax:
-
-- Separate all command words and arguments with commas only (',')
-- All names are case insensitive
-- Do not use commas in Continent, Territory, or Player names
-- Extra arguments after commands will be ignored
-- <argument:int> signifies an integer argument
-- <argument:String> signifies a name as a string argument
-
-PLAY,<player_number:int>
-- Starts a new game of RISK with the specified number of players
-- The number of players must be between 2 and 6
-
-PROCEED
-- Moves to the next phase of the player's turn, or to the next player's turn
-
-PLACE,<territory:String>,<army_number:int>
-- During the FORTIFY phase, places new armies in the specified territory
-- This is not a permanent action, and can be undone by the RETRACT command
-- Army placements become confirmed once the player ends the fortify phase
-
-RETRACT,<territory:String>,<army_number:int>
-- Removes armies placed using the PLACE command, allowing them to be placed elsewhere
-
-ATTACK,<defending_territory:String>,<attacking_territory:String>,<attacker_number:int>
-- During the ATTACK phase, performs an attack between the specified territories
-- The attacker will attempt to roll with the specified number of dice (between 1 and 3)
-
-FORTIFY,<to_territory:String>,<from_territory:String>,<army_number:int>
-- During the FORTIFY phase, moves armies between the specified territories
-- Once a successful fortification is completed, the players turn will end automatically
-
-PRINT
-- Prints a description of the entire board
-
-INFO,<object_name:String>
-- Shows more information about the specified object (Continent, Territory, or Player)
-
-HELP
-- Displays a help message detailing all commands
-
-QUIT
-- Quits the game
 
 #### Playing the Game
-1. To start playing type:
-    ```
-    play,<number of players>
-    ```
-    Where number of players is an integer from 2-6.
+1. To start, click the play buton and enter the number of players in the promt that will appear. The number of players is between 2-6.
 2. Next, type in the players names.
-3. Then, the first player's turn starts. They will be given a number of armies based on the number of territories they control and any entire continents they control. They must place these armies using the PLACE command as specified above.
-4. These placements are not immediately permanent, and can be undone using the RETRACT command. Placements will be confirmed once the player begins the ATTACK phase of their turn using the PROCEED command. The player must place all armies they have been given before starting the ATTACK phase.
-5. The ATTACK phase will now begin. The player can use the ATTACK command to attack any unowned territory that is neighbouring one that the player does own. Then, the defender will be asked how many armies they wish to use for defense.
+3. Then, the first player's turn starts. They will be given a number of armies based on the number of territories they control and any entire continents they control. They must place these armies, and will be finalized using the PLACE button as specified above.
+4. These placements are not immediately permanent, and can be undone using the RETRACT button. Placements will be confirmed once the player begins the ATTACK phase of their turn using the PROCEED button. The player must place all armies they have been given before starting the ATTACK phase.
+5. The ATTACK phase will now begin. The player can use the ATTACK button to finalizr any attack on any unowned territory that is neighbouring one that the player does own. Then, the defender will be asked how many armies they wish to use for defense via a text prompt.
 The attacker may attack with up to 3 armies, and the defender can defend with up to 2 armies. If the defending territory runs out of armies the attacker gains control of the territory and can then decide how many pieces to move from the attacking territory to the newly conquered territory. The attacker must move at least as many armies as they used for the conquering attack, and must leave at least one army in the territory they attacked from. The attacker may attack as many times as they like.
-6. Next the player types PROCEED to move to the FORTIFY phase of the turn. The player can move any number of armies from
+6. Next the player clicks the PROCEED button to move to the FORTIFY phase of the turn. The player can move any number of armies from
 any territory they control to any other territory that is connected to the original territory through only territories owned by the player.
-This may only be done once. Once a successful fortification is completed, the next player's turn will begin. If the player does not wish to fortify any armies, they can end their turn using the PROCEED command.
+This may only be done once. Once a successful fortification is completed, the next player's turn will begin. If the player does not wish to fortify any armies, they can end their turn using the PROCEED button.
 7. Then, it will immediately become the next player's turn, which will play the same as the first player's turn. The game will cycle turns through players until a winner is decided.
 8. If a player no longer controls any territories, they are eliminated from the game. They will not have any more turns.
 9. Once only one player is left, the game is over and they are declared the winner. 
-10. After a game is finished, the game will return to its starting state, where the PLAY command may be used to start a new game. If the PLAY command is used during a game still in progress, the board will be reset and a new game will begin.
-11. At any time, the user may request more information about any player, continent, or territory using the INFO command as specified above. The PRINT command will display all board information at once.
-12. At any time, the user may enter the QUIT command to terminate the program.
+10. After a game is finished, the game will return to its starting state, where the PLAY button may be used to start a new game. If the PLAY button is used during a game still in progress, the board will be reset and a new game will begin.
+11. At any time, the user may request more information about any player, continent, or territory using the INFO button as specified above. The PRINT button will display all board information at once.
+12. At any time, the user may enter the QUIT button to terminate the program.
 
 #### Example Turn:
 At the beginning of this turn, PLAYER_A has 3 armies in India and 2 in China. PLAYER_B has 2 armies in Siam. All three of these territories neighbour each other.
@@ -170,15 +129,12 @@ PLAYER_A moves 1 army from Siam into India:
 PLAYER_B will then begin their turn.
 
 ### Important Design Decisions:
-- Using Model View Controller Design Pattern.   We decided to build our console based object using this format in order to future proof it for when we would be adding GUI on top of the console version. 
-- Comma over spaces.   We choose the easier method to implement on out behind as the console version of this class was going to be overshadows later on by the GUI implementation. This was easier as it allowed us to not have to change the xml file or any of the logic that was required to parse it.
-- Reading a file vs Hardcoding in the map.   We chose to make our first deliverable read a xml file as it avoided hardcoding and fulfilled a future. They currently are not enabled as it is currently always using the default map, however this allows us to easily update the project to what we need later on.
-- Removing Game -> Splitting functions into board and parser -> Parser becomes our view / "Main" class.   There was limited use for game that did warrant the entire class for it. Once we switched to using MVC, It was clear that Parser was our view and that is where the user input was coming from, so it became our main.
-- Removing Dice.   We moved the functions it had to board in order to remove a class that would be responsible for doing next to nothing in the project. This was also inspired by using the MVC design pattern as we were giving the model more control over itself. 
+- Choosing between having one mouseButtonListener or having one mouseListener and one buttonListner.  ... 
+- Choosing what classes not to create JUnit tests for. This is because some classes were to be scrapped as they only served the version of the game where the console was required. 
+- Adding lines between territories that were connected over oceans. ... ease of use ... 
+- Adding onto the XML file to crete the GUI as well as board. This was done by having our XML file hold the points to create a polygon. This allows for custom map designers to have full freedom and not be held typical country shapes. 
 
 ### Roadmap:
-- Implement a gui to allow the game to played with only a mouse (keyboard needed to input names)
-- Add testing capabilities to enable us to find more issues we might be missing
-- Add the option to have AI players
-- Enable loading and saving the game
-- Implement cards (Optional)
+- Add the option to have AI players.
+- Enable loading and saving the game.
+- Implement cards (Optional).
