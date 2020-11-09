@@ -60,10 +60,58 @@ java -jar risk.jar
 The game will then start! 
 
 #### Buttons
+There are 5 buttons at the bottom of the window for the player to use. From left to right they are as follows:
+
+```
+New Game
+```
+This button starts a new game of RISK. After being pressed, the user will be prompted to enter the desired number of players and then names for those players. After that, the new game will begin on the first player's turn. If this button is pressed while a game is in progress, a new game will begin and the current one will be lost.
+
+```
+Help
+```
+This button opens a dialog box containing helpful information about the game.
+
+```
+Quit
+```
+This button terminates the application. When pressed, the game window will close and the current game will be lost.
+
+```
+Proceed
+```
+This button is used to move to the next phase of a player's turn, or when in the FORTIFY phase, move to the next player's turn. If the player tries to press this button during the PLACEMENT phase when they still have armies left to place on the board, a dialog box will inform them of that and nothing will happen.
+
+```
+Action Button (PLACE/RETRACT, ATTACK, FORTIFY)
+```
+This button is used by the player to perform actions during their turn, such as placing armies, attacking, and fortifying. The text of the button will change to reflect the turn phase that the player is currently in. 
+
+In the PLACEMENT phase, the button label will say "Place / Retract", and the player must press the button after selecting a single territory to place or retract armies. The player will then be prompted for any additional details through dialog boxes.
+
+In the ATTACK phase, the button label will say "Attack", and the player must press the button after selecting only the territory they wish to attack plus the one they wish to attack from. Then, the attacker and defender will both be prompted for additional details through dialog boxes.
+
+In the FORTIFY phase, the button label will say "Fortify", and the player must press the button after selecting only the two territories between which they wish to move armies. Using dialog boxes, the player will then indicate the direction they wish to move armies, and how many, if applicable.
+
+During any of the 3 turn phases, if the player presses this button when they have an invalid number of territories selected, they will be informed of their error with a dialog box and nothing will happen. If they have the correct number of territories selected, but their selection is invalid for another reason, a dialog box will provide more information and nothing will happen.
 
 #### Selecting Territories
+Territories on the game board can be selected or deselected by clicking on them. The specific territories selected indicate the players intentions when they press the ACTION BUTTON. When selected, the background color of a territory will be red instead of the usual background color. Territories will stay in their current selection state until the player clicks on them or one of the following occurrs:
+
+When a player moves to the next phase of their turn, all territories will be deselected.
+
+After a player successfully attacks and conquers a territory, the territory that they attacked from will be deselected and the territory that they conquered will remain selected.
+
+When a player ends their turn, the new player's turn will begin with no territories selected.
 
 #### The Map
+The RISK game board will be drawn to the screen once the user starts a new game. Each polygon represents a territory, and the lines between them represent borders. Territories are adjacent if they share a border or there is an extra line connecting their borders. Alaska and Kamchatka are adjacent, and the line connecting them extends off the left and right sides of the map.
+
+The color of a territory when it is not selected indicates which continent it is a part of. The player recieves extra armies at the beginning of their turn if they control entire continents. When selected, the territory will always appear red.
+
+Every territory has a square drawn above it. The color of the square represents the player that currently controls it, and the number indicates the amount of armies on the territory.
+
+During the PLACEMENT turn phase, the square may contain two numbers seperated by an addition sign. When this occurs, the number on the right represents armies that the player has placed in the territory, but have not been confirmed. The player may still retract these armies before moving to the ATTACK phase. The number on the left indicates the amount of armies on the territory at the beginning of the turn, before the player started placing armies.
 
 #### Current Player Information
 
