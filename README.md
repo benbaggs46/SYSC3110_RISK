@@ -8,7 +8,7 @@
 - Razem Shahin: @razem999
 
 ### Changelog:
-No changes as of now.
+- 2.0.0 - Removed text-based interface and replaced it with new GUI.
 
 ### Table of Contents:
 - [Quick Start](#quick-start)
@@ -16,11 +16,11 @@ No changes as of now.
 - [Issues](#issues)
 - [Resolved Issues](#resolved-issues)
 - [User Manual](#complete-user-manual)
-    * [Buttons](#buttons)
-    * [Selecting Territories](#selecting-territories)
+    * [Playing the Game](#playing-the-game)
     * [The Map](#the-map)
     * [Current Player Information](#current-player-information)
-    * [Playing the Game](#playing-the-game)
+    * [Selecting Territories](#selecting-territories)
+    * [Buttons](#buttons)
     * [Example Turn](#example-turn)
 - [Important Design Descisions](#important-design-decisions)
 - [Roadmap](#roadmap)
@@ -59,6 +59,49 @@ java -jar risk.jar
 
 The game will then start! 
 
+#### Playing the Game
+When the application is opened initially, the user must press the NEW GAME button to start a game of RISK.
+
+Every player will begin their turn in the PLACEMENT phase. They will have been given a certain amount of armies, indicated at the top of the screen. They must place all of these armies on territories that they control by selecting the territory they wish to place armies in and using the ACTION BUTTON. Once armies are placed, they are not there permanently, and can be retracted in a similar manner. Once they player has placed all of their new armies to their satisfaction, they may move to the next phase of their turn using the PROCEED button.
+
+Once in the ATTACK phase, they may select the two territories they wish to attack and attack from, respectively, and use the ACTION BUTTON to initiate an attack on another player. If, during an attack, the defending territory loses all armies, the territory is conquered and the attacker gains control of it. They may continue to attack until they decide to stop or do not have enough armies. They may then move to the final turn phase using the PROCEED button.
+
+The FORTIFY phase allows the player to move a certain number of armies between two territories that they control. They may select these two territories and use the ACTION BUTTON to fortify. Once a successful fortification is completed, this turn phase automatically ends. If the player does not wish to fortify, they may simply press the PROCEED button.
+
+After this, the next player's turn will begin. The game will cycle between each players' turn in a fixed order until a single player controls all territories on the board. This player is declared the winner and the game ends. The window will remain open and a new game may be started using the NEW GAME button.
+
+At any time, a help menu may be opened using the HELP button.
+
+The player may start a new game or close the application at any time using the NEW GAME and QUIT buttons respectively.
+
+During any placement, retraction, attack, or fortification, the player will be propmted to enter any additional directions via dialog boxes when applicable.
+
+#### The Map
+The RISK game board will be drawn to the screen once the user starts a new game. Each polygon represents a territory, and the lines between them represent borders. Territories are adjacent if they share a border or there is an extra line connecting their borders. Alaska and Kamchatka are adjacent, and the line connecting them extends off the left and right sides of the map.
+
+The color of a territory when it is not selected indicates which continent it is a part of. The player recieves extra armies at the beginning of their turn if they control entire continents. When selected, the territory will always appear red.
+
+Every territory has a square drawn above it. The color of the square represents the player that currently controls it, and the number indicates the amount of armies on the territory.
+
+During the PLACEMENT turn phase, the square may contain two numbers seperated by an addition sign. When this occurs, the number on the right represents armies that the player has placed in the territory, but have not been confirmed. The player may still retract these armies before moving to the ATTACK phase. The number on the left indicates the amount of armies on the territory at the beginning of the turn, before the player started placing armies.
+
+#### Current Player Information
+Throughout the game, information relevant to the current player will be displayed at the top of the screen. 
+
+- The player's name and associated color will be displayed at the top center of the screen as text with a colored square beside it.
+- The line labelled "Turn Phase" indicates the turn phase that the player is currently in. This can be either PLACEMENT, ATTACK, or FORTIFY.
+- The line labelled "Total Armies" indicates the total number of combined armies the player has in all of their controlled territories.
+- The line labelled "Total Territories" indicates the number of territories the player currently controls.
+- The line labelled "Current Army Bonus" indicates how many armies the player will recieve at the start of their turn if they do not gain or lose any. This number will have a minimum value of 3 / turn.
+- The line labelled "Armies to Place" indicates the amount of armies that the player has been given during the PLACEMENT turn phase that have not yet been placed on the board. The player must place all of these armies before proceeding to the ATTACK phase. This number will be zero at all other times.
+
+#### Selecting Territories
+Territories on the game board can be selected or deselected by clicking on them. The specific territories selected indicate the players intentions when they press the ACTION BUTTON. When selected, the background color of a territory will be red instead of the usual background color. Territories will stay in their current selection state until the player clicks on them or one of the following occurrs:
+
+- When a player moves to the next phase of their turn, all territories will be deselected.
+- After a player successfully attacks and conquers a territory, the territory that they attacked from will be deselected and the territory that they conquered will remain selected.
+- When a player ends their turn, the new player's turn will begin with no territories selected.
+
 #### Buttons
 There are 5 buttons at the bottom of the window for the player to use. From left to right they are as follows:
 
@@ -95,28 +138,6 @@ In the FORTIFY phase, the button label will say "Fortify", and the player must p
 
 During any of the 3 turn phases, if the player presses this button when they have an invalid number of territories selected, they will be informed of their error with a dialog box and nothing will happen. If they have the correct number of territories selected, but their selection is invalid for another reason, a dialog box will provide more information and nothing will happen.
 
-#### Selecting Territories
-Territories on the game board can be selected or deselected by clicking on them. The specific territories selected indicate the players intentions when they press the ACTION BUTTON. When selected, the background color of a territory will be red instead of the usual background color. Territories will stay in their current selection state until the player clicks on them or one of the following occurrs:
-
-When a player moves to the next phase of their turn, all territories will be deselected.
-
-After a player successfully attacks and conquers a territory, the territory that they attacked from will be deselected and the territory that they conquered will remain selected.
-
-When a player ends their turn, the new player's turn will begin with no territories selected.
-
-#### The Map
-The RISK game board will be drawn to the screen once the user starts a new game. Each polygon represents a territory, and the lines between them represent borders. Territories are adjacent if they share a border or there is an extra line connecting their borders. Alaska and Kamchatka are adjacent, and the line connecting them extends off the left and right sides of the map.
-
-The color of a territory when it is not selected indicates which continent it is a part of. The player recieves extra armies at the beginning of their turn if they control entire continents. When selected, the territory will always appear red.
-
-Every territory has a square drawn above it. The color of the square represents the player that currently controls it, and the number indicates the amount of armies on the territory.
-
-During the PLACEMENT turn phase, the square may contain two numbers seperated by an addition sign. When this occurs, the number on the right represents armies that the player has placed in the territory, but have not been confirmed. The player may still retract these armies before moving to the ATTACK phase. The number on the left indicates the amount of armies on the territory at the beginning of the turn, before the player started placing armies.
-
-#### Current Player Information
-
-#### Playing the Game
-
 #### Example Turn:
 At the beginning of this turn, PLAYER_A has 3 armies in India and 2 in China. PLAYER_B has 2 armies in Siam. All three of these territories neighbour each other. PLAYER_A has no territories selected on the map.
 
@@ -142,10 +163,11 @@ PLAYER_A moves 1 army from Siam into India by selecting Siam and India before pr
 Once the fortification is complete, PLAYER_B will then begin their turn in the PLACEMENT phase.
 
 ### Important Design Decisions:
-- Choosing between having one mouseButtonListener or having one mouseListener and one buttonListner.  ... 
+- Choosing between having one mouseButtonListener or having one mouseListener and one buttonListner. The mouseButtonListener was required to have non-rectangular clickable territories. The buttons did not require this functionality, and could be seperated to a seperate listener class that uses the built in features of the Swing library.
 - Choosing what classes not to create JUnit tests for. This is because some classes were to be scrapped as they only served the version of the game where the console was required. 
-- Adding lines between territories that were connected over oceans. ... ease of use ... 
-- Adding onto the XML file to crete the GUI as well as board. This was done by having our XML file hold the points to create a polygon. This allows for custom map designers to have full freedom and not be held typical country shapes. 
+- Choosing to isolate the game view, model, and controller. All communication between the view and controller is done between the BoardView and BoardController classes, and all communication between the controller and model is done between the BoardController and Board classes. The BoardView class manages all components of the view, and like wise with the Board class and the model. This will make adding new components to any of the 3 areas (view, controller, model) easier, as new classes will only have to be registered with the "main" class of their area.
+- Adding lines between territories that were connected over oceans via the XML map file. Designing a board with custom lines is not very difficult for a map maker to implement in the XML file, and would produce better looking results than an algorithm that draws lines between connected territories that are not adjacent. Such an algorithm would also require a lot of checking to see if territory polygons are adjacent.
+- Adding onto the XML file to create the GUI as well as board. This was done by having our XML file hold the points to create a polygon. This allows for custom map designers to have full freedom and not be held typical country shapes. 
 
 ### Roadmap:
 - Add the option to have AI players.
