@@ -5,7 +5,7 @@ import java.awt.event.MouseAdapter;
 /**
  * Creates a frame for the user to play RISK
  */
-public class BoardView extends JFrame{
+public class BoardView extends JFrame implements RiskView{
 
     /**
      * The panel to draw the risk board on
@@ -110,4 +110,30 @@ public class BoardView extends JFrame{
         new BoardView();
     }
 
+    @Override
+    public void updateMap(MapEvent me) {
+        for(Territory t: me.getTerritoryList()){
+            mapPanel.drawTerritory(t, mapPanel.getGraphics());
+        }
+    }
+
+    @Override
+    public void updateUI(UIEvent uie) {
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(null, message);
+    }
+
+    @Override
+    public String getStringInput() {
+        return null;
+    }
+
+    @Override
+    public int getIntInput() {
+        return 0;
+    }
 }

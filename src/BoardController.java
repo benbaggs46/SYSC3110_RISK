@@ -119,7 +119,8 @@ public class BoardController {
     private void doFortify(){
 
         if(board.getSelectedTerritories().size() != 2) {
-            JOptionPane.showMessageDialog(null,"Invalid number of territories selected");
+            //JOptionPane.showMessageDialog(null,"Invalid number of territories selected");
+            boardView.showMessage("Invalid number of territories selected");
             return;
         }
 
@@ -128,12 +129,14 @@ public class BoardController {
         Territory t2 = board.getSelectedTerritories().get(1);
 
         if(t1.getOwner() != currentPlayer || t2.getOwner() != currentPlayer) {
-            JOptionPane.showMessageDialog(null,"Current player doesn't own both selected territories");
+            //JOptionPane.showMessageDialog(null,"Current player doesn't own both selected territories");
+            boardView.showMessage("Current player doesn't own both selected territories");
             return;
         }
 
         if (!board.areConnected(t1, t2)) {
-            JOptionPane.showMessageDialog(null,"Selected territories are not connected");
+            //JOptionPane.showMessageDialog(null,"Selected territories are not connected");
+            boardView.showMessage("Selected territories are not connected");
             return;
         }
 
@@ -163,7 +166,8 @@ public class BoardController {
     private void doAttack(){
 
         if(board.getSelectedTerritories().size() != 2) {
-            JOptionPane.showMessageDialog(null,"Invalid number of territories selected");
+            //JOptionPane.showMessageDialog(null,"Invalid number of territories selected");
+            boardView.showMessage("Invalid number of territories selected");
             return;
         }
 
@@ -172,12 +176,14 @@ public class BoardController {
         Territory t2 = board.getSelectedTerritories().get(1);
 
         if((t1.getOwner() == currentPlayer) == (t2.getOwner() == currentPlayer)) {
-            JOptionPane.showMessageDialog(null,"Current player owns neither or both selected territories");
+            //JOptionPane.showMessageDialog(null,"Current player owns neither or both selected territories");
+            boardView.showMessage("Current player owns neither or both selected territories");
             return;
         }
 
         if((t1.getOwner() == currentPlayer && t1.getNumArmies() < 2) || (t2.getOwner() == currentPlayer && t2.getNumArmies() < 2)) {
-            JOptionPane.showMessageDialog(null,"You don't have enough armies there to attack with");
+            //JOptionPane.showMessageDialog(null,"You don't have enough armies there to attack with");
+            boardView.showMessage("You don't have enough armies there to attack with");
             return;
         }
 
@@ -195,14 +201,16 @@ public class BoardController {
      */
     private void doPlacement(){
         if(board.getSelectedTerritories().size() != 1) {
-            JOptionPane.showMessageDialog(null,"Invalid number of territories selected");
+            //JOptionPane.showMessageDialog(null,"Invalid number of territories selected");
+            boardView.showMessage("Invalid number of territories selected");
             return;
         }
 
         Territory t = board.getSelectedTerritories().get(0);
 
         if(t.getOwner() != board.getCurrentPlayer()) {
-            JOptionPane.showMessageDialog(null,"You do not control that territory");
+            //JOptionPane.showMessageDialog(null,"You do not control that territory");
+            boardView.showMessage("You do not control that territory");
             return;
         }
 
@@ -210,7 +218,8 @@ public class BoardController {
 
         if(t.getTempArmies() == 0){
             if(board.getArmiesToPlace() == 0){
-                JOptionPane.showMessageDialog(null,"You have no more armies to place");
+                //JOptionPane.showMessageDialog(null,"You have no more armies to place");
+                boardView.showMessage("You have no more armies to place");
                 return;
             }
             else{
@@ -249,11 +258,17 @@ public class BoardController {
         infoPanel.setArmiesToPlace(board.getArmiesToPlace());
         infoPanel.setNumArmies(t.getOwner().getNumArmies() + sum);
 
-        BoardPanel mapPanel = boardView.getMapPanel();
-        mapPanel.drawTerritory(t, mapPanel.getGraphics());
+        //BoardPanel mapPanel = boardView.getMapPanel();
+        //mapPanel.drawTerritory(t, mapPanel.getGraphics());
 
-        if(armies > 0) JOptionPane.showMessageDialog(null,"Placed " + armies + " armies in " + t.getName());
-        else if(armies < 0) JOptionPane.showMessageDialog(null,"Retracted " + (-armies) + " armies from " + t.getName());
+        List<Territory> territoriesToUpdate = new ArrayList<>();
+        territoriesToUpdate.add(t);
+        boardView.updateMap(new MapEvent(this, territoriesToUpdate));
+
+        if(armies > 0) //JOptionPane.showMessageDialog(null,"Placed " + armies + " armies in " + t.getName());
+            boardView.showMessage("Placed " + armies + " armies in " + t.getName());
+        else if(armies < 0) //JOptionPane.showMessageDialog(null,"Retracted " + (-armies) + " armies from " + t.getName());
+            boardView.showMessage("Retracted " + (-armies) + " armies from " + t.getName());
     }
 
     /**
@@ -265,11 +280,17 @@ public class BoardController {
     private void fortify(Territory t1, Territory t2, int armies){
         board.moveArmies(t2, t1, armies);
 
-        BoardPanel mapPanel = boardView.getMapPanel();
-        mapPanel.drawTerritory(t1, mapPanel.getGraphics());
-        mapPanel.drawTerritory(t2, mapPanel.getGraphics());
+        //BoardPanel mapPanel = boardView.getMapPanel();
+        //mapPanel.drawTerritory(t1, mapPanel.getGraphics());
+        //mapPanel.drawTerritory(t2, mapPanel.getGraphics());
 
-        JOptionPane.showMessageDialog(null,"Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
+        List<Territory> territoriesToUpdate = new ArrayList<>();
+        territoriesToUpdate.add(t1);
+        territoriesToUpdate.add(t2);
+        boardView.updateMap(new MapEvent(this, territoriesToUpdate));
+
+        //JOptionPane.showMessageDialog(null,"Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
+        boardView.showMessage("Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
         nextTurn();
         nextTurnStage();
     }
@@ -285,7 +306,8 @@ public class BoardController {
 
         int result = attackResult(attackDice, defendDice);
 
-        JOptionPane.showMessageDialog(null, result == 0? "Both players lost an army": (result > 0)? t1.getOwner().getName()+" lost "+result +" armies": t2.getOwner().getName()+" lost "+ (-result) +" armies");
+        //JOptionPane.showMessageDialog(null, result == 0? "Both players lost an army": (result > 0)? t1.getOwner().getName()+" lost "+result +" armies": t2.getOwner().getName()+" lost "+ (-result) +" armies");
+        boardView.showMessage(result == 0? "Both players lost an army": (result > 0)? t1.getOwner().getName()+" lost "+result +" armies": t2.getOwner().getName()+" lost "+ (-result) +" armies");
 
         if(result == 0){ //both players lose one army
             t2.addArmies(-1);
@@ -301,12 +323,18 @@ public class BoardController {
         InfoPanel infoPanel = boardView.getInfoPanel();
         infoPanel.setNumArmies(t2.getOwner().getNumArmies());
 
-        BoardPanel mapPanel = boardView.getMapPanel();
-        mapPanel.drawTerritory(t1, mapPanel.getGraphics());
-        mapPanel.drawTerritory(t2, mapPanel.getGraphics());
+        //BoardPanel mapPanel = boardView.getMapPanel();
+        //mapPanel.drawTerritory(t1, mapPanel.getGraphics());
+        //mapPanel.drawTerritory(t2, mapPanel.getGraphics());
+
+        List<Territory> territoriesToUpdate = new ArrayList<>();
+        territoriesToUpdate.add(t1);
+        territoriesToUpdate.add(t2);
+        boardView.updateMap(new MapEvent(this, territoriesToUpdate));
 
         if(t1.getNumArmies() <= 0 ) { //defending territory has no armies left
-            JOptionPane.showMessageDialog(null, t1.getName()+" was conquered!");
+            //JOptionPane.showMessageDialog(null, t1.getName()+" was conquered!");
+            boardView.showMessage(t1.getName()+" was conquered!");
 
             Player prevOwner = t1.getOwner();
             prevOwner.loseTerritory(t1);
@@ -316,22 +344,29 @@ public class BoardController {
             infoPanel = boardView.getInfoPanel();
             infoPanel.setNumTerritories(t2.getOwner().getNumTerritories());
 
-            mapPanel.drawTerritory(t1, mapPanel.getGraphics());
+            //mapPanel.drawTerritory(t1, mapPanel.getGraphics());
+
+            territoriesToUpdate = new ArrayList<>();
+            territoriesToUpdate.add(t1);
+            boardView.updateMap(new MapEvent(this, territoriesToUpdate));
 
             board.toggleTerritorySelection(t2);
 
             Continent continent = t1.getContinent();
-            if(continent.isConquered()) JOptionPane.showMessageDialog(null, continent.getName()+" was conquered!");
+            if(continent.isConquered()) //JOptionPane.showMessageDialog(null, continent.getName()+" was conquered!");
+                boardView.showMessage(continent.getName()+" was conquered!");
 
             if(prevOwner.getNumTerritories() == 0) {
 
                 //prevOwner is eliminated
                 board.removePlayer(prevOwner);
-                JOptionPane.showMessageDialog(null, prevOwner.getName() + " was eliminated!");
+                //JOptionPane.showMessageDialog(null, prevOwner.getName() + " was eliminated!");
+                boardView.showMessage(prevOwner.getName() + " was eliminated!");
 
                 if(board.getPlayerList().size() > 1){
                     //game is over
-                    JOptionPane.showMessageDialog(null, t2.getOwner().getName() + " has won!");
+                    //JOptionPane.showMessageDialog(null, t2.getOwner().getName() + " has won!");
+                    boardView.showMessage(t2.getOwner().getName() + " has won!");
                     board.clearBoard();
                 }
             }
@@ -339,10 +374,16 @@ public class BoardController {
 
             board.moveArmies(t2, t1, armiesToMove);
 
-            mapPanel.drawTerritory(t1, mapPanel.getGraphics());
-            mapPanel.drawTerritory(t2, mapPanel.getGraphics());
+            //mapPanel.drawTerritory(t1, mapPanel.getGraphics());
+            //mapPanel.drawTerritory(t2, mapPanel.getGraphics());
 
-            JOptionPane.showMessageDialog(null, "Moved " + armiesToMove + " armies into " + t1.getName());
+            territoriesToUpdate = new ArrayList<>();
+            territoriesToUpdate.add(t1);
+            territoriesToUpdate.add(t2);
+            boardView.updateMap(new MapEvent(this, territoriesToUpdate));
+
+            //JOptionPane.showMessageDialog(null, "Moved " + armiesToMove + " armies into " + t1.getName());
+            boardView.showMessage("Moved " + armiesToMove + " armies into " + t1.getName());
         }
     }
 
@@ -364,7 +405,8 @@ public class BoardController {
 
         infoPanel.repaint();
 
-        JOptionPane.showMessageDialog(null, "It is now " + player.getName() + "'s turn");
+        //JOptionPane.showMessageDialog(null, "It is now " + player.getName() + "'s turn");
+        boardView.showMessage("It is now " + player.getName() + "'s turn");
     }
 
     /**
@@ -445,7 +487,8 @@ public class BoardController {
         board = bc.createMapFromFile("DEFAULT_MAP.xml");
 
         if(board == null){
-            JOptionPane.showMessageDialog(null, "Error constructing default board. Ensure that the file DEFAULT_MAP.xml is in the source directory.");
+            //JOptionPane.showMessageDialog(null, "Error constructing default board. Ensure that the file DEFAULT_MAP.xml is in the source directory.");
+            boardView.showMessage("Error constructing default board. Ensure that the file DEFAULT_MAP.xml is in the source directory.");
             return;
         }
 
@@ -454,7 +497,8 @@ public class BoardController {
         int numPlayers = getValidIntegerInput("Enter the number of players:", MIN_PLAYERS, Math.min(MAX_PLAYERS, boardSize));
         int numArmiesEach = STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers);
         if(numPlayers * numArmiesEach < boardSize) {
-            JOptionPane.showMessageDialog(null,"The selected map has too many territories to fill. Please start a new game with more players");
+            //JOptionPane.showMessageDialog(null,"The selected map has too many territories to fill. Please start a new game with more players");
+            boardView.showMessage("The selected map has too many territories to fill. Please start a new game with more players");
             return;
         }
 
@@ -530,7 +574,8 @@ public class BoardController {
         TurnStage currentTurnStage = board.getTurnStage();
         if(currentTurnStage == TurnStage.PLACEMENT){
             if(board.getArmiesToPlace() > 0) {
-                JOptionPane.showMessageDialog(null,"You still have armies to place");
+                //JOptionPane.showMessageDialog(null,"You still have armies to place");
+                boardView.showMessage("You still have armies to place");
                 return;
             }
             for(Territory t: board.getTerritoryList()){
