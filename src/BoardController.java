@@ -151,12 +151,14 @@ public class BoardController {
         else {
             Object[] options = {t1.getName() + " -> " + t2.getName(), t2.getName() + " -> " + t1.getName()};
 
-            t1IsDestination = JOptionPane.showOptionDialog(null, "In which direction do you want to fortify?", "Input",
+            /*t1IsDestination = JOptionPane.showOptionDialog(null, "In which direction do you want to fortify?", "Input",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-                    null, options, options[0]) > 0;
+                    null, options, options[0]) > 0;*/
+            t1IsDestination = boardView.getOption("In which direction do you want to fortify?", options) > 0;
         }
 
-        int armiesToFortify = getValidIntegerInput("How many armies would you like to fortify?", 1, (t1IsDestination? t2.getNumArmies(): t1.getNumArmies()) - 1);
+        //int armiesToFortify = getValidIntegerInput("How many armies would you like to fortify?", 1, (t1IsDestination? t2.getNumArmies(): t1.getNumArmies()) - 1);
+        int armiesToFortify = boardView.getIntInput("How many armies would you like to fortify?", 1, (t1IsDestination ? t2.getNumArmies() : t1.getNumArmies()) - 1);
         fortify((t1IsDestination? t1: t2), (t1IsDestination? t2: t1), armiesToFortify);
     }
 
@@ -187,9 +189,11 @@ public class BoardController {
             return;
         }
 
-        int attackDice = getValidIntegerInput("How many armies would "+currentPlayer.getName()+" like to attack with?", 1, Math.min(t1.getNumArmies() - 1, MAX_ATTACK_DICE));
+        //int attackDice = getValidIntegerInput("How many armies would "+currentPlayer.getName()+" like to attack with?", 1, Math.min(t1.getNumArmies() - 1, MAX_ATTACK_DICE));
+        int attackDice = boardView.getIntInput("How many armies would "+currentPlayer.getName()+" like to attack with?", 1, Math.min(t1.getNumArmies() - 1, MAX_ATTACK_DICE));
 
-        int defendDice = getValidIntegerInput("How many armies would "+ (t1.getOwner() == currentPlayer? t2.getOwner().getName(): t1.getOwner().getName()) +" like to defend with?", 1, Math.min(t2.getNumArmies(), MAX_DEFEND_DICE));
+        //int defendDice = getValidIntegerInput("How many armies would "+ (t1.getOwner() == currentPlayer? t2.getOwner().getName(): t1.getOwner().getName()) +" like to defend with?", 1, Math.min(t2.getNumArmies(), MAX_DEFEND_DICE));
+        int defendDice = boardView.getIntInput("How many armies would "+ (t1.getOwner() == currentPlayer? t2.getOwner().getName(): t1.getOwner().getName()) +" like to defend with?", 1, Math.min(t2.getNumArmies(), MAX_DEFEND_DICE));
 
         if(t1.getOwner() == currentPlayer) attack(t2, t1, attackDice, defendDice);
         else attack(t1, t2, attackDice, defendDice);
@@ -232,11 +236,13 @@ public class BoardController {
         else {
             Object[] options = {"Place", "Retract"};
 
-            retracting = JOptionPane.showOptionDialog(null, "Would you like to place or retract armies?", "Input",
+            /*retracting = JOptionPane.showOptionDialog(null, "Would you like to place or retract armies?", "Input",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-                    null, options, options[0]) > 0;
+                    null, options, options[0]) > 0;*/
+            retracting = boardView.getOption("Would you like to place or retract armies?", options) > 0;
         }
-        int armiesToPlace = getValidIntegerInput("How many armies would you like to " + (retracting? "retract from ": "place in ") + t.getName() + "?", 1, (retracting? t.getTempArmies(): board.getArmiesToPlace()));
+        //int armiesToPlace = getValidIntegerInput("How many armies would you like to " + (retracting? "retract from ": "place in ") + t.getName() + "?", 1, (retracting? t.getTempArmies(): board.getArmiesToPlace()));
+        int armiesToPlace = boardView.getIntInput("How many armies would you like to " + (retracting? "retract from ": "place in ") + t.getName() + "?", 1, (retracting? t.getTempArmies(): board.getArmiesToPlace()));
         place(t, (retracting? -1: 1) * armiesToPlace);
     }
 
@@ -370,7 +376,8 @@ public class BoardController {
                     board.clearBoard();
                 }
             }
-            int armiesToMove = getValidIntegerInput("How many armies would "+t2.getOwner().getName()+" like to move?", attackDice, t2.getNumArmies() - 1);
+            //int armiesToMove = getValidIntegerInput("How many armies would "+t2.getOwner().getName()+" like to move?", attackDice, t2.getNumArmies() - 1);
+            int armiesToMove = boardView.getIntInput("How many armies would "+t2.getOwner().getName()+" like to move?", attackDice, t2.getNumArmies() - 1);
 
             board.moveArmies(t2, t1, armiesToMove);
 
@@ -445,39 +452,6 @@ public class BoardController {
     }
 
     /**
-     * Determines if the provided string input is an integer between the specified minimum and maximum (both inclusive)
-     * @param input The input string
-     * @param min The inclusive minimum value
-     * @param max The inclusive maximum value
-     * @return A boolean indicating whether the input represents an integer between the minimum and maximum values
-     */
-    public static boolean isValidIntegerInput(String input, int min, int max){
-        if(input == null) return false;
-        if(input.isEmpty()) return false;
-        for(char ch: input.toCharArray()){
-            if(!Character.isDigit(ch)) return false;
-        }
-        int value = Integer.parseInt(input);
-
-        return !(value < min || value > max);
-    }
-
-    /**
-     * Returns a user input which is an integer between the specified minimum and maximum (both inclusive).
-     * The user will be prompted repeatedly until they enter a valid input
-     * @param message The prompt message to be displayed to the user
-     * @param min The inclusive minimum value
-     * @param max The inclusive maximum value
-     * @return A valid user integer input
-     */
-    public static int getValidIntegerInput(String message, int min, int max){
-        if(min == max) return min;
-        String input = "";
-        while(!isValidIntegerInput(input, min, max)) input = JOptionPane.showInputDialog(message + " (" + min + " - " + max + ")");
-        return Integer.parseInt(input);
-    }
-
-    /**
      * Constructs a new RISK board from the default map file and registers it with the BoardController and BoardView
      */
     public void createNewGame(){
@@ -494,7 +468,8 @@ public class BoardController {
 
         int boardSize = board.getTerritoryList().size();
 
-        int numPlayers = getValidIntegerInput("Enter the number of players:", MIN_PLAYERS, Math.min(MAX_PLAYERS, boardSize));
+        //int numPlayers = getValidIntegerInput("Enter the number of players:", MIN_PLAYERS, Math.min(MAX_PLAYERS, boardSize));
+        int numPlayers = boardView.getIntInput("Enter the number of players:", MIN_PLAYERS, Math.min(MAX_PLAYERS, boardSize));
         int numArmiesEach = STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers);
         if(numPlayers * numArmiesEach < boardSize) {
             //JOptionPane.showMessageDialog(null,"The selected map has too many territories to fill. Please start a new game with more players");
@@ -503,7 +478,8 @@ public class BoardController {
         }
 
         for(int i=0;i<numPlayers;i++){
-            board.addPlayer(new Player(JOptionPane.showInputDialog("Please enter a name for player " + (i+1) + ":", "Player "+ (i+1)), PLAYER_COLOR_FOR_PLAYER_NUM.get(i)));
+            //board.addPlayer(new Player(JOptionPane.showInputDialog("Please enter a name for player " + (i+1) + ":", "Player "+ (i+1)), PLAYER_COLOR_FOR_PLAYER_NUM.get(i)));
+            board.addPlayer(new Player(boardView.getStringInput("Please enter a name for player " + (i+1) + ":", "Player "+ (i+1)), PLAYER_COLOR_FOR_PLAYER_NUM.get(i)));
         }
 
         board.populateBoard(numArmiesEach);
@@ -555,8 +531,9 @@ public class BoardController {
             "\n- This button is used by the player to perform actions during their turn, such as placing armies, attacking, and fortifying. The text of the button will change" +
                         "\n to reflect the turn phase that the player is currently in. ";
 
-        JOptionPane.showMessageDialog(null, message,
-                "Help", JOptionPane.INFORMATION_MESSAGE);
+        /*JOptionPane.showMessageDialog(null, message,
+                "Help", JOptionPane.INFORMATION_MESSAGE);*/
+        boardView.showMessage(message);
     }
 
     /**

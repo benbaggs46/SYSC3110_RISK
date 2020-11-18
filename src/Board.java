@@ -1,9 +1,59 @@
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Models the RISK game board, including all players, continents, territories, armies, and turn phases.
  */
 public class Board {
+
+    /**
+     * The max number of dice rolls
+     */
+    public static final int MAX_DICE_ROLL = 6;
+
+    /**
+     * The max number of dice that the attacker can roll at once
+     */
+    public static final int MAX_ATTACK_DICE = 3;
+
+    /**
+     * The max number of dice that the defender can roll at once
+     */
+    public static final int MAX_DEFEND_DICE = 2;
+
+    /**
+     * The maximum number of players
+     */
+    public static final int MAX_PLAYERS = 6;
+
+    /**
+     * The minimum number of players
+     */
+    public static final int MIN_PLAYERS = 2;
+
+    /**
+     * A map between any valid number of players and how many armies each player should start the game with
+     */
+    public static final Map<Integer, Integer> STARTING_ARMIES_FOR_NUM_PLAYERS = Map.of(
+            2, 50,
+            3, 35,
+            4, 30,
+            5, 25,
+            6, 20
+    );
+
+    /**
+     * A map between each player number and the corresponding colors
+     */
+    public static final Map<Integer, Color> PLAYER_COLOR_FOR_PLAYER_NUM = Map.of(
+            0,Color.RED,
+            1,Color.BLUE,
+            2, Color.YELLOW,
+            3, Color.GREEN,
+            4, Color.MAGENTA,
+            5, Color.LIGHT_GRAY
+    );
     /**
      * A list of continents that belong to the board
      */
@@ -37,6 +87,8 @@ public class Board {
      */
     private List<Territory> selectedTerritories;
 
+    private List<RiskView> views;
+
     /**
      * Constructor for the board
      */
@@ -45,6 +97,11 @@ public class Board {
         players = new ArrayList<>();
         selectedTerritories = new ArrayList<>();
         lines = new ArrayList<>();
+        views = new ArrayList<>();
+    }
+
+    public void addRiskView(RiskView view){
+        views.add(view);
     }
 
     /**

@@ -128,12 +128,40 @@ public class BoardView extends JFrame implements RiskView{
     }
 
     @Override
-    public String getStringInput() {
-        return null;
+    public String getStringInput(String prompt, String defaultValue) {
+        return JOptionPane.showInputDialog(prompt, defaultValue);
     }
 
     @Override
-    public int getIntInput() {
-        return 0;
+    public int getIntInput(String prompt, int min, int max) {
+        if(min == max) return min;
+        String input = "";
+        while(!isValidIntegerInput(input, min, max)) input = JOptionPane.showInputDialog(prompt + " (" + min + " - " + max + ")");
+        return Integer.parseInt(input);
+    }
+
+    /**
+     * Determines if the provided string input is an integer between the specified minimum and maximum (both inclusive)
+     * @param input The input string
+     * @param min The inclusive minimum value
+     * @param max The inclusive maximum value
+     * @return A boolean indicating whether the input represents an integer between the minimum and maximum values
+     */
+    public static boolean isValidIntegerInput(String input, int min, int max){
+        if(input == null) return false;
+        if(input.isEmpty()) return false;
+        for(char ch: input.toCharArray()){
+            if(!Character.isDigit(ch)) return false;
+        }
+        int value = Integer.parseInt(input);
+
+        return !(value < min || value > max);
+    }
+
+    @Override
+    public int getOption(String prompt, Object[] options){
+        return JOptionPane.showOptionDialog(null, prompt, "Input",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                null, options, options[0]);
     }
 }
