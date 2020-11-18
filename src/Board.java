@@ -94,7 +94,7 @@ public class Board {
     /**
      * Constructor for the board
      */
-    public Board(RiskInput userInputSource, List<String> playerNames){
+    public Board(String filename, RiskInput userInputSource, List<String> playerNames){
         continents = new ArrayList<>();
         players = new ArrayList<>();
         selectedTerritories = new ArrayList<>();
@@ -103,7 +103,7 @@ public class Board {
         this.userInputSource = userInputSource;
 
         BoardConstructor boardConstructor = new BoardConstructor();
-        boardConstructor.loadBoardFromFile("DEFAULT_MAP.xml", this);
+        boardConstructor.loadBoardFromFile(filename, this);
 
         int numPlayers = playerNames.size();
 
@@ -115,7 +115,6 @@ public class Board {
 
         currentPlayer = players.get(numPlayers - 1);
         turnStage = TurnStage.FORTIFY;
-        nextTurnStage();
     }
 
     public void addRiskView(RiskView view){
@@ -157,29 +156,6 @@ public class Board {
     }
 
     /**
-     * Get the current players turnstage
-     * @return current turnstage
-     */
-    public TurnStage getTurnStage() {
-        return turnStage;
-    }
-
-    /**
-     * Goes to the next players turn and gives them armies
-     */
-    public void incrementTurn(){
-        currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
-        armiesToPlace = getArmyBonusForPlayer(currentPlayer);
-    }
-
-    /**
-     * Sets turnStage to the next turn stage
-     */
-    public void incrementTurnStage(){
-        turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
-    }
-
-    /**
      * Tells the user how many Armies they have yet to place
      * @return the number of armies to place
      */
@@ -193,22 +169,6 @@ public class Board {
      */
     public void addArmiesToPlace(int armiesToPlace) {
         this.armiesToPlace += armiesToPlace;
-    }
-
-    /**
-     * Give the player currently stored in currentPlayer
-     * @return the currentPlayer
-     */
-    public Player getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    /**
-     * Sets the current player to the one given
-     * @param currentPlayer player to set as currentPlayer
-     */
-    public void setCurrentPlayer(Player currentPlayer) {
-        this.currentPlayer = currentPlayer;
     }
 
     /**
@@ -266,30 +226,6 @@ public class Board {
     }
 
     /**
-     * Gives the continent with the same name as the one specified
-     * @param name the name of the continent to search for
-     * @return the continent object that corresponds to the name given (null if name doesn't belong to a continent)
-     */
-    public Continent findContinentByName(String name){
-        for(Continent c: continents){
-            if(c.getName().toLowerCase().equals(name.toLowerCase())) return c;
-        }
-        return null;
-    }
-
-    /**
-     * Give the player with the name equal to one given
-     * @param name the name to look for in the player list
-     * @return the player object with the same name (null if there is no player with that name)
-     */
-    public Player findPlayerByName(String name){
-        for(Player p: players){
-            if(p.getName().toLowerCase().equals(name.toLowerCase())) return p;
-        }
-        return null;
-    }
-
-    /**
      * Goes through the continents list finding all the Territory objects in
      * each continent.
      * @return List of all Territory objects
@@ -300,14 +236,6 @@ public class Board {
             list.addAll(c.getTerritoryList());
         }
         return list;
-    }
-
-    /**
-     * Gives the list of players
-     * @return the list of players
-     */
-    public List<Player> getPlayerList(){
-        return players;
     }
 
     /**
@@ -430,7 +358,7 @@ public class Board {
     /**
      * Prompts the user for details when placing/retracting armies, and calls a method to perform the specified army placement/retraction
      */
-    public void doPlacement(){
+    private void doPlacement(){
         if(selectedTerritories.size() != 1) {
             for(RiskView boardView: views) {
                 boardView.showMessage("Invalid number of territories selected");
@@ -540,6 +468,252 @@ public class Board {
             boardView.updateUI(new UIEvent(this, turnStage, currentPlayer, getArmyBonusForPlayer(currentPlayer), armiesToPlace));
             boardView.updateMap(new MapEvent(this, getTerritoryList()));
         }
+    }
+
+    /**
+     * Prompts the user for details when fortifying troops, and calls a method to perform the specified fortification
+     */
+    private void doFortify(){
+
+        if(selectedTerritories.size() != 2) {
+            for(RiskView boardView: views) {
+                boardView.showMessage("Invalid number of territories selected");
+            }
+            return;
+        }
+
+        Territory t1 = selectedTerritories.get(0);
+        Territory t2 = selectedTerritories.get(1);
+
+        if(t1.getOwner() != currentPlayer || t2.getOwner() != currentPlayer) {
+            for(RiskView boardView: views) {
+                boardView.showMessage("Current player doesn't own both selected territories");
+            }
+            return;
+        }
+
+        if (!areConnected(t1, t2)) {
+            for(RiskView boardView: views) {
+                boardView.showMessage("Selected territories are not connected");
+            }
+            return;
+        }
+
+        boolean t1IsDestination;
+
+        if(t1.getNumArmies() == 1){
+            t1IsDestination = true;
+        }
+        else if(t2.getNumArmies() == 1){
+            t1IsDestination = false;
+        }
+        else {
+            Object[] options = {t1.getName() + " -> " + t2.getName(), t2.getName() + " -> " + t1.getName()};
+            t1IsDestination = userInputSource.getOption("In which direction do you want to fortify?", options) > 0;
+        }
+
+        int armiesToFortify = userInputSource.getIntInput("How many armies would you like to fortify?", 1, (t1IsDestination ? t2.getNumArmies() : t1.getNumArmies()) - 1);
+        fortify((t1IsDestination? t1: t2), (t1IsDestination? t2: t1), armiesToFortify);
+    }
+
+    /**
+     * Fortifies the specified number of armies between the specified territories in the Board model
+     * @param t1 The territory armies are to be fortified to
+     * @param t2 The territory armies are to be fortified from
+     * @param armies The number of armies to fortify
+     */
+    private void fortify(Territory t1, Territory t2, int armies){
+        moveArmies(t2, t1, armies);
+
+        List<Territory> territoriesToUpdate = new ArrayList<>();
+        territoriesToUpdate.add(t1);
+        territoriesToUpdate.add(t2);
+
+        for(RiskView boardView: views) {
+            boardView.updateMap(new MapEvent(this, territoriesToUpdate));
+            boardView.showMessage("Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
+        }
+
+        nextTurnStage();
+    }
+
+    /**
+     * Conducts a dice battle with the specified number of dice. Positive return values indicate that the attacker
+     * won the battle. Negative values indicate the defender has won.
+     * @param attackerDiceNum The number of dice the attacker will use
+     * @param defenderDiceNum The number of dice the defender will use
+     * @return the result of the dice battle (positive indicates attacker won, negative indicates defender won, 0 indicates both players lose 1 army)
+     */
+    public static int attackResult(int attackerDiceNum, int defenderDiceNum){
+
+        int result = 0;
+
+        //roll dice and collect the results into lists
+        Random r = new Random();
+        List<Integer> attackDice = new ArrayList<>();
+        List<Integer> defendDice = new ArrayList<>();
+        for(int i=0; i<attackerDiceNum; i++ ){ attackDice.add(r.nextInt(MAX_DICE_ROLL));}
+        for(int i=0; i<defenderDiceNum; i++ ){ defendDice.add(r.nextInt(MAX_DICE_ROLL));}
+
+        //matches up the highest rolls from attacker and defender, modifies the result accordingly, and repeats
+        for(int i = Math.min(attackerDiceNum, defenderDiceNum); i > 0; i--){
+            int topAttackDie = Collections.max(attackDice);
+            int topDefendDie = Collections.max(defendDice);
+            attackDice.remove((Integer) topAttackDie);
+            defendDice.remove((Integer) topDefendDie);
+            //if the attack die is larger than the defend die then add 1 else subtract 1 from result
+            result += topAttackDie > topDefendDie? 1: -1;
+        }
+
+        return result;
+    }
+
+    /**
+     * Prompts the user for details when attacking, and calls a method to perform the specified attack
+     */
+    private void doAttack(){
+
+        if(getSelectedTerritories().size() != 2) {
+            for(RiskView boardView: views) {
+                boardView.showMessage("Invalid number of territories selected");
+            }
+            return;
+        }
+
+        Territory t1 = selectedTerritories.get(0);
+        Territory t2 = selectedTerritories.get(1);
+
+        if((t1.getOwner() == currentPlayer) == (t2.getOwner() == currentPlayer)) {
+            for(RiskView boardView: views) {
+                boardView.showMessage("Current player owns neither or both selected territories");
+            }
+            return;
+        }
+
+        if(!(t1.getNeighbours().contains(t2))) {
+            for(RiskView boardView: views) {
+                boardView.showMessage("The selected territories do not border each other");
+            }
+            return;
+        }
+
+        if((t1.getOwner() == currentPlayer && t1.getNumArmies() < 2) || (t2.getOwner() == currentPlayer && t2.getNumArmies() < 2)) {
+            for(RiskView boardView: views) {
+                boardView.showMessage("You don't have enough armies there to attack with");
+            }
+            return;
+        }
+
+        int attackDice = userInputSource.getIntInput("How many armies would "+currentPlayer.getName()+" like to attack with?", 1, Math.min(t1.getNumArmies() - 1, MAX_ATTACK_DICE));
+
+        int defendDice = userInputSource.getIntInput("How many armies would "+ (t1.getOwner() == currentPlayer? t2.getOwner().getName(): t1.getOwner().getName()) +" like to defend with?", 1, Math.min(t2.getNumArmies(), MAX_DEFEND_DICE));
+
+        if(t1.getOwner() == currentPlayer) attack(t2, t1, attackDice, defendDice);
+        else attack(t1, t2, attackDice, defendDice);
+
+    }
+
+    /**
+     * Attacks with the specified army numbers between the specified territories in the Board model
+     * @param t1 The defending territory
+     * @param t2 The attacking territory
+     * @param attackDice The number of attacking armies
+     * @param defendDice The number of defending armies
+     */
+    private void attack(Territory t1, Territory t2, int attackDice, int defendDice){
+
+        int result = attackResult(attackDice, defendDice);
+
+        for(RiskView boardView: views) {
+            boardView.showMessage(result == 0 ? "Both players lost an army" : (result > 0) ? t1.getOwner().getName() + " lost " + result + " armies" : t2.getOwner().getName() + " lost " + (-result) + " armies");
+        }
+
+        if(result == 0){ //both players lose one army
+            t2.addArmies(-1);
+            t1.addArmies(-1);
+        }
+        else if(result > 0) { //defender loses armies
+            t1.addArmies(-result);
+        }
+        else { //attacker loses armies
+            t2.addArmies(result);
+        }
+
+        for(RiskView boardView: views) {
+            boardView.updateUI(new UIEvent(this, turnStage, currentPlayer, getArmyBonusForPlayer(currentPlayer), armiesToPlace));
+        }
+
+        List<Territory> territoriesToUpdate = new ArrayList<>();
+        territoriesToUpdate.add(t1);
+        territoriesToUpdate.add(t2);
+
+        for(RiskView boardView: views) {
+            boardView.updateMap(new MapEvent(this, territoriesToUpdate));
+        }
+
+        if(t1.getNumArmies() <= 0 ) { //defending territory has no armies left
+            for(RiskView boardView: views) {
+                boardView.showMessage(t1.getName() + " was conquered!");
+            }
+
+            Player prevOwner = t1.getOwner();
+            prevOwner.loseTerritory(t1);
+            t2.getOwner().gainTerritory(t1);
+            t1.setOwner(t2.getOwner());
+
+            territoriesToUpdate = new ArrayList<>();
+            territoriesToUpdate.add(t1);
+
+            toggleTerritorySelection(t2);
+
+            for(RiskView boardView: views) {
+                boardView.updateUI(new UIEvent(this, turnStage, currentPlayer, getArmyBonusForPlayer(currentPlayer), armiesToPlace));
+                boardView.updateMap(new MapEvent(this, territoriesToUpdate));
+            }
+
+            Continent continent = t1.getContinent();
+            if(continent.isConquered())
+                for(RiskView boardView: views) {
+                    boardView.showMessage(continent.getName() + " was conquered!");
+                }
+
+            if(prevOwner.getNumTerritories() == 0) {
+
+                //prevOwner is eliminated
+                removePlayer(prevOwner);
+
+                for(RiskView boardView: views) {
+                    boardView.showMessage(prevOwner.getName() + " was eliminated!");
+                }
+
+                if(players.size() > 1){
+
+                    for(RiskView boardView: views) {
+                        boardView.showMessage(t2.getOwner().getName() + " has won!");
+                    }
+                    clearBoard();
+                }
+            }
+
+            int armiesToMove = userInputSource.getIntInput("How many armies would "+t2.getOwner().getName()+" like to move?", attackDice, t2.getNumArmies() - 1);
+
+            moveArmies(t2, t1, armiesToMove);
+
+            territoriesToUpdate = new ArrayList<>();
+            territoriesToUpdate.add(t1);
+            territoriesToUpdate.add(t2);
+
+            for(RiskView boardView: views) {
+                boardView.updateMap(new MapEvent(this, territoriesToUpdate));
+                boardView.showMessage("Moved " + armiesToMove + " armies into " + t1.getName());
+            }
+        }
+    }
+
+    public void doAction(){
+        if(turnStage == TurnStage.ATTACK) doAttack();
+        else if(turnStage == TurnStage.FORTIFY) doFortify();
+        else if(turnStage == TurnStage.PLACEMENT) doPlacement();
     }
 }
 

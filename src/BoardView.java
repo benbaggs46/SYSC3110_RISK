@@ -91,14 +91,6 @@ public class BoardView extends JFrame implements RiskView, RiskInput{
     }
 
     /**
-     * Returns the info panel of this BoardView
-     * @return The info panel of this BoardView
-     */
-    public InfoPanel getInfoPanel(){
-        return infoPanel;
-    }
-
-    /**
      * Sets the text of the ACTION button to the specified text
      * @param text The text to be displayed by the ACTION button
      */

@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -31,10 +32,12 @@ public class BoardMouseListener extends MouseAdapter {
 
         if(board == null) return;
 
+        BoardPanel mapPanel = boardView.getMapPanel();
+
         for(Territory t: board.getTerritoryList()) {
             if (t.getPolygon().contains(me.getPoint())) {
                 board.toggleTerritorySelection(t);
-                boardView.getMapPanel().drawTerritory(t, boardView.getMapPanel().getGraphics());
+                mapPanel.drawTerritory(t, mapPanel.getGraphics());
             }
         }
     }
