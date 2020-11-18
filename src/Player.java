@@ -70,7 +70,7 @@ public class Player {
      */
     public int getNumArmies(){
         int sum = 0;
-        for(Territory t: controlledTerritories) sum += t.getNumArmies();
+        for(Territory t: controlledTerritories) sum += t.getNumArmies() + t.getTempArmies();
         return sum;
     }
 

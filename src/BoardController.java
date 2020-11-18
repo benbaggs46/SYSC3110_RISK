@@ -260,9 +260,11 @@ public class BoardController {
             sum += territory.getTempArmies();
         }
 
-        InfoPanel infoPanel = boardView.getInfoPanel();
+        /*InfoPanel infoPanel = boardView.getInfoPanel();
         infoPanel.setArmiesToPlace(board.getArmiesToPlace());
-        infoPanel.setNumArmies(t.getOwner().getNumArmies() + sum);
+        infoPanel.setNumArmies(t.getOwner().getNumArmies() + sum);*/
+
+        boardView.updateUI(new UIEvent(this, board.getTurnStage(), board.getCurrentPlayer(), board.getArmyBonusForPlayer(board.getCurrentPlayer()), board.getArmiesToPlace()));
 
         //BoardPanel mapPanel = boardView.getMapPanel();
         //mapPanel.drawTerritory(t, mapPanel.getGraphics());
@@ -326,8 +328,10 @@ public class BoardController {
             t2.addArmies(result);
         }
 
-        InfoPanel infoPanel = boardView.getInfoPanel();
-        infoPanel.setNumArmies(t2.getOwner().getNumArmies());
+       /* InfoPanel infoPanel = boardView.getInfoPanel();
+        infoPanel.setNumArmies(t2.getOwner().getNumArmies());*/
+
+        boardView.updateUI(new UIEvent(this, board.getTurnStage(), board.getCurrentPlayer(), board.getArmyBonusForPlayer(board.getCurrentPlayer()), board.getArmiesToPlace()));
 
         //BoardPanel mapPanel = boardView.getMapPanel();
         //mapPanel.drawTerritory(t1, mapPanel.getGraphics());
@@ -347,8 +351,9 @@ public class BoardController {
             t2.getOwner().gainTerritory(t1);
             t1.setOwner(t2.getOwner());
 
-            infoPanel = boardView.getInfoPanel();
-            infoPanel.setNumTerritories(t2.getOwner().getNumTerritories());
+            /*infoPanel = boardView.getInfoPanel();
+            infoPanel.setNumTerritories(t2.getOwner().getNumTerritories());*/
+            boardView.updateUI(new UIEvent(this, board.getTurnStage(), board.getCurrentPlayer(), board.getArmyBonusForPlayer(board.getCurrentPlayer()), board.getArmiesToPlace()));
 
             //mapPanel.drawTerritory(t1, mapPanel.getGraphics());
 
@@ -401,7 +406,7 @@ public class BoardController {
         board.incrementTurn();
         board.getSelectedTerritories().clear();
 
-        InfoPanel infoPanel = boardView.getInfoPanel();
+       /* InfoPanel infoPanel = boardView.getInfoPanel();
         infoPanel.setCurrentBonus(board.getArmiesToPlace());
         Player player = board.getCurrentPlayer();
         infoPanel.setPlayerName(player.getName());
@@ -410,10 +415,12 @@ public class BoardController {
         infoPanel.setArmiesToPlace(board.getArmiesToPlace());
         infoPanel.setPlayerColorPanel(player.getColor());
 
-        infoPanel.repaint();
+        infoPanel.repaint();*/
+
+        boardView.updateUI(new UIEvent(this, board.getTurnStage(), board.getCurrentPlayer(), board.getArmyBonusForPlayer(board.getCurrentPlayer()), board.getArmiesToPlace()));
 
         //JOptionPane.showMessageDialog(null, "It is now " + player.getName() + "'s turn");
-        boardView.showMessage("It is now " + player.getName() + "'s turn");
+        boardView.showMessage("It is now " + board.getCurrentPlayer().getName() + "'s turn");
     }
 
     /**
