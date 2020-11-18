@@ -89,15 +89,33 @@ public class Board {
 
     private List<RiskView> views;
 
+    private RiskInput userInputSource;
+
     /**
      * Constructor for the board
      */
-    public Board(){
+    public Board(RiskInput userInputSource, List<String> playerNames){
         continents = new ArrayList<>();
         players = new ArrayList<>();
         selectedTerritories = new ArrayList<>();
         lines = new ArrayList<>();
         views = new ArrayList<>();
+        this.userInputSource = userInputSource;
+
+        BoardConstructor boardConstructor = new BoardConstructor();
+        boardConstructor.loadBoardFromFile("DEFAULT_MAP.xml", this);
+
+        int numPlayers = playerNames.size();
+
+        for(int i = 0; i < numPlayers; i++){
+            addPlayer(new Player(playerNames.get(i), PLAYER_COLOR_FOR_PLAYER_NUM.get(i)));
+        }
+
+        populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers));
+
+        currentPlayer = players.get(numPlayers - 1);
+        turnStage = TurnStage.FORTIFY;
+        nextTurnStage();
     }
 
     public void addRiskView(RiskView view){
@@ -159,14 +177,6 @@ public class Board {
      */
     public void incrementTurnStage(){
         turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
-    }
-
-    /**
-     * Sets the object turnStage to what is given
-     * @param turnStage the turnStage to go to
-     */
-    public void setTurnStage(TurnStage turnStage) {
-        this.turnStage = turnStage;
     }
 
     /**
@@ -414,6 +424,121 @@ public class Board {
             for(int i = 0; i < numPlayers; i++){
                 if(armiesLeftEach[i] > 0) donePlacing = false;
             }
+        }
+    }
+
+    /**
+     * Prompts the user for details when placing/retracting armies, and calls a method to perform the specified army placement/retraction
+     */
+    public void doPlacement(){
+        if(selectedTerritories.size() != 1) {
+            for(RiskView boardView: views) {
+                boardView.showMessage("Invalid number of territories selected");
+            }
+            return;
+        }
+
+        Territory t = selectedTerritories.get(0);
+
+        if(t.getOwner() != currentPlayer) {
+            for(RiskView boardView: views) {
+                boardView.showMessage("You do not control that territory");
+            }
+            return;
+        }
+
+        boolean retracting;
+
+        if(t.getTempArmies() == 0){
+            if(armiesToPlace == 0){
+                for(RiskView boardView: views) {
+                    boardView.showMessage("You have no more armies to place");
+                }
+                return;
+            }
+            else{
+                retracting = false;
+            }
+        }
+        else if(armiesToPlace == 0){
+            retracting = true;
+        }
+        else {
+            Object[] options = {"Place", "Retract"};
+            retracting = userInputSource.getOption("Would you like to place or retract armies?", options) > 0;
+        }
+        int armiesToPlace = userInputSource.getIntInput("How many armies would you like to " + (retracting? "retract from ": "place in ") + t.getName() + "?", 1, (retracting? t.getTempArmies(): getArmiesToPlace()));
+        place(t, (retracting? -1: 1) * armiesToPlace);
+    }
+
+    /**
+     * Places the specified number of armies in the specified territory in the Board model
+     * @param t The territory to place armies in
+     * @param armies The number of armies to place
+     */
+    private void place(Territory t, int armies){
+        t.addTempArmies(armies);
+        addArmiesToPlace(-armies);
+
+        for(RiskView boardView: views) {
+            boardView.updateUI(new UIEvent(this, turnStage, currentPlayer, getArmyBonusForPlayer(currentPlayer), armiesToPlace));
+        }
+
+        List<Territory> territoriesToUpdate = new ArrayList<>();
+        territoriesToUpdate.add(t);
+        for(RiskView boardView: views) {
+            boardView.updateMap(new MapEvent(this, territoriesToUpdate));
+        }
+
+        if(armies > 0)
+            for(RiskView boardView: views) {
+                boardView.showMessage("Placed " + armies + " armies in " + t.getName());
+            }
+        else if(armies < 0)
+            for(RiskView boardView: views) {
+                boardView.showMessage("Retracted " + (-armies) + " armies from " + t.getName());
+            }
+    }
+
+    /**
+     * Moves the board to the next player's turn
+     */
+    public void nextTurn(){
+        currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
+        armiesToPlace = getArmyBonusForPlayer(currentPlayer);
+
+        for(RiskView boardView: views) {
+            boardView.showMessage("It is now " + currentPlayer.getName() + "'s turn");
+        }
+    }
+
+    /**
+     * Moves the board to the next turn phase
+     */
+    public void nextTurnStage(){
+
+        if(turnStage == TurnStage.FORTIFY) nextTurn();
+
+        else if(turnStage == TurnStage.PLACEMENT){
+            if(armiesToPlace > 0) {
+                for(RiskView boardView: views) {
+                    boardView.showMessage("You still have armies to place");
+                }
+                return;
+            }
+            for(Territory t: getTerritoryList()){
+                if(t.getTempArmies() == 0) continue;
+                t.confirmTempArmies();
+            }
+        }
+
+        turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
+
+        selectedTerritories.clear();
+
+        for(RiskView boardView: views) {
+            boardView.updateUI(new UIEvent(this, turnStage, currentPlayer, getArmyBonusForPlayer(currentPlayer), armiesToPlace));
+            boardView.updateMap(new MapEvent(this, getTerritoryList()));
         }
     }
 }

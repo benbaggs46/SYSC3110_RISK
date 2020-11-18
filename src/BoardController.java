@@ -299,8 +299,7 @@ public class BoardController {
 
         //JOptionPane.showMessageDialog(null,"Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
         boardView.showMessage("Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
-        nextTurn();
-        nextTurnStage();
+        board.nextTurnStage();
     }
 
     /**
@@ -400,52 +399,6 @@ public class BoardController {
     }
 
     /**
-     * Moves the board to the next player's turn
-     */
-    private void nextTurn(){
-        board.incrementTurn();
-        board.getSelectedTerritories().clear();
-
-       /* InfoPanel infoPanel = boardView.getInfoPanel();
-        infoPanel.setCurrentBonus(board.getArmiesToPlace());
-        Player player = board.getCurrentPlayer();
-        infoPanel.setPlayerName(player.getName());
-        infoPanel.setNumArmies(player.getNumArmies());
-        infoPanel.setNumTerritories(player.getNumTerritories());
-        infoPanel.setArmiesToPlace(board.getArmiesToPlace());
-        infoPanel.setPlayerColorPanel(player.getColor());
-
-        infoPanel.repaint();*/
-
-        boardView.updateUI(new UIEvent(this, board.getTurnStage(), board.getCurrentPlayer(), board.getArmyBonusForPlayer(board.getCurrentPlayer()), board.getArmiesToPlace()));
-
-        //JOptionPane.showMessageDialog(null, "It is now " + player.getName() + "'s turn");
-        boardView.showMessage("It is now " + board.getCurrentPlayer().getName() + "'s turn");
-    }
-
-    /**
-     * Moves the board to the next turn phase
-     */
-    private void nextTurnStage(){
-        board.incrementTurnStage();
-
-        String buttonText;
-        if(board.getTurnStage() == TurnStage.FORTIFY) buttonText = "Fortify";
-        else if(board.getTurnStage() == TurnStage.ATTACK){
-            buttonText = "Attack";
-            boardView.getMapPanel().repaint();
-        }
-        else buttonText = "Place / Retract";
-        boardView.setActionButtonText(buttonText);
-
-        boardView.getInfoPanel().setTurnStage(board.getTurnStage());
-
-        board.getSelectedTerritories().clear();
-
-        boardView.getMapPanel().repaint();
-    }
-
-    /**
      * Calls the correct method when the user presses the ACTION button
      * (labelled as PLACE/RETRACT, ATTACK, or FORTIFY)
      */
@@ -453,9 +406,9 @@ public class BoardController {
         TurnStage turnStage = board.getTurnStage();
         if(turnStage == TurnStage.ATTACK) doAttack();
         else if(turnStage == TurnStage.FORTIFY) doFortify();
-        else if(turnStage == TurnStage.PLACEMENT) doPlacement();
+        else if(turnStage == TurnStage.PLACEMENT) board.doPlacement();
 
-        boardView.getMapPanel().repaint();
+        boardView.updateMap(new MapEvent(this, board.getTerritoryList()));
     }
 
     /**
@@ -463,41 +416,16 @@ public class BoardController {
      */
     public void createNewGame(){
 
-        BoardConstructor bc = new BoardConstructor();
+        int numPlayers = boardView.getIntInput("Enter the number of players:", MIN_PLAYERS, MAX_PLAYERS);
 
-        board = bc.createMapFromFile("DEFAULT_MAP.xml");
-
-        if(board == null){
-            //JOptionPane.showMessageDialog(null, "Error constructing default board. Ensure that the file DEFAULT_MAP.xml is in the source directory.");
-            boardView.showMessage("Error constructing default board. Ensure that the file DEFAULT_MAP.xml is in the source directory.");
-            return;
+        List<String> playerNames = new ArrayList<>();
+        for(int i = 0; i < numPlayers; i++){
+            playerNames.add(boardView.getStringInput("Please enter a name for player " + (i+1) + ":", "Player "+ (i+1)));
         }
 
-        int boardSize = board.getTerritoryList().size();
+        board = new Board(boardView, playerNames);
 
-        //int numPlayers = getValidIntegerInput("Enter the number of players:", MIN_PLAYERS, Math.min(MAX_PLAYERS, boardSize));
-        int numPlayers = boardView.getIntInput("Enter the number of players:", MIN_PLAYERS, Math.min(MAX_PLAYERS, boardSize));
-        int numArmiesEach = STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers);
-        if(numPlayers * numArmiesEach < boardSize) {
-            //JOptionPane.showMessageDialog(null,"The selected map has too many territories to fill. Please start a new game with more players");
-            boardView.showMessage("The selected map has too many territories to fill. Please start a new game with more players");
-            return;
-        }
-
-        for(int i=0;i<numPlayers;i++){
-            //board.addPlayer(new Player(JOptionPane.showInputDialog("Please enter a name for player " + (i+1) + ":", "Player "+ (i+1)), PLAYER_COLOR_FOR_PLAYER_NUM.get(i)));
-            board.addPlayer(new Player(boardView.getStringInput("Please enter a name for player " + (i+1) + ":", "Player "+ (i+1)), PLAYER_COLOR_FOR_PLAYER_NUM.get(i)));
-        }
-
-        board.populateBoard(numArmiesEach);
-
-        board.setCurrentPlayer(board.getPlayerList().get(numPlayers - 1));
-        board.setTurnStage(TurnStage.FORTIFY);
-
-        nextTurn();
-        nextTurnStage();
-
-        boardView.getMapPanel().repaint();
+        board.addRiskView(boardView);
     }
 
     /**
@@ -538,8 +466,6 @@ public class BoardController {
             "\n- This button is used by the player to perform actions during their turn, such as placing armies, attacking, and fortifying. The text of the button will change" +
                         "\n to reflect the turn phase that the player is currently in. ";
 
-        /*JOptionPane.showMessageDialog(null, message,
-                "Help", JOptionPane.INFORMATION_MESSAGE);*/
         boardView.showMessage(message);
     }
 
@@ -555,21 +481,6 @@ public class BoardController {
      * Called when the user presses the PROCEED button
      */
     public void proceed(){
-        TurnStage currentTurnStage = board.getTurnStage();
-        if(currentTurnStage == TurnStage.PLACEMENT){
-            if(board.getArmiesToPlace() > 0) {
-                //JOptionPane.showMessageDialog(null,"You still have armies to place");
-                boardView.showMessage("You still have armies to place");
-                return;
-            }
-            for(Territory t: board.getTerritoryList()){
-                if(t.getTempArmies() == 0) continue;
-                t.confirmTempArmies();
-            }
-        }
-        else if(currentTurnStage == TurnStage.FORTIFY){
-            nextTurn();
-        }
-        nextTurnStage();
+        board.nextTurnStage();
     }
 }

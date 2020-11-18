@@ -121,14 +121,24 @@ public class BoardView extends JFrame implements RiskView, RiskInput{
     public void updateUI(UIEvent uie) {
 
         Player player = uie.getCurrentPlayer();
+        TurnStage turnStage = uie.getTurnStage();
 
         infoPanel.setPlayerColorPanel(player.getColor());
         infoPanel.setNumArmies(player.getNumArmies());
         infoPanel.setArmiesToPlace(uie.getArmiesToPlace());
         infoPanel.setNumTerritories(player.getNumTerritories());
-        infoPanel.setTurnStage(uie.getTurnStage());
+        infoPanel.setTurnStage(turnStage);
         infoPanel.setPlayerName(player.getName());
         infoPanel.setCurrentBonus(uie.getCurrentPlayerBonus());
+
+        infoPanel.repaint();
+
+        String buttonText;
+        if(turnStage == TurnStage.FORTIFY) buttonText = "Fortify";
+        else if(turnStage == TurnStage.ATTACK) buttonText = "Attack";
+        else buttonText = "Place / Retract";
+        actionButton.setText(buttonText);
+
     }
 
     @Override
