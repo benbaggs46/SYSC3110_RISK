@@ -22,6 +22,7 @@ public class Player {
      */
     private Color color;
 
+    private Boolean ai;
     /**
      * Constructor for the Player object
      * @param name sets the players name to this parameter
@@ -30,6 +31,7 @@ public class Player {
         controlledTerritories = new ArrayList<>();
         this.name = name;
         this.color = color;
+        //this.ai=ai;
     }
 
     /**
