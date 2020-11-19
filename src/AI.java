@@ -1,10 +1,27 @@
-public class AI extends BoardView {
+public class AI implements RiskView {
+
     private Board board;
-    public AI(){
+
+    public AI(Board board){
         this.board=board;
     }
 
-    public int Utility(Board board){
+    @Override
+    public void updateMap(MapEvent me) {
+
+    }
+
+    @Override
+    public void updateUI(UIEvent uie) {
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
+
+    /**public int Utility(Board board){
 
         //Determine state of territories around it based on: numArmies, ...            Prefer not attacking border territories
        // for (int i = 0; i <  ; i++) {
@@ -20,5 +37,5 @@ public class AI extends BoardView {
 
         return 0;
 
-    }
+    }) **/
 }
