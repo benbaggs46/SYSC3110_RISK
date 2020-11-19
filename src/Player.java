@@ -31,7 +31,7 @@ public class Player {
         controlledTerritories = new ArrayList<>();
         this.name = name;
         this.color = color;
-        this.ai=ai;
+        this.ai = isAi;
     }
 
     /**
@@ -104,4 +104,7 @@ public class Player {
         return string;
     }
 
+    public boolean isAi() {
+        return ai;
+    }
 }
