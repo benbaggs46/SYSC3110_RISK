@@ -114,12 +114,6 @@ public class BoardView extends JFrame implements RiskView, RiskInput{
 
         Player player = uie.getCurrentPlayer();
 
-        /**
-         * TODO: Need to implement a method for the UI when it is an AI turn
-         */
-        if(player.isAi()){
-            return;
-        }
         TurnStage turnStage = uie.getTurnStage();
 
         infoPanel.setPlayerColorPanel(player.getColor());

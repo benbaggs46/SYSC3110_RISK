@@ -81,7 +81,8 @@ public class BoardController {
         List<Boolean> IsAi = new ArrayList<>();
         for(int i = 0; i < numPlayers; i++){
             playerNames.add(boardView.getStringInput("Please enter a name for the " + Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getName().toLowerCase() + " player:", Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getName() + " player"));
-            IsAi.add(boardView.getBooleanInput("Is the player an AI?", false));
+            Object[] options = {"Human", "AI"};
+            IsAi.add(boardView.getOption("Please enter the player type:", options) == 1);
         }
         board = new Board("DEFAULT_MAP.xml", boardView, playerNames, IsAi);
         board.addRiskView(boardView);
