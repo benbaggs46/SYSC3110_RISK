@@ -79,7 +79,7 @@ public class BoardController {
         int numPlayers = boardView.getIntInput("Enter the number of players:", Board.MIN_PLAYERS, Board.MAX_PLAYERS);
         List<String> playerNames = new ArrayList<>();
         for(int i = 0; i < numPlayers; i++){
-            playerNames.add(boardView.getStringInput("Please enter a name for player " + (i+1) + ":", "Player "+ (i+1)));
+            playerNames.add(boardView.getStringInput("Please enter a name for the " + Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getName().toLowerCase() + " player:", Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getName() + " player"));
         }
         board = new Board("DEFAULT_MAP.xml", boardView, playerNames);
         board.addRiskView(boardView);

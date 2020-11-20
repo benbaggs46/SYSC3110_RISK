@@ -46,13 +46,13 @@ public class Board {
     /**
      * A map between each player number and the corresponding colors
      */
-    public static final Map<Integer, Color> PLAYER_COLOR_FOR_PLAYER_NUM = Map.of(
-            0,Color.RED,
-            1,Color.BLUE,
-            2, Color.YELLOW,
-            3, Color.GREEN,
-            4, Color.MAGENTA,
-            5, Color.LIGHT_GRAY
+    public static final Map<Integer, RiskColor> PLAYER_COLOR_FOR_PLAYER_NUM = Map.of(
+            0,RiskColor.RED,
+            1,RiskColor.BLUE,
+            2, RiskColor.YELLOW,
+            3, RiskColor.GREEN,
+            4, RiskColor.MAGENTA,
+            5, RiskColor.GRAY
     );
     /**
      * A list of continents that belong to the board
@@ -108,13 +108,26 @@ public class Board {
         int numPlayers = playerNames.size();
 
         for(int i = 0; i < numPlayers; i++){
-            addPlayer(new Player(playerNames.get(i), PLAYER_COLOR_FOR_PLAYER_NUM.get(i)));
+            addPlayer(new Player(playerNames.get(i), PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getColor()));
         }
+
+        shuffle(players);
 
         populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers));
 
         currentPlayer = players.get(numPlayers - 1);
         turnStage = TurnStage.FORTIFY;
+    }
+
+    public static <E> void shuffle(List<E> list){
+        Random r = new Random();
+        Stack<E> stack = new Stack<>();
+        for(int i = 0; i < list.size(); i++){
+            int index = r.nextInt(list.size());
+            stack.push(list.get(index));
+            list.remove(index);
+        }
+        while(!stack.isEmpty()) list.add(stack.pop());
     }
 
     public void addRiskView(RiskView view){
