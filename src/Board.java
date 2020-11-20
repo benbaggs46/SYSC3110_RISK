@@ -448,7 +448,27 @@ public class Board {
     /**
      * Moves the board to the next player's turn
      */
+    public void nextTurnAI(){
+        currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
+        armiesToPlace = getArmyBonusForPlayer(currentPlayer);
+
+        for(RiskView boardView: views) {
+            boardView.showMessage("It is now " + currentPlayer.getName() + "'s turn");
+        }
+    }
+
+    /**
+     * Moves the board to the next player's turn
+     */
     public void nextTurn(){
+
+        int index = (players.indexOf(currentPlayer) + 1) % players.size();
+        int numAIPlayersUpNext = 0;
+        while(players.get(index).isAi()){
+            numAIPlayersUpNext++;
+            index = (index + 1) % players.size();
+        }
+
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
         armiesToPlace = getArmyBonusForPlayer(currentPlayer);
 
@@ -456,7 +476,9 @@ public class Board {
             boardView.showMessage("It is now " + currentPlayer.getName() + "'s turn");
         }
 
-        if(currentPlayer.isAi()) AIPlayer.takeTurn(this, currentPlayer);
+        for(int i = 0; i < numAIPlayersUpNext; i++) {
+            AIPlayer.takeTurn(this, currentPlayer);
+        }
     }
 
     /**
@@ -464,7 +486,14 @@ public class Board {
      */
     public void nextTurnStage(){
 
-        if(turnStage == TurnStage.FORTIFY) nextTurn();
+        if(turnStage == TurnStage.FORTIFY) {
+            turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
+            selectedTerritories.clear();
+            if(currentPlayer.isAi()) nextTurnAI();
+            else {
+                nextTurn();
+            }
+        }
 
         else if(turnStage == TurnStage.PLACEMENT){
             if(armiesToPlace > 0) {
@@ -477,11 +506,14 @@ public class Board {
                 if(t.getTempArmies() == 0) continue;
                 t.confirmTempArmies();
             }
+            turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
+            selectedTerritories.clear();
         }
 
-        turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
-
-        selectedTerritories.clear();
+        else{
+            turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
+            selectedTerritories.clear();
+        }
 
         for(RiskView boardView: views) {
             boardView.updateUI(new UIEvent(this, turnStage, currentPlayer, getArmyBonusForPlayer(currentPlayer), armiesToPlace));
