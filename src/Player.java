@@ -27,11 +27,11 @@ public class Player {
      * Constructor for the Player object
      * @param name sets the players name to this parameter
      */
-    public Player(String name, Color color){
+    public Player(String name, Color color, Boolean isAi){
         controlledTerritories = new ArrayList<>();
         this.name = name;
         this.color = color;
-        //this.ai=ai;
+        this.ai = isAi;
     }
 
     /**
@@ -104,4 +104,7 @@ public class Player {
         return string;
     }
 
+    public boolean isAi() {
+        return ai;
+    }
 }

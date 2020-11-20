@@ -113,6 +113,13 @@ public class BoardView extends JFrame implements RiskView, RiskInput{
     public void updateUI(UIEvent uie) {
 
         Player player = uie.getCurrentPlayer();
+
+        /**
+         * TODO: Need to implement a method for the UI when it is an AI turn
+         */
+        if(player.isAi()){
+            return;
+        }
         TurnStage turnStage = uie.getTurnStage();
 
         infoPanel.setPlayerColorPanel(player.getColor());
@@ -149,6 +156,11 @@ public class BoardView extends JFrame implements RiskView, RiskInput{
         String input = "";
         while(!isValidIntegerInput(input, min, max)) input = JOptionPane.showInputDialog(prompt + " (" + min + " - " + max + ")");
         return Integer.parseInt(input);
+    }
+
+    public Boolean getBooleanInput(String prompt, Boolean defaultValue) {
+        int x = JOptionPane.showConfirmDialog(this, prompt);
+        return x != 1;
     }
 
     /**
