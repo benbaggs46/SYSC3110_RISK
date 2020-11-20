@@ -25,6 +25,7 @@ public class BoardButtonListener implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+
         String actionCommand = e.getActionCommand();
 
         BoardController boardController = boardView.getBoardController();

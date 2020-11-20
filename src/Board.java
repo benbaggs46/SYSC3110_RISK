@@ -165,6 +165,9 @@ public class Board {
      * @param t The territory whose selection is to be toggled
      */
     public void toggleTerritorySelection(Territory t){
+
+        if(currentPlayer.isAi()) return; //the user cannot select or deselect territories when it is an AI player's turn
+
         if(selectedTerritories.contains(t)) selectedTerritories.remove(t);
         else selectedTerritories.add(t);
     }
@@ -459,6 +462,8 @@ public class Board {
      */
     public void nextTurnStage(){
 
+        if(currentPlayer.isAi()) return; //the user cannot move to next turn stage when it is an AI player's turn
+
         if(turnStage == TurnStage.FORTIFY) nextTurn();
 
         else if(turnStage == TurnStage.PLACEMENT){
@@ -725,6 +730,7 @@ public class Board {
     }
 
     public void doAction(){
+        if(currentPlayer.isAi()) return; //the user cannot perform an action when it is an AI player's turn
         if(turnStage == TurnStage.ATTACK) doAttack();
         else if(turnStage == TurnStage.FORTIFY) doFortify();
         else if(turnStage == TurnStage.PLACEMENT) doPlacement();
