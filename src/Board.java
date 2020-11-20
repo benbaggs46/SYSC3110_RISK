@@ -421,7 +421,7 @@ public class Board {
      * @param t The territory to place armies in
      * @param armies The number of armies to place
      */
-    private void place(Territory t, int armies){
+    public void place(Territory t, int armies){
         t.addTempArmies(armies);
         addArmiesToPlace(-armies);
 
@@ -463,8 +463,6 @@ public class Board {
      * Moves the board to the next turn phase
      */
     public void nextTurnStage(){
-
-        if(currentPlayer.isAi()) return; //the user cannot move to next turn stage when it is an AI player's turn
 
         if(turnStage == TurnStage.FORTIFY) nextTurn();
 
@@ -729,6 +727,11 @@ public class Board {
                 boardView.showMessage("Moved " + armiesToMove + " armies into " + t1.getName());
             }
         }
+    }
+
+    public void proceed(){
+        if(currentPlayer.isAi()) return; //the user cannot move to next turn stage when it is an AI player's turn
+        nextTurnStage();
     }
 
     public void doAction(){

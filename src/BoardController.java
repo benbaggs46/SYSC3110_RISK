@@ -108,6 +108,6 @@ public class BoardController {
      * Called when the user presses the PROCEED button
      */
     public void proceed(){
-        board.nextTurnStage();
+        board.proceed();
     }
 }
