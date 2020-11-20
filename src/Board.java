@@ -94,7 +94,7 @@ public class Board {
     /**
      * Constructor for the board
      */
-    public Board(String filename, RiskInput userInputSource, List<String> playerNames){
+    public Board(String filename, RiskInput userInputSource, List<String> playerNames, List<Boolean> isAi){
         continents = new ArrayList<>();
         players = new ArrayList<>();
         selectedTerritories = new ArrayList<>();
@@ -108,7 +108,8 @@ public class Board {
         int numPlayers = playerNames.size();
 
         for(int i = 0; i < numPlayers; i++){
-            addPlayer(new Player(playerNames.get(i), PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getColor()));
+            Player player = new Player(playerNames.get(i), PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getColor(), isAi.get(i));
+            addPlayer(player);
         }
 
         shuffle(players);

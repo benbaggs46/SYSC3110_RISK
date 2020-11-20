@@ -80,8 +80,8 @@ public class BoardController {
         List<String> playerNames = new ArrayList<>();
         List<Boolean> IsAi = new ArrayList<>();
         for(int i = 0; i < numPlayers; i++){
-            playerNames.add(boardView.getStringInput("Please enter a name for player " + (i+1) + ":", "Player "+ (i+1)));
-            IsAi.add(boardView.getBooleanInput("Is the player an Ai?", false));
+            playerNames.add(boardView.getStringInput("Please enter a name for the " + Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getName().toLowerCase() + " player:", Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getName() + " player"));
+            IsAi.add(boardView.getBooleanInput("Is the player an AI?", false));
         }
         board = new Board("DEFAULT_MAP.xml", boardView, playerNames, IsAi);
         board.addRiskView(boardView);
