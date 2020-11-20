@@ -455,6 +455,8 @@ public class Board {
         for(RiskView boardView: views) {
             boardView.showMessage("It is now " + currentPlayer.getName() + "'s turn");
         }
+
+        if(currentPlayer.isAi()) AIPlayer.takeTurn(this, currentPlayer);
     }
 
     /**
