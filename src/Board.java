@@ -335,6 +335,7 @@ public class Board {
         currentPlayer = null;
         armiesToPlace = 0;
         turnStage = TurnStage.PLACEMENT;
+        gameHasStarted = false;
 
         /*the territories and players still reference each other, but their memory
         should still be freed. Java's garbage collection handles cyclic references*/
@@ -487,6 +488,11 @@ public class Board {
                 while (players.get(index).isAi()) {
                     numAIPlayersUpNext++;
                     index = (index + 1) % players.size();
+
+                    //ALL AI GAME TEST
+                    if(numAIPlayersUpNext == players.size()){
+                        while(gameHasStarted) AIPlayer.takeTurn(this, currentPlayer);
+                    }
                 }
                 //Loops through the turns of all AI players until the next human player's turn
                 for (int i = 0; i < numAIPlayersUpNext; i++) {
@@ -755,7 +761,7 @@ public class Board {
                 }*/
                 sendMessageToViews(prevOwner.getName() + " was eliminated!");
 
-                if(players.size() > 1){
+                if(players.size() == 1){
 
                     /*for(RiskView boardView: views) {
                         boardView.showMessage(t2.getOwner().getName() + " has won!");
