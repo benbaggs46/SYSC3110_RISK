@@ -119,7 +119,7 @@ public class Board {
             addPlayer(player);
         }
 
-       shuffle(players);
+        shuffle(players);
 
         populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers));
 
@@ -136,6 +136,12 @@ public class Board {
             list.remove(index);
         }
         while(!stack.isEmpty()) list.add(stack.pop());
+    }
+
+    public void sendMessageToViews(String message){
+        for(RiskView boardView: views) {
+            boardView.showMessage(message);
+        }
     }
 
     public void addRiskView(RiskView view){
@@ -384,18 +390,20 @@ public class Board {
      */
     private void doPlacement(){
         if(selectedTerritories.size() != 1) {
-            for(RiskView boardView: views) {
+            /*for(RiskView boardView: views) {
                 boardView.showMessage("Invalid number of territories selected");
-            }
+            }*/
+            sendMessageToViews("Invalid number of territories selected (must be 1)");
             return;
         }
 
         Territory t = selectedTerritories.get(0);
 
         if(t.getOwner() != currentPlayer) {
-            for(RiskView boardView: views) {
+            /*for(RiskView boardView: views) {
                 boardView.showMessage("You do not control that territory");
-            }
+            }*/
+            sendMessageToViews("You do not control that territory");
             return;
         }
 
@@ -403,9 +411,10 @@ public class Board {
 
         if(t.getTempArmies() == 0){
             if(armiesToPlace == 0){
-                for(RiskView boardView: views) {
+                /*for(RiskView boardView: views) {
                     boardView.showMessage("You have no more armies to place");
-                }
+                }*/
+                sendMessageToViews("You have no more armies to place");
                 return;
             }
             else{
@@ -443,13 +452,15 @@ public class Board {
         }
 
         if(armies > 0)
-            for(RiskView boardView: views) {
+            /*for(RiskView boardView: views) {
                 boardView.showMessage("Placed " + armies + " armies in " + t.getName());
-            }
+            }*/
+            sendMessageToViews("Placed " + armies + " armies in " + t.getName());
         else if(armies < 0)
-            for(RiskView boardView: views) {
+           /* for(RiskView boardView: views) {
                 boardView.showMessage("Retracted " + (-armies) + " armies from " + t.getName());
-            }
+            }*/
+            sendMessageToViews("Retracted " + (-armies) + " armies from " + t.getName());
     }
 
     /**
@@ -460,23 +471,27 @@ public class Board {
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
         armiesToPlace = getArmyBonusForPlayer(currentPlayer);
 
-        for(RiskView boardView: views) {
+        /*for(RiskView boardView: views) {
             boardView.showMessage("It is now " + currentPlayer.getName() + "'s turn");
-        }
+        }*/
+        sendMessageToViews("It is now " + currentPlayer.getName() + "'s turn");
 
         int index = players.indexOf(currentPlayer);
         Player prevPlayer = players.get((index - 1 + players.size()) % players.size());
 
-        if(!prevPlayer.isAi() || !gameHasStarted) {
-            //determines how many consecutive AI players have turns after the human player who just ended their turn
-            int numAIPlayersUpNext = 0;
-            while (players.get(index).isAi()) {
-                numAIPlayersUpNext++;
-                index = (index + 1) % players.size();
-            }
-            //Loops through the turns of all AI players until the next human player's turn
-            for (int i = 0; i < numAIPlayersUpNext; i++) {
-                AIPlayer.takeTurn(this, currentPlayer);
+        if(currentPlayer.isAi()) {
+            if(!prevPlayer.isAi() || !gameHasStarted) {
+                if (!gameHasStarted) gameHasStarted = true;
+                //determines how many consecutive AI players have turns after the human player who just ended their turn
+                int numAIPlayersUpNext = 0;
+                while (players.get(index).isAi()) {
+                    numAIPlayersUpNext++;
+                    index = (index + 1) % players.size();
+                }
+                //Loops through the turns of all AI players until the next human player's turn
+                for (int i = 0; i < numAIPlayersUpNext; i++) {
+                    AIPlayer.takeTurn(this, currentPlayer);
+                }
             }
         }
     }
@@ -495,9 +510,10 @@ public class Board {
 
         else if(turnStage == TurnStage.ATTACK){
             if(armiesToPlace > 0) {
-                for(RiskView boardView: views) {
+                /*for(RiskView boardView: views) {
                     boardView.showMessage("You still have armies to place");
-                }
+                }*/
+                sendMessageToViews("You still have armies to place");
                 return;
             }
             for(Territory t: getTerritoryList()){
@@ -518,9 +534,10 @@ public class Board {
     private void doFortify(){
 
         if(selectedTerritories.size() != 2) {
-            for(RiskView boardView: views) {
+            /*for(RiskView boardView: views) {
                 boardView.showMessage("Invalid number of territories selected");
-            }
+            }*/
+            sendMessageToViews("Invalid number of territories selected (must be 2)");
             return;
         }
 
@@ -528,16 +545,18 @@ public class Board {
         Territory t2 = selectedTerritories.get(1);
 
         if(t1.getOwner() != currentPlayer || t2.getOwner() != currentPlayer) {
-            for(RiskView boardView: views) {
+            /*for(RiskView boardView: views) {
                 boardView.showMessage("Current player doesn't own both selected territories");
-            }
+            }*/
+            sendMessageToViews("Current player doesn't own both selected territories");
             return;
         }
 
         if (!areConnected(t1, t2)) {
-            for(RiskView boardView: views) {
+            /*for(RiskView boardView: views) {
                 boardView.showMessage("Selected territories are not connected");
-            }
+            }*/
+            sendMessageToViews("Selected territories are not connected");
             return;
         }
 
@@ -573,8 +592,8 @@ public class Board {
 
         for(RiskView boardView: views) {
             boardView.updateMap(new MapEvent(this, territoriesToUpdate));
-            boardView.showMessage("Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
         }
+        sendMessageToViews("Fortified " + armies + " armies from " + t2.getName() + " to " + t1.getName());
 
         nextTurnStage();
     }
@@ -616,9 +635,10 @@ public class Board {
     private void doAttack(){
 
         if(getSelectedTerritories().size() != 2) {
-            for(RiskView boardView: views) {
+            /*for(RiskView boardView: views) {
                 boardView.showMessage("Invalid number of territories selected");
-            }
+            }*/
+            sendMessageToViews("Invalid number of territories selected (must be 2)");
             return;
         }
 
@@ -626,23 +646,26 @@ public class Board {
         Territory t2 = selectedTerritories.get(1);
 
         if((t1.getOwner() == currentPlayer) == (t2.getOwner() == currentPlayer)) {
-            for(RiskView boardView: views) {
+            /*for(RiskView boardView: views) {
                 boardView.showMessage("Current player owns neither or both selected territories");
-            }
+            }*/
+            sendMessageToViews("Current player owns neither or both selected territories");
             return;
         }
 
         if(!(t1.getNeighbours().contains(t2))) {
-            for(RiskView boardView: views) {
+            /*for(RiskView boardView: views) {
                 boardView.showMessage("The selected territories do not border each other");
-            }
+            }*/
+            sendMessageToViews("The selected territories do not border each other");
             return;
         }
 
         if((t1.getOwner() == currentPlayer && t1.getNumArmies() < 2) || (t2.getOwner() == currentPlayer && t2.getNumArmies() < 2)) {
-            for(RiskView boardView: views) {
+            /*for(RiskView boardView: views) {
                 boardView.showMessage("You don't have enough armies there to attack with");
-            }
+            }*/
+            sendMessageToViews("You don't have enough armies there to attack with");
             return;
         }
 
@@ -666,9 +689,10 @@ public class Board {
 
         int result = attackResult(attackDice, defendDice);
 
-        for(RiskView boardView: views) {
+        /*for(RiskView boardView: views) {
             boardView.showMessage(result == 0 ? "Both players lost an army" : (result > 0) ? t1.getOwner().getName() + " lost " + result + " armies" : t2.getOwner().getName() + " lost " + (-result) + " armies");
-        }
+        }*/
+        sendMessageToViews(result == 0 ? "Both players lost an army" : (result > 0) ? t1.getOwner().getName() + " lost " + result + " armies" : t2.getOwner().getName() + " lost " + (-result) + " armies");
 
         if(result == 0){ //both players lose one army
             t2.addArmies(-1);
@@ -694,9 +718,10 @@ public class Board {
         }
 
         if(t1.getNumArmies() <= 0 ) { //defending territory has no armies left
-            for(RiskView boardView: views) {
+            /*for(RiskView boardView: views) {
                 boardView.showMessage(t1.getName() + " was conquered!");
-            }
+            }*/
+            sendMessageToViews(t1.getName() + " was conquered!");
 
             Player prevOwner = t1.getOwner();
             prevOwner.loseTerritory(t1);
@@ -715,25 +740,29 @@ public class Board {
 
             Continent continent = t1.getContinent();
             if(continent.isConquered())
-                for(RiskView boardView: views) {
+                /*for(RiskView boardView: views) {
                     boardView.showMessage(continent.getName() + " was conquered!");
-                }
+                }*/
+                sendMessageToViews(continent.getName() + " was conquered!");
 
             if(prevOwner.getNumTerritories() == 0) {
 
                 //prevOwner is eliminated
                 removePlayer(prevOwner);
 
-                for(RiskView boardView: views) {
+                /*for(RiskView boardView: views) {
                     boardView.showMessage(prevOwner.getName() + " was eliminated!");
-                }
+                }*/
+                sendMessageToViews(prevOwner.getName() + " was eliminated!");
 
                 if(players.size() > 1){
 
-                    for(RiskView boardView: views) {
+                    /*for(RiskView boardView: views) {
                         boardView.showMessage(t2.getOwner().getName() + " has won!");
-                    }
+                    }*/
+                    sendMessageToViews(t2.getOwner().getName() + " has won!");
                     clearBoard();
+                    return;
                 }
             }
 
@@ -747,8 +776,8 @@ public class Board {
 
             for(RiskView boardView: views) {
                 boardView.updateMap(new MapEvent(this, territoriesToUpdate));
-                boardView.showMessage("Moved " + armiesToMove + " armies into " + t1.getName());
             }
+            sendMessageToViews("Moved " + armiesToMove + " armies into " + t1.getName());
         }
     }
 
