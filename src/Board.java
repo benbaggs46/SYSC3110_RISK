@@ -54,6 +54,8 @@ public class Board {
             4, RiskColor.MAGENTA,
             5, RiskColor.GRAY
     );
+
+    private boolean gameHasStarted;
     /**
      * A list of continents that belong to the board
      */
@@ -105,6 +107,7 @@ public class Board {
         lines = new ArrayList<>();
         views = new ArrayList<>();
         this.userInputSource = userInputSource;
+        gameHasStarted = false;
 
         BoardConstructor boardConstructor = new BoardConstructor();
         boardConstructor.loadBoardFromFile(filename, this);
@@ -116,7 +119,7 @@ public class Board {
             addPlayer(player);
         }
 
-       // shuffle(players);
+       shuffle(players);
 
         populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers));
 
@@ -454,13 +457,6 @@ public class Board {
      */
     public void nextTurn(){
 
-        int index = (players.indexOf(currentPlayer) + 1) % players.size();
-        int numAIPlayersUpNext = 0;
-        while(players.get(index).isAi()){
-            numAIPlayersUpNext++;
-            index = (index + 1) % players.size();
-        }
-
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
         armiesToPlace = getArmyBonusForPlayer(currentPlayer);
 
@@ -468,8 +464,20 @@ public class Board {
             boardView.showMessage("It is now " + currentPlayer.getName() + "'s turn");
         }
 
-        for(int i = 0; i < numAIPlayersUpNext; i++) {
-            AIPlayer.takeTurn(this, currentPlayer);
+        int index = players.indexOf(currentPlayer);
+        Player prevPlayer = players.get((index - 1 + players.size()) % players.size());
+
+        if(!prevPlayer.isAi() || !gameHasStarted) {
+            //determines how many consecutive AI players have turns after the human player who just ended their turn
+            int numAIPlayersUpNext = 0;
+            while (players.get(index).isAi()) {
+                numAIPlayersUpNext++;
+                index = (index + 1) % players.size();
+            }
+            //Loops through the turns of all AI players until the next human player's turn
+            for (int i = 0; i < numAIPlayersUpNext; i++) {
+                AIPlayer.takeTurn(this, currentPlayer);
+            }
         }
     }
 
