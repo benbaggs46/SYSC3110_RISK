@@ -89,6 +89,10 @@ public class Board {
 
     private List<RiskView> views;
 
+    public RiskInput getUserInputSource() {
+        return userInputSource;
+    }
+
     private RiskInput userInputSource;
 
     /**
@@ -671,7 +675,7 @@ public class Board {
      * @param attackDice The number of attacking armies
      * @param defendDice The number of defending armies
      */
-    private void attack(Territory t1, Territory t2, int attackDice, int defendDice){
+    public void attack(Territory t1, Territory t2, int attackDice, int defendDice){
 
         int result = attackResult(attackDice, defendDice);
 
