@@ -116,7 +116,7 @@ public class Board {
             addPlayer(player);
         }
 
-        shuffle(players);
+       // shuffle(players);
 
         populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers));
 
@@ -452,18 +452,6 @@ public class Board {
     /**
      * Moves the board to the next player's turn
      */
-    public void nextTurnAI(){
-        currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
-        armiesToPlace = getArmyBonusForPlayer(currentPlayer);
-
-        for(RiskView boardView: views) {
-            boardView.showMessage("It is now " + currentPlayer.getName() + "'s turn");
-        }
-    }
-
-    /**
-     * Moves the board to the next player's turn
-     */
     public void nextTurn(){
 
         int index = (players.indexOf(currentPlayer) + 1) % players.size();
@@ -490,16 +478,14 @@ public class Board {
      */
     public void nextTurnStage(){
 
-        if(turnStage == TurnStage.FORTIFY) {
-            turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
-            selectedTerritories.clear();
-            if(currentPlayer.isAi()) nextTurnAI();
-            else {
-                nextTurn();
-            }
+        turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
+        selectedTerritories.clear();
+
+        if(turnStage == TurnStage.PLACEMENT) {
+            nextTurn();
         }
 
-        else if(turnStage == TurnStage.PLACEMENT){
+        else if(turnStage == TurnStage.ATTACK){
             if(armiesToPlace > 0) {
                 for(RiskView boardView: views) {
                     boardView.showMessage("You still have armies to place");
@@ -510,13 +496,6 @@ public class Board {
                 if(t.getTempArmies() == 0) continue;
                 t.confirmTempArmies();
             }
-            turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
-            selectedTerritories.clear();
-        }
-
-        else{
-            turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
-            selectedTerritories.clear();
         }
 
         for(RiskView boardView: views) {
