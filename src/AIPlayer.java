@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +6,7 @@ public class AIPlayer {
     private static Player player;
     private static Board board;
 
-    public static int UTILITY_THRESHOLD = 0;
+    public static int UTILITY_THRESHOLD = 1;
 
     private static Territory getTargetTerritory(){
 
@@ -26,20 +25,20 @@ public class AIPlayer {
             float utilityScore = 0;
             utilityScore += getAmountOfBordersRemoved(t, player.getControlledTerritories());
             utilityScore += percentOfOpponentTerritoriesRemoved(t);
-            utilityScore += percentOfUnconqueredContinentRemoved(t);
+            utilityScore += percentOfUnconqueredContinentRemoved(t) * 10;
             utilityScore += opponentContinentBonusPrevented(t);
-            utilityScore += getArmyRatio(t, true);
+            utilityScore += (getArmyRatio(t, true) - t.getNumArmies());
             utilityScores[i] = utilityScore;
             if(utilityScores[maxIndex] < utilityScore) maxIndex = i;
         }
 
-        JOptionPane.showMessageDialog(null, attackableTerritories.get(maxIndex).getName() + "\n"
+        /*JOptionPane.showMessageDialog(null, attackableTerritories.get(maxIndex).getName() + "\n"
                 + "Utility Score = " + utilityScores[maxIndex] + "\n"
-                + "borders removed = " + getAmountOfBordersRemoved(attackableTerritories.get(maxIndex), player.getControlledTerritories()) + "\n"
-                + "% of opponent territories removed = " + percentOfOpponentTerritoriesRemoved(attackableTerritories.get(maxIndex)) + "\n"
-                + "% of unconquered continent removed = " + percentOfUnconqueredContinentRemoved(attackableTerritories.get(maxIndex)) + "\n"
-                + "opponent continent bonus prevented = " + opponentContinentBonusPrevented(attackableTerritories.get(maxIndex)) + "\n"
-                + "army ratio = " + getArmyRatio(attackableTerritories.get(maxIndex), true));
+                + "borders removed = " + (getAmountOfBordersRemoved(attackableTerritories.get(maxIndex), player.getControlledTerritories())) + "\n"
+                + "% of opponent territories removed = " + (percentOfOpponentTerritoriesRemoved(attackableTerritories.get(maxIndex))) + "\n"
+                + "% of unconquered continent removed = " + (percentOfUnconqueredContinentRemoved(attackableTerritories.get(maxIndex))) + "\n"
+                + "opponent continent bonus prevented = " + (opponentContinentBonusPrevented(attackableTerritories.get(maxIndex))) + "\n"
+                + "army ratio = " + (getArmyRatio(attackableTerritories.get(maxIndex), true)));*/
 
         //return territory with the highest utility score
         return utilityScores[maxIndex] < UTILITY_THRESHOLD? null: attackableTerritories.get(maxIndex);
