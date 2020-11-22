@@ -108,12 +108,28 @@ public class AIPlayer {
     }
 
     private static void AIFortify(){
-        Territory source = getTerritoryByArmyRatio(null, true);
+        Territory source = getNonBorderTerritoryWithMostArmies();
+        if(source == null) source = getTerritoryByArmyRatio(null, true);
         Territory destination = getTerritoryByArmyRatio(source, false);
         if(destination != null && source.getNumArmies() > 1){
             board.fortify(destination, source, source.getNumArmies() / 2);
         }
         else board.nextTurnStage();
+    }
+
+    private static Territory getNonBorderTerritoryWithMostArmies(){
+        List<Territory> nonBorderTerritories = player.getControlledTerritories();
+        nonBorderTerritories.removeAll(getBorderTerritories(nonBorderTerritories));
+
+        int maxIndex = -1;
+        for(int i = 0; i < nonBorderTerritories.size(); i++){
+            Territory t = nonBorderTerritories.get(i);
+            if(t.getNumArmies() > 1){
+                if(maxIndex == -1) maxIndex = i;
+                else if(t.getNumArmies() > nonBorderTerritories.get(maxIndex).getNumArmies()) maxIndex = i;
+            }
+        }
+        return maxIndex == -1? null: nonBorderTerritories.get(maxIndex);
     }
 
     private static Territory getTerritoryByArmyRatio(Territory connectedTerritory, boolean lookingForMax){
