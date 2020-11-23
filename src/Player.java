@@ -22,7 +22,11 @@ public class Player {
      */
     private Color color;
 
+    /**
+     * Indicates whether the player is AI controlled
+     */
     private Boolean ai;
+
     /**
      * Constructor for the Player object
      * @param name sets the players name to this parameter
@@ -104,6 +108,10 @@ public class Player {
         return string;
     }
 
+    /**
+     * Indicates whether the player is AI controlled
+     * @return True if the player is AI, false otherwise
+     */
     public boolean isAi() {
         return ai;
     }

@@ -1,13 +1,29 @@
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Performs AI controlled turns for RISK players
+ */
 public class AIPlayer {
 
+    /**
+     * The current player who the AI is making decisions for
+     */
     private static Player player;
+
+    /**
+     * The board that the AI Player is playing on
+     */
     private static Board board;
 
+    /**
+     * The minimum utility score for a possible attack required for the AI Player to do it
+     */
     public static int UTILITY_THRESHOLD = 1;
 
+    /**
+     * Gets the best territory to attack based on the current board state
+     * @return The attackable territory with the highest utility score, or null if there are no options good enough
+     */
     private static Territory getTargetTerritory(){
 
         //create list of all possible territories to attack and an array of their corresponding utility scores
@@ -32,18 +48,15 @@ public class AIPlayer {
             if(utilityScores[maxIndex] < utilityScore) maxIndex = i;
         }
 
-        /*JOptionPane.showMessageDialog(null, attackableTerritories.get(maxIndex).getName() + "\n"
-                + "Utility Score = " + utilityScores[maxIndex] + "\n"
-                + "borders removed = " + (getAmountOfBordersRemoved(attackableTerritories.get(maxIndex), player.getControlledTerritories())) + "\n"
-                + "% of opponent territories removed = " + (percentOfOpponentTerritoriesRemoved(attackableTerritories.get(maxIndex))) + "\n"
-                + "% of unconquered continent removed = " + (percentOfUnconqueredContinentRemoved(attackableTerritories.get(maxIndex))) + "\n"
-                + "opponent continent bonus prevented = " + (opponentContinentBonusPrevented(attackableTerritories.get(maxIndex))) + "\n"
-                + "army ratio = " + (getArmyRatio(attackableTerritories.get(maxIndex), true)));*/
-
-        //return territory with the highest utility score
         return utilityScores[maxIndex] < UTILITY_THRESHOLD? null: attackableTerritories.get(maxIndex);
     }
 
+    /**
+     * Returns how many fewer border territories the AI player would have if the took the specified territory
+     * @param t The territory that the player is considering attacking
+     * @param territoryGroup The territories currently controlled by the player
+     * @return The number of border territories they would eliminate if they took the territory
+     */
     private static int getAmountOfBordersRemoved(Territory t, List<Territory> territoryGroup){
         int currentBorders = getBorderTerritories(territoryGroup).size();
         territoryGroup.add(t);
@@ -52,6 +65,11 @@ public class AIPlayer {
         return currentBorders - futureBorders;
     }
 
+    /**
+     * Returns the amount of armies from continent bonuses that the AI player would deprive an opponent if they took the specified territory
+     * @param t The territory that the player is considering attacking
+     * @return The total continent bonus for the opponent that would be prevented
+     */
     private static int opponentContinentBonusPrevented(Territory t){
         Player opponent = t.getOwner();
         Continent c = t.getContinent();
@@ -61,6 +79,11 @@ public class AIPlayer {
         return c.getArmyBonus();
     }
 
+    /**
+     * Returns the percentage of the uncontrolled portion of the continent that the AI player would conquer if they took the specified territory
+     * @param t The territory that the player is considering attacking
+     * @return The percent of uncontrolled continent that would be conquered
+     */
     private static float percentOfUnconqueredContinentRemoved(Territory t){
         List<Territory> territoriesInContinent = t.getContinent().getTerritoryList();
         float unconqueredContinentSize = 0;
@@ -70,10 +93,20 @@ public class AIPlayer {
         return 1 / unconqueredContinentSize;
     }
 
+    /**
+     * Returns the percentage of an opponent's territory that the AI player would conquer if they took the specified territory
+     * @param t The territory that the player is considering attacking
+     * @return The percent of the opponent's territories that would be conquered
+     */
     private static float percentOfOpponentTerritoriesRemoved(Territory t){
         return 1 / (float) t.getOwner().getNumTerritories();
     }
 
+    /**
+     * Performs a RISK turn for the current player on the current board state
+     * @param currentBoard The current board
+     * @param currentPlayer The player who the AI is acting for
+     */
     public static void takeTurn(Board currentBoard, Player currentPlayer){
         player = currentPlayer;
         board = currentBoard;
@@ -82,6 +115,9 @@ public class AIPlayer {
         AIFortify();
     }
 
+    /**
+     * Performs the PLACEMENT phase of the AI turn
+     */
     private static void AIPlacement(){
         Territory target = getTargetTerritory();
         Territory attackingTerritory;
@@ -95,6 +131,9 @@ public class AIPlayer {
         board.nextTurnStage();
     }
 
+    /**
+     * Performs the ATTACK phase of the AI turn
+     */
     private static void AIAttack(){
         Territory target = getTargetTerritory();
         while(target !=  null){
@@ -107,6 +146,9 @@ public class AIPlayer {
         board.nextTurnStage();
     }
 
+    /**
+     * Performs the FORTIFY phase of the AI turn
+     */
     private static void AIFortify(){
         Territory source = getNonBorderTerritoryWithMostArmies();
         if(source == null) source = getTerritoryByArmyRatio(null, true);
@@ -117,6 +159,13 @@ public class AIPlayer {
         else board.nextTurnStage();
     }
 
+    /**
+     * Returns the territory with the most armies that is:
+     * - controlled by the player
+     * - not a border territory
+     * - has at least 2 armies
+     * @return Returns the non-border territory of the current player with the most moveable armies, null if no such territory exists
+     */
     private static Territory getNonBorderTerritoryWithMostArmies(){
         List<Territory> nonBorderTerritories = player.getControlledTerritories();
         List<Territory> borderTerritories = getBorderTerritories(nonBorderTerritories);
@@ -134,6 +183,14 @@ public class AIPlayer {
         return maxIndex == -1? null: nonBorderTerritories.get(maxIndex);
     }
 
+    /**
+     * Returns the territory controlled by the current player with either the highest or lowest army ratio.
+     * The territory must be connected to the specified territory through only other player controlled territories
+     * @param connectedTerritory The territory that must be connected to
+     * @param lookingForMax Determines if the territory with the highest(true) or lowest(false) army ratio is selected
+     * @return Returns the territory controlled by the current player with either the highest or lowest army ratio, that is connected to
+     * the specified territory
+     */
     private static Territory getTerritoryByArmyRatio(Territory connectedTerritory, boolean lookingForMax){
         List<Territory> borderTerritories = player.getControlledTerritories();
         int bestIndex = -1;
@@ -155,6 +212,13 @@ public class AIPlayer {
         return bestIndex == -1? null: borderTerritories.get(bestIndex);
     }
 
+    /**
+     * Returns either the difference between the number of armies in a current player controlled territory and the sum of armies in uncontrolled neighbour territories (1),
+     * or the sum of armies in current player controlled neighbour territories and the number of armies in an uncontrolled territory (2)
+     * @param t The single territory used in the calculation
+     * @param attacking Determines which result is calculated. (2) if true, (1) if false
+     * @return The calculated army difference
+     */
     private static float getArmyRatio(Territory t, boolean attacking){
         float availableAttackingArmies = 0;
         for(Territory t2: t.getNeighbours()){
@@ -165,6 +229,11 @@ public class AIPlayer {
         return (attacking? 1: -1) * armyRatio;
     }
 
+    /**
+     * Returns the current player controlled neighbour of the specified territory with the most armies
+     * @param t The territory that the result must neighbour
+     * @return The neighbour territory with the most armies
+     */
     private static Territory getControlledNeighbourWithMostArmies(Territory t){
         Territory neighbourWithMostArmies = null;
         for(Territory t2: t.getNeighbours()){
@@ -175,6 +244,11 @@ public class AIPlayer {
         return neighbourWithMostArmies;
     }
 
+    /**
+     * Returns the border territories of a set of territories
+     * @param territoryGroup The list of territories
+     * @return A list of border territories from the provided territory group
+     */
     private static List<Territory> getBorderTerritories(List<Territory> territoryGroup){
         List<Territory> borderTerritories = new ArrayList<>();
         for(Territory t: territoryGroup){
@@ -188,6 +262,11 @@ public class AIPlayer {
         return borderTerritories;
     }
 
+    /**
+     * Returns all territories possible for the current player to attack
+     * @param territoryGroup The current player's territories
+     * @return A list of all attackable territories
+     */
     private static List<Territory> getAttackableTerritories(List<Territory> territoryGroup){
         List<Territory> borderTerritories = new ArrayList<>();
         for(Territory t: territoryGroup){

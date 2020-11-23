@@ -54,8 +54,11 @@ public class Board {
             4, RiskColor.MAGENTA,
             5, RiskColor.GRAY
     );
-
+    /**
+     * Indicates whether the game has been started
+     */
     private boolean gameHasStarted;
+
     /**
      * A list of continents that belong to the board
      */
@@ -90,14 +93,27 @@ public class Board {
      */
     private List<Territory> selectedTerritories;
 
+    /**
+     * All views to be notified when the game state changes
+     */
     private List<RiskView> views;
 
+    /**
+     * Returns the user input source of the Board
+     * @return The user input source of the Board
+     */
     public RiskInput getUserInputSource() {
         return userInputSource;
     }
 
+    /**
+     * The source of user input the board will ask for while performing actions (attack, fortify, etc.)
+     */
     private RiskInput userInputSource;
 
+    /**
+     * Indicates whether the game has been won
+     */
     private boolean gameIsWon;
 
     /**
@@ -131,6 +147,11 @@ public class Board {
         turnStage = TurnStage.FORTIFY;
     }
 
+    /**
+     * Randomly arranges a list of elements
+     * @param list The list to be shuffled
+     * @param <E> The type of the list elements
+     */
     public static <E> void shuffle(List<E> list){
         Random r = new Random();
         Stack<E> stack = new Stack<>();
@@ -142,12 +163,20 @@ public class Board {
         while(!stack.isEmpty()) list.add(stack.pop());
     }
 
+    /**
+     * Sends a string message to all views of the model
+     * @param message The string message to be sent
+     */
     public void sendMessageToViews(String message){
         for(RiskView boardView: views) {
             boardView.showMessage(message);
         }
     }
 
+    /**
+     * Adds a view to the RISK model
+     * @param view The view to be added
+     */
     public void addRiskView(RiskView view){
         views.add(view);
     }
@@ -716,11 +745,17 @@ public class Board {
         }
     }
 
+    /**
+     * Manipulates the board accordingly when the user presses the PROCEED button
+     */
     public void proceed(){
         if(currentPlayer.isAi()) return; //the user cannot move to next turn stage when it is an AI player's turn
         nextTurnStage();
     }
 
+    /**
+     * Manipulates the board accordingly when the user presses the ACTION button
+     */
     public void doAction(){
         if(currentPlayer.isAi()) return; //the user cannot perform an action when it is an AI player's turn
         if(turnStage == TurnStage.ATTACK) doAttack();
