@@ -80,10 +80,6 @@ public class Board {
      */
     private int armiesToPlace;
 
-    public TurnStage getTurnStage() {
-        return turnStage;
-    }
-
     /**
      * The stage of the turn the current player is on
      */
@@ -124,7 +120,7 @@ public class Board {
 
         for(int i = 0; i < numPlayers; i++){
             Player player = new Player(playerNames.get(i), PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getColor(), isAi.get(i));
-            addPlayer(player);
+            players.add(player);
         }
 
         shuffle(players);
@@ -202,19 +198,11 @@ public class Board {
     }
 
     /**
-     * Increases the number of armies left to place by the input
-     * @param armiesToPlace number to add to the current number of armies to place
-     */
-    public void addArmiesToPlace(int armiesToPlace) {
-        this.armiesToPlace += armiesToPlace;
-    }
-
-    /**
      * Calculates how many armies to give to the specified player at the start of their turn
      * @param player the player to calculate for
      * @return the number of armies that player gets at the start of their turn
      */
-    public int getArmyBonusForPlayer(Player player){
+    private int getArmyBonusForPlayer(Player player){
         return Math.max(player.getNumTerritories() / 3, 3) + getContinentBonusForPlayer(player);
     }
 
@@ -236,19 +224,6 @@ public class Board {
             if(controlsContinent) sum += c.getArmyBonus();
         }
         return sum;
-    }
-
-    /**
-     * Gives a string that contains the output of calling toString on each of
-     * the continents in the continents list
-     * @return a string containing the return from each continent.toString()
-     */
-    public String toString(){
-        String string = "";
-        for(Continent c: continents){
-            string += c + "\n";
-        }
-        return string;
     }
 
     /**
@@ -277,12 +252,6 @@ public class Board {
     }
 
     /**
-     * Add a player to the player list
-     * @param player the player to add to the list
-     */
-    public void addPlayer(Player player) {players.add(player);}
-
-    /**
      * Add a continent to the continent list
      * @param continent the continent to add to the list
      */
@@ -296,7 +265,7 @@ public class Board {
      * @param t2 The second territory
      * @return A boolean indicating whether the two territories are connected
      */
-    public boolean areConnected(Territory t1, Territory t2){
+    public static boolean areConnected(Territory t1, Territory t2){
         Set<Territory> visited = new HashSet<>();
         Queue<Territory> queue = new LinkedList<>();
         queue.add(t1);
@@ -321,17 +290,9 @@ public class Board {
      * @param destination The territory where armies are to be moved to
      * @param numArmies The number of armies to move
      */
-    public void moveArmies(Territory source, Territory destination, int numArmies){
+    private void moveArmies(Territory source, Territory destination, int numArmies){
         destination.addArmies(numArmies);
         source.addArmies(-numArmies);
-    }
-
-    /**
-     * Removes a player from the board
-     * @param player The player to be removed
-     */
-    public void removePlayer(Player player){
-        players.remove(player);
     }
 
     /**
@@ -340,7 +301,7 @@ public class Board {
      * Each player is given an equal number of armies, distributed randomly throughout their territories, with a minimum of 1 on any territory.
      * @param numArmiesEach The number of armies given to each player
      */
-    public void populateBoard(int numArmiesEach){
+    private void populateBoard(int numArmiesEach){
         Random r = new Random();
         int numPlayers = players.size();
         int[] armiesLeftEach = new int[numPlayers];
@@ -424,7 +385,7 @@ public class Board {
      */
     public void place(Territory t, int armies){
         t.addTempArmies(armies);
-        addArmiesToPlace(-armies);
+        armiesToPlace -= armies;
 
         for(RiskView boardView: views) {
             boardView.updateUI(new UIEvent(this, turnStage, currentPlayer, getArmyBonusForPlayer(currentPlayer), armiesToPlace));
@@ -447,7 +408,7 @@ public class Board {
     /**
      * Moves the board to the next player's turn
      */
-    public void nextTurn(){
+    private void nextTurn(){
 
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
         armiesToPlace = getArmyBonusForPlayer(currentPlayer);
@@ -698,8 +659,9 @@ public class Board {
         }
 
         if(t1.getNumArmies() <= 0 ) { //defending territory has no armies left
-            if(!currentPlayer.isAi())
+            if(!currentPlayer.isAi()) {
                 sendMessageToViews(t1.getName() + " was conquered!");
+            }
 
             Player prevOwner = t1.getOwner();
             prevOwner.loseTerritory(t1);
@@ -717,14 +679,16 @@ public class Board {
             }
 
             Continent continent = t1.getContinent();
-            if(continent.isConquered())
-                if(!currentPlayer.isAi())
+            if(continent.isConquered()) {
+                if (!currentPlayer.isAi()) {
                     sendMessageToViews(continent.getName() + " was conquered!");
+                }
+            }
 
             if(prevOwner.getNumTerritories() == 0) {
 
                 //prevOwner is eliminated
-                removePlayer(prevOwner);
+                players.remove(prevOwner);
 
                 sendMessageToViews(prevOwner.getName() + " was eliminated!");
 
@@ -747,7 +711,7 @@ public class Board {
             for(RiskView boardView: views) {
                 boardView.updateMap(new MapEvent(this, territoriesToUpdate));
             }
-            if(!currentPlayer.isAi())
+           if(!currentPlayer.isAi())
                 sendMessageToViews("Moved " + armiesToMove + " armies into " + t1.getName());
         }
     }

@@ -152,11 +152,6 @@ public class BoardView extends JFrame implements RiskView, RiskInput{
         return Integer.parseInt(input);
     }
 
-    public Boolean getBooleanInput(String prompt, Boolean defaultValue) {
-        int x = JOptionPane.showConfirmDialog(this, prompt);
-        return x != 1;
-    }
-
     /**
      * Determines if the provided string input is an integer between the specified minimum and maximum (both inclusive)
      * @param input The input string

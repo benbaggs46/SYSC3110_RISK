@@ -119,14 +119,16 @@ public class AIPlayer {
 
     private static Territory getNonBorderTerritoryWithMostArmies(){
         List<Territory> nonBorderTerritories = player.getControlledTerritories();
-        nonBorderTerritories.removeAll(getBorderTerritories(nonBorderTerritories));
+        List<Territory> borderTerritories = getBorderTerritories(nonBorderTerritories);
 
         int maxIndex = -1;
         for(int i = 0; i < nonBorderTerritories.size(); i++){
             Territory t = nonBorderTerritories.get(i);
-            if(t.getNumArmies() > 1){
-                if(maxIndex == -1) maxIndex = i;
-                else if(t.getNumArmies() > nonBorderTerritories.get(maxIndex).getNumArmies()) maxIndex = i;
+            if(!borderTerritories.contains(t)) {
+                if (t.getNumArmies() > 1) {
+                    if (maxIndex == -1) maxIndex = i;
+                    else if (t.getNumArmies() > nonBorderTerritories.get(maxIndex).getNumArmies()) maxIndex = i;
+                }
             }
         }
         return maxIndex == -1? null: nonBorderTerritories.get(maxIndex);
