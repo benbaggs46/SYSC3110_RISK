@@ -416,34 +416,8 @@ public class Board {
         if(!currentPlayer.isAi())
             sendMessageToViews("It is now " + currentPlayer.getName() + "'s turn");
 
-        int index = players.indexOf(currentPlayer);
-        Player prevPlayer = players.get((index - 1 + players.size()) % players.size());
-
-        boolean allAIGame = false;
-
-        if(currentPlayer.isAi()) {
-            if(!prevPlayer.isAi() || !gameHasStarted) {
-                if (!gameHasStarted) gameHasStarted = true;
-                //determines how many consecutive AI players have turns after the human player who just ended their turn
-                int numAIPlayersUpNext = 0;
-                while (players.get(index).isAi()) {
-                    numAIPlayersUpNext++;
-                    index = (index + 1) % players.size();
-
-                    //ALL AI GAME
-                    if(numAIPlayersUpNext == players.size()){
-                        allAIGame = true;
-                        break;
-                    }
-                }
-
-                if(allAIGame) while(!gameIsWon) AIPlayer.takeTurn(this, currentPlayer);
-
-                //Loops through the turns of all AI players until the next human player's turn
-                for (int i = 0; i < numAIPlayersUpNext; i++) {
-                    AIPlayer.takeTurn(this, currentPlayer);
-                }
-            }
+        else{
+            AIPlayer.takeTurn(this, currentPlayer);
         }
     }
 
