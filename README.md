@@ -1,5 +1,5 @@
 # SYSC3110 RISK
-### Version: 2.0.0
+### Version: 3.0.0
 ### Authors:
 - Ben Baggs: @benbaggs46
 - Liam Ballantyne: @ljjb97
@@ -9,6 +9,7 @@
 
 ### Changelog:
 - 2.0.0 - Removed text-based interface and replaced it with new GUI.
+- 3.0.0 - Added AI Players, reworked MVC structure, UI and gameplay changes.
 
 ### Table of Contents:
 - [Quick Start](#quick-start)
@@ -22,6 +23,7 @@
     * [Selecting Territories](#selecting-territories)
     * [Buttons](#buttons)
     * [Example Turn](#example-turn)
+    * [AI Players](#ai-players)
 - [Important Design Descisions](#important-design-decisions)
 - [Roadmap](#roadmap)
 
@@ -35,10 +37,10 @@ The game will then start! A window will open with a black square at the top and 
 ```
 New Game
 ```
-The game will then prompt you for the number of players you want, and then the names of those players. After that, the game will begin at the start of the first player's turn.
+The game will then prompt you for the number of players you want, the names of those players, and whether they are human or AI players. After that, the game will begin at the start of the first player's turn.
 
 ### Deliverables:
-SYSC3110_RISK_UML - Milestone 2.png gives a detailed uml diagram
+SYSC3110_RISK_UML - Milestone 3.png gives a detailed uml diagram
 The src directory contains all the source files for the project.
 The test directory contains all the JUnit test files for the project.
 The diagram directory contains the class and sequence diagrams.
@@ -50,6 +52,7 @@ The diagram directory contains the class and sequence diagrams.
 ### Resolved Issues:
 - Added sequence diagrams that model the events that occur over a turn for both the console and GUI based verions. 
 - Removed the ability to place or retract 0 armies from a territory during the PLACEMENT phase.
+- The RISK model was too tightly coupled to the game view.
 
 ### Complete User Manual:
 To play RISK run the main function in BoardView.java, or if running from the jar file type:
@@ -68,7 +71,7 @@ Once in the ATTACK phase, they may select the two territories they wish to attac
 
 The FORTIFY phase allows the player to move a certain number of armies between two territories that they control. They may select these two territories and use the ACTION BUTTON to fortify. Once a successful fortification is completed, this turn phase automatically ends. If the player does not wish to fortify, they may simply press the PROCEED button.
 
-After this, the next player's turn will begin. The game will cycle between each players' turn in a fixed order until a single player controls all territories on the board. This player is declared the winner and the game ends. The window will remain open and a new game may be started using the NEW GAME button.
+After this, the next player's turn will begin. If they are also a human player, their turn will be similar. If they are AI controlled, they will play automatically, and the user will only be notified of game events when it directly concerns them. The game will cycle between each players' turn in a fixed, random order until a single player controls all territories on the board. This player is declared the winner and the game ends. The window will remain open and a new game may be started using the NEW GAME button.
 
 At any time, a help menu may be opened using the HELP button.
 
@@ -162,14 +165,26 @@ PLAYER_A moves 1 army from Siam into India by selecting Siam and India before pr
 
 Once the fortification is complete, PLAYER_B will then begin their turn in the PLACEMENT phase.
 
+### AI Players:
+In the PLACEMENT phase, AI players will place all of their new armies in the territory they intend to attack. If they do not intend to attack, they will instead place their armies in the border territory that they deem the most vulnerable to enemy attack.
+
+In the ATTACK phase, the AI player will continously re-evaluate the state of the board, and attack until there are no possible attacks that the AI player deems good enough to perform. AI players will always attack or defend a territory with the maximum possible amount of armies, and will always move the maximum amount after conquering a territory.
+
+In the FORTIFY phase, AI players will move armies from the non-border territory with the most extra armies (at least 2). If no such territory exists, they will move armies from the territory that they deem the least vulnerable to enemy attack. They will move armies to the border territory that they deem the most vulnerable to attack. The number of armies moved will always be half of the maximum possible amount.
+
+When deciding the territory they intend to attack, AI players value five things, which they calculate for every possible territory:
+- Having fewer border territories after taking the territory in question (Being able to concentrate armies).
+- Having more than twice as many armies attacking as defending. Conversely, having less than twice the amount is a negative incentive to attack (Picking easy battles).
+- Taking a large percentage of an opponent's territories (Eliminating opponents).
+- Taking a large percentage of the unconquered portion of a continent (Conquering continents).
+- Preventing an opponent from recieving a continent bonus (Preventing opponents from conquering continents).
+
 ### Important Design Decisions:
-- Choosing between having one mouseButtonListener or having one mouseListener and one buttonListner. The mouseButtonListener was required to have non-rectangular clickable territories. The buttons did not require this functionality, and could be seperated to a seperate listener class that uses the built in features of the Swing library.
-- Choosing what classes not to create JUnit tests for. This is because some classes were to be scrapped as they only served the version of the game where the console was required. 
-- Choosing to isolate the game view, model, and controller. All communication between the view and controller is done between the BoardView and BoardController classes, and all communication between the controller and model is done between the BoardController and Board classes. The BoardView class manages all components of the view, and like wise with the Board class and the model. This will make adding new components to any of the 3 areas (view, controller, model) easier, as new classes will only have to be registered with the "main" class of their area.
-- Adding lines between territories that were connected over oceans via the XML map file. Designing a board with custom lines is not very difficult for a map maker to implement in the XML file, and would produce better looking results than an algorithm that draws lines between connected territories that are not adjacent. Such an algorithm would also require a lot of checking to see if territory polygons are adjacent.
-- Adding onto the XML file to create the GUI as well as board. This was done by having our XML file hold the points to create a polygon. This allows for custom map designers to have full freedom and not be held typical country shapes. 
+- Adding event classes and decoupling the model from views to more closely follow the MVC pattern.
+- Choosing to have a RiskInput interface separate from the RiskView interface. When the model needs to recieve a user input during an action that affects how the model changes (asking number of armies to attack/defend with, direction to fortify, etc.) it does not make sense to poll multiple listeners for potentially different responses. Therefore, the Board model holds a reference to exactly one user input source.
+- Choosing to implement the AI players as a static method in a class outside the model. Every AI player would follow the same procedure for every turn, and would completely re-evaluate the state of the board each turn regardless of how they were implemented. Therefore, the AI players were implemented as a static method called by the board model and given the current board state whenever required.
+- Disabling some pop-up messages while AI players are taking their turns. This was done to make the gameplay faster, especially in a gme with only AI players.
+- AI player turn structure. Since the game has to wait for input when a human player is taking their turn, but continously progress through potentially multiple AI turns without stopping, the following was implmented. After any human player ends their turn, or it is the start of the game, the game will calculate how many consecutive AI players are set to take their turns next. A for loop will then be used to call the takeTurn() method in AIPlayer (performing an AI turn) exactly that many times. The game will then pause before the next human turn. If the game has only AI players, there is a special case where the game will loop through turns until the game is won.
 
 ### Roadmap:
-- Add the option to have AI players.
 - Enable loading and saving the game.
-- Implement cards (Optional).
