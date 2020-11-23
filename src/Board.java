@@ -96,6 +96,11 @@ public class Board {
 
     private List<RiskView> views;
 
+    /**
+     * Gets set to true if all players are AI
+     */
+    private boolean allAIGame;
+
     public RiskInput getUserInputSource() {
         return userInputSource;
     }
@@ -129,6 +134,8 @@ public class Board {
 
         shuffle(players);
 
+        allAIGame = isAllAI();
+
         populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers));
 
         currentPlayer = players.get(numPlayers - 1);
@@ -154,6 +161,15 @@ public class Board {
 
     public void addRiskView(RiskView view){
         views.add(view);
+    }
+
+    public boolean isAllAI(){
+        for(Player p: players){
+            if(!p.isAi()){
+                return false;
+            }
+        }
+        return  true;
     }
 
     /**
@@ -327,11 +343,13 @@ public class Board {
     }
 
     /**
-     * Removes a player from the board
+     * Removes a player from the board and then checks if the game has become an allAI game
      * @param player The player to be removed
      */
     public void removePlayer(Player player){
         players.remove(player);
+        allAIGame = isAllAI();
+
     }
 
     /**
@@ -452,37 +470,13 @@ public class Board {
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
         armiesToPlace = getArmyBonusForPlayer(currentPlayer);
 
-        if(!currentPlayer.isAi())
+        if(allAIGame) while(!gameIsWon) AIPlayer.takeTurn(this, currentPlayer);
+
+        else if(!currentPlayer.isAi())
             sendMessageToViews("It is now " + currentPlayer.getName() + "'s turn");
 
-        int index = players.indexOf(currentPlayer);
-        Player prevPlayer = players.get((index - 1 + players.size()) % players.size());
-
-        boolean allAIGame = false;
-
-        if(currentPlayer.isAi()) {
-            if(!prevPlayer.isAi() || !gameHasStarted) {
-                if (!gameHasStarted) gameHasStarted = true;
-                //determines how many consecutive AI players have turns after the human player who just ended their turn
-                int numAIPlayersUpNext = 0;
-                while (players.get(index).isAi()) {
-                    numAIPlayersUpNext++;
-                    index = (index + 1) % players.size();
-
-                    //ALL AI GAME
-                    if(numAIPlayersUpNext == players.size()){
-                        allAIGame = true;
-                        break;
-                    }
-                }
-
-                if(allAIGame) while(!gameIsWon) AIPlayer.takeTurn(this, currentPlayer);
-
-                //Loops through the turns of all AI players until the next human player's turn
-                for (int i = 0; i < numAIPlayersUpNext; i++) {
-                    AIPlayer.takeTurn(this, currentPlayer);
-                }
-            }
+        else if(currentPlayer.isAi()) {
+            AIPlayer.takeTurn(this, currentPlayer);
         }
     }
 
