@@ -188,3 +188,4 @@ When deciding the territory they intend to attack, AI players value five things,
 
 ### Roadmap:
 - Enable loading and saving the game.
+- Add interface for using custom game boards.
