@@ -152,6 +152,7 @@ public class Board {
 
         BoardConstructor boardConstructor = new BoardConstructor();
         isValid = boardConstructor.loadBoardFromFile(filename, this) && validateMapBoarders();
+        //if the board is invalid then populating the board may cause an error
         if(isValid) {
             shuffle(players);
 
@@ -170,7 +171,8 @@ public class Board {
     }
 
     /**
-     * Checks if every territory can be reached
+     * Checks if every territory can be reached and if the number of territories is GE to the
+     * number of players (can't have more players than territories)
      * @return true if each territory can be reached
      */
     private boolean validateMapBoarders(){
@@ -188,7 +190,7 @@ public class Board {
 
         }
         while(!toVisit.isEmpty());
-        return getTerritoryList().size() == visited.size();
+        return (getTerritoryList().size() == visited.size()) && (getTerritoryList().size() >= players.size());
     }
 
     /**

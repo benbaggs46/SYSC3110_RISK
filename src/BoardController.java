@@ -52,9 +52,12 @@ public class BoardController {
                     boardView.isPlayerAI()
                     ));
         }
+
+        //Get user input for the board to use then check if it is valid
         do {
             board = new Board(boardView.getMapPath(), boardView, players);
         } while(!board.isValid());
+
         board.addRiskView(boardView);
         board.nextTurnStage();
     }

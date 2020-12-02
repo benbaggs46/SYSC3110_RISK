@@ -47,7 +47,6 @@ public class BoardConstructor {
     }
 
     public boolean loadBoardFromFile(String filename, Board board){
-        //TODO: implement error handling if map isn't valid
         if(validateXMLSchema("src/MAP.xsd","src/" + filename)) {
             try {
                 //an instance of factory that gives a document builder

@@ -7,6 +7,9 @@ import java.awt.event.MouseAdapter;
  */
 public class BoardView extends JFrame implements RiskView, RiskInput{
 
+    /**
+     * Message containing some helpfully information for the player
+     */
     public static final String HELP_MESSAGE = "\nThe Map: " +
             "\n Territories are adjacent if they share a border or there is an extra line connecting their borders. Alaska and Kamchatka are adjacent, and the line connecting" +
             "\n them extends off the left and right sides of the map. " +
@@ -166,6 +169,9 @@ public class BoardView extends JFrame implements RiskView, RiskInput{
 
     }
 
+    /**
+     * Show the user a message containing the help information
+     */
     public void showHelp(){
         showMessage(HELP_MESSAGE);
     }
