@@ -52,7 +52,9 @@ public class BoardController {
                     boardView.isPlayerAI()
                     ));
         }
-        board = new Board("DEFAULT_MAP.xml", boardView, players);
+        do {
+            board = new Board(boardView.getMapPath(), boardView, players);
+        } while(!board.isValid());
         board.addRiskView(boardView);
         board.nextTurnStage();
     }

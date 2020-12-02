@@ -133,6 +133,11 @@ public class Board {
     private boolean gameIsWon;
 
     /**
+     * Indicates whether the board that the user tried to load is valid
+     */
+    private boolean isValid;
+
+    /**
      * Constructor for the board
      */
     public Board(String filename, RiskInput userInputSource, List<Player> players){
@@ -146,14 +151,44 @@ public class Board {
         gameIsWon = false;
 
         BoardConstructor boardConstructor = new BoardConstructor();
-        boardConstructor.loadBoardFromFile(filename, this);
+        isValid = boardConstructor.loadBoardFromFile(filename, this) && validateMapBoarders();
+        if(isValid) {
+            shuffle(players);
 
-        shuffle(players);
+            populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(players.size()));
 
-        populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(players.size()));
+            currentPlayer = (AIPlayer) players.get(players.size() - 1);
+            turnStage = TurnStage.FORTIFY;
+        }
+    }
 
-        currentPlayer = (AIPlayer) players.get(players.size() - 1);
-        turnStage = TurnStage.FORTIFY;
+    /**
+     * Check if the map was succesfully loaded
+     */
+    public boolean isValid(){
+        return isValid;
+    }
+
+    /**
+     * Checks if every territory can be reached
+     * @return true if each territory can be reached
+     */
+    private boolean validateMapBoarders(){
+        Territory start = continents.get(0).getTerritoryList().get(0);
+        ArrayList<Territory> toVisit = new ArrayList<>();
+        ArrayList<Territory> visited = new ArrayList<>();
+        visited.add(start);
+        do {
+            for (Territory t : start.getNeighbours()) {
+                if(!toVisit.contains(t) && !visited.contains(t)) toVisit.add(t);
+            }
+            start = toVisit.get(0);
+            toVisit.remove(0);
+            visited.add(start);
+
+        }
+        while(!toVisit.isEmpty());
+        return getTerritoryList().size() == visited.size();
     }
 
     /**

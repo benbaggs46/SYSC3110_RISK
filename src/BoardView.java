@@ -180,6 +180,11 @@ public class BoardView extends JFrame implements RiskView, RiskInput{
                 " player:", Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getName() + " player");
     }
 
+    public String getMapPath(){
+        return getStringInput("Please enter a path for the map file",
+                "DEFAULT_MAP.xml");
+    }
+
     public boolean isPlayerAI(){
         Object[] options = {"Human", "AI"};
         return getOption("Please enter the player type:", options) == 1;
