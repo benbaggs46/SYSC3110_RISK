@@ -33,6 +33,16 @@ public class Board {
     public static final int MIN_PLAYERS = 2;
 
     /**
+     * The minimum number of armies to start with each turn
+     */
+    public static final int MIN_ARMIES = 3;
+
+    /**
+     * The ratio used to determine how many armies a player gets based on the number of territories they own
+     */
+    public static final int ARMY_RATIO = 3;
+
+    /**
      * A map between any valid number of players and how many armies each player should start the game with
      */
     public static final Map<Integer, Integer> STARTING_ARMIES_FOR_NUM_PLAYERS = Map.of(
@@ -54,6 +64,12 @@ public class Board {
             4, RiskColor.MAGENTA,
             5, RiskColor.GRAY
     );
+
+    /**
+     * Number of armies given to each territory when creating the board
+     */
+    private static final int NUM_STARTING_ARMIES = 1;
+
     /**
      * Indicates whether the game has been started
      */
@@ -119,9 +135,9 @@ public class Board {
     /**
      * Constructor for the board
      */
-    public Board(String filename, RiskInput userInputSource, List<String> playerNames, List<Boolean> isAi){
+    public Board(String filename, RiskInput userInputSource, List<Player> players){
         continents = new ArrayList<>();
-        players = new ArrayList<>();
+        this.players = players;
         selectedTerritories = new ArrayList<>();
         lines = new ArrayList<>();
         views = new ArrayList<>();
@@ -132,18 +148,11 @@ public class Board {
         BoardConstructor boardConstructor = new BoardConstructor();
         boardConstructor.loadBoardFromFile(filename, this);
 
-        int numPlayers = playerNames.size();
-
-        for(int i = 0; i < numPlayers; i++){
-            Player player = new Player(playerNames.get(i), PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getColor(), isAi.get(i));
-            players.add(player);
-        }
-
         shuffle(players);
 
-        populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(numPlayers));
+        populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(players.size()));
 
-        currentPlayer = players.get(numPlayers - 1);
+        currentPlayer = players.get(players.size() - 1);
         turnStage = TurnStage.FORTIFY;
     }
 
@@ -232,7 +241,7 @@ public class Board {
      * @return the number of armies that player gets at the start of their turn
      */
     private int getArmyBonusForPlayer(Player player){
-        return Math.max(player.getNumTerritories() / 3, 3) + getContinentBonusForPlayer(player);
+        return Math.max(player.getNumTerritories() / ARMY_RATIO, MIN_ARMIES) + getContinentBonusForPlayer(player);
     }
 
     /**
@@ -345,7 +354,7 @@ public class Board {
                 Territory t = unfilledTerritories.remove(territoryIndex);
                 Player p = players.get(playerIndex);
                 p.gainTerritory(t);
-                t.addArmies(1);
+                t.addArmies(NUM_STARTING_ARMIES);
                 t.setOwner(p);
                 armiesLeftEach[playerIndex]--;
             }
