@@ -1,14 +1,16 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Performs AI controlled turns for RISK players
  */
-public class AIPlayer {
+public class AIPlayer extends Player{
 
     /**
      * The current player who the AI is making decisions for
      */
-    private static Player player;
+    private Player player;
 
     /**
      * The board that the AI Player is playing on
@@ -21,10 +23,21 @@ public class AIPlayer {
     public static int UTILITY_THRESHOLD = 1;
 
     /**
+     * Constructor for the Player object
+     *
+     * @param name  sets the players name to this parameter
+     * @param color
+     * @param isAi
+     */
+    public AIPlayer(String name, Color color, Boolean isAi) {
+        super(name, color, isAi);
+    }
+
+    /**
      * Gets the best territory to attack based on the current board state
      * @return The attackable territory with the highest utility score, or null if there are no options good enough
      */
-    private static Territory getTargetTerritory(){
+    private Territory getTargetTerritory(){
 
         //create list of all possible territories to attack and an array of their corresponding utility scores
         List<Territory> attackableTerritories = getAttackableTerritories(player.getControlledTerritories());
@@ -47,7 +60,6 @@ public class AIPlayer {
             utilityScores[i] = utilityScore;
             if(utilityScores[maxIndex] < utilityScore) maxIndex = i;
         }
-
         return utilityScores[maxIndex] < UTILITY_THRESHOLD? null: attackableTerritories.get(maxIndex);
     }
 
@@ -57,7 +69,7 @@ public class AIPlayer {
      * @param territoryGroup The territories currently controlled by the player
      * @return The number of border territories they would eliminate if they took the territory
      */
-    private static int getAmountOfBordersRemoved(Territory t, List<Territory> territoryGroup){
+    private int getAmountOfBordersRemoved(Territory t, List<Territory> territoryGroup){
         int currentBorders = getBorderTerritories(territoryGroup).size();
         territoryGroup.add(t);
         int futureBorders = getBorderTerritories(territoryGroup).size();
@@ -70,7 +82,7 @@ public class AIPlayer {
      * @param t The territory that the player is considering attacking
      * @return The total continent bonus for the opponent that would be prevented
      */
-    private static int opponentContinentBonusPrevented(Territory t){
+    private int opponentContinentBonusPrevented(Territory t){
         Player opponent = t.getOwner();
         Continent c = t.getContinent();
         for(Territory t2: c.getTerritoryList()){
@@ -84,7 +96,7 @@ public class AIPlayer {
      * @param t The territory that the player is considering attacking
      * @return The percent of uncontrolled continent that would be conquered
      */
-    private static float percentOfUnconqueredContinentRemoved(Territory t){
+    private float percentOfUnconqueredContinentRemoved(Territory t){
         List<Territory> territoriesInContinent = t.getContinent().getTerritoryList();
         float unconqueredContinentSize = 0;
         for(Territory t2: territoriesInContinent){
@@ -98,7 +110,7 @@ public class AIPlayer {
      * @param t The territory that the player is considering attacking
      * @return The percent of the opponent's territories that would be conquered
      */
-    private static float percentOfOpponentTerritoriesRemoved(Territory t){
+    private float percentOfOpponentTerritoriesRemoved(Territory t){
         return 1 / (float) t.getOwner().getNumTerritories();
     }
 
@@ -107,7 +119,7 @@ public class AIPlayer {
      * @param currentBoard The current board
      * @param currentPlayer The player who the AI is acting for
      */
-    public static void takeTurn(Board currentBoard, Player currentPlayer){
+    public void takeTurn(Board currentBoard, Player currentPlayer){
         player = currentPlayer;
         board = currentBoard;
         AIPlacement();
@@ -118,7 +130,7 @@ public class AIPlayer {
     /**
      * Performs the PLACEMENT phase of the AI turn
      */
-    private static void AIPlacement(){
+    private void AIPlacement(){
         Territory target = getTargetTerritory();
         Territory attackingTerritory;
         if(target != null) {
@@ -134,7 +146,7 @@ public class AIPlayer {
     /**
      * Performs the ATTACK phase of the AI turn
      */
-    private static void AIAttack(){
+    private void AIAttack(){
         Territory target = getTargetTerritory();
         while(target !=  null){
             Territory attackingTerritory = getControlledNeighbourWithMostArmies(target);
@@ -149,7 +161,7 @@ public class AIPlayer {
     /**
      * Performs the FORTIFY phase of the AI turn
      */
-    private static void AIFortify(){
+    private void AIFortify(){
         Territory source = getNonBorderTerritoryWithMostArmies();
         if(source == null) source = getTerritoryByArmyRatio(null, true);
         Territory destination = getTerritoryByArmyRatio(source, false);
@@ -166,7 +178,7 @@ public class AIPlayer {
      * - has at least 2 armies
      * @return Returns the non-border territory of the current player with the most moveable armies, null if no such territory exists
      */
-    private static Territory getNonBorderTerritoryWithMostArmies(){
+    private Territory getNonBorderTerritoryWithMostArmies(){
         List<Territory> nonBorderTerritories = player.getControlledTerritories();
         List<Territory> borderTerritories = getBorderTerritories(nonBorderTerritories);
 
@@ -191,7 +203,7 @@ public class AIPlayer {
      * @return Returns the territory controlled by the current player with either the highest or lowest army ratio, that is connected to
      * the specified territory
      */
-    private static Territory getTerritoryByArmyRatio(Territory connectedTerritory, boolean lookingForMax){
+    private Territory getTerritoryByArmyRatio(Territory connectedTerritory, boolean lookingForMax){
         List<Territory> borderTerritories = player.getControlledTerritories();
         int bestIndex = -1;
         float[] armyRatios = new float[borderTerritories.size()];
@@ -219,7 +231,7 @@ public class AIPlayer {
      * @param attacking Determines which result is calculated. (2) if true, (1) if false
      * @return The calculated army difference
      */
-    private static float getArmyRatio(Territory t, boolean attacking){
+    private float getArmyRatio(Territory t, boolean attacking){
         float availableAttackingArmies = 0;
         for(Territory t2: t.getNeighbours()){
             if((t2.getOwner() != player) == attacking) continue;
@@ -234,7 +246,7 @@ public class AIPlayer {
      * @param t The territory that the result must neighbour
      * @return The neighbour territory with the most armies
      */
-    private static Territory getControlledNeighbourWithMostArmies(Territory t){
+    private Territory getControlledNeighbourWithMostArmies(Territory t){
         Territory neighbourWithMostArmies = null;
         for(Territory t2: t.getNeighbours()){
             if(t2.getOwner() != player) continue;
@@ -249,7 +261,7 @@ public class AIPlayer {
      * @param territoryGroup The list of territories
      * @return A list of border territories from the provided territory group
      */
-    private static List<Territory> getBorderTerritories(List<Territory> territoryGroup){
+    private List<Territory> getBorderTerritories(List<Territory> territoryGroup){
         List<Territory> borderTerritories = new ArrayList<>();
         for(Territory t: territoryGroup){
             for(Territory neighbour: t.getNeighbours()){
@@ -267,7 +279,7 @@ public class AIPlayer {
      * @param territoryGroup The current player's territories
      * @return A list of all attackable territories
      */
-    private static List<Territory> getAttackableTerritories(List<Territory> territoryGroup){
+    private List<Territory> getAttackableTerritories(List<Territory> territoryGroup){
         List<Territory> borderTerritories = new ArrayList<>();
         for(Territory t: territoryGroup){
             if(t.getNumArmies() < 2) continue;

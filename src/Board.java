@@ -93,7 +93,7 @@ public class Board {
     /**
      * The player who's turn it is currently
      */
-    private Player currentPlayer;
+    private AIPlayer currentPlayer;
     /**
      * Number of armies the current player can place
      */
@@ -152,7 +152,7 @@ public class Board {
 
         populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(players.size()));
 
-        currentPlayer = players.get(players.size() - 1);
+        currentPlayer = (AIPlayer) players.get(players.size() - 1);
         turnStage = TurnStage.FORTIFY;
     }
 
@@ -448,14 +448,13 @@ public class Board {
      */
     private void nextTurn(){
 
-        currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
+        currentPlayer = (AIPlayer) players.get((players.indexOf(currentPlayer) + 1) % players.size());
         armiesToPlace = getArmyBonusForPlayer(currentPlayer);
 
-        if(!currentPlayer.isAi())
-            sendMessageToViews("It is now " + currentPlayer.getName() + "'s turn");
-
+        if(currentPlayer.isAi())
+            currentPlayer.takeTurn(this, currentPlayer);
         else{
-            AIPlayer.takeTurn(this, currentPlayer);
+            sendMessageToViews("It is now " + currentPlayer.getName() + "'s turn");
         }
     }
 

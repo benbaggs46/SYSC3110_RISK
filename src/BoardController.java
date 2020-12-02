@@ -47,7 +47,7 @@ public class BoardController {
         int numPlayers = boardView.getNumPlayers();
         List<Player> players = new ArrayList<>();
         for(int i = 0; i < numPlayers; i++){
-            players.add(new Player(boardView.getPlayerName(i),
+            players.add(new AIPlayer(boardView.getPlayerName(i),
                     Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getColor(),
                     boardView.isPlayerAI()
                     ));
