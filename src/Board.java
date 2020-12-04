@@ -212,7 +212,7 @@ public class Board {
             xml += "<player>\n";
             xml += "<name>" + p.getName() + "</name>";
             xml += "<isAi>" + p.isAi() + "</isAi>\n";
-            xml += "<color>" + p.getColor().toString() + "</color>\n";
+            xml += "<color>" + BoardConstructor.colorToHex(p.getColor()) + "</color>\n";
             for(Territory t: p.getControlledTerritories()){
                 xml += "<territory>";
                 xml += "<name>" + t.getName() + "</name>";

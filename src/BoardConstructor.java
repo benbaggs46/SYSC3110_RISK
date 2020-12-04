@@ -39,11 +39,18 @@ public class BoardConstructor {
      * @param colorString String representing a hexadecimal color code, formatted like "FFFFFF"
      * @return A Color object representing the input string
      */
-    public static Color hex2RGB(String colorString) {
+    public static Color hexToColor(String colorString) {
         return new Color(
                 Integer.valueOf( colorString.substring( 0, 2 ), 16 ),
                 Integer.valueOf( colorString.substring( 2, 4 ), 16 ),
                 Integer.valueOf( colorString.substring( 4, 6 ), 16 ) );
+    }
+
+    public static String colorToHex(Color color){
+        String red = String.format("%02X", color.getRed());
+        String green = String.format("%02X", color.getGreen());
+        String blue = String.format("%02X", color.getBlue());
+        return red + green + blue;
     }
 
     public boolean loadBoardFromFile(String filename, Board board){
@@ -70,7 +77,7 @@ public class BoardConstructor {
                     if (continentNode.getNodeType() == Node.ELEMENT_NODE) {
                         Element continentElement = (Element) continentNode;
 
-                        Continent c = new Continent(continentElement.getElementsByTagName("name").item(0).getTextContent(), Integer.parseInt(continentElement.getElementsByTagName("bonus").item(0).getTextContent()), hex2RGB(continentElement.getElementsByTagName("color").item(0).getTextContent()));
+                        Continent c = new Continent(continentElement.getElementsByTagName("name").item(0).getTextContent(), Integer.parseInt(continentElement.getElementsByTagName("bonus").item(0).getTextContent()), hexToColor(continentElement.getElementsByTagName("color").item(0).getTextContent()));
                         board.addContinent(c);
 
                         NodeList territoryList = continentElement.getElementsByTagName("territory");

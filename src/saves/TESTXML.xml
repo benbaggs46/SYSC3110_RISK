@@ -1,63 +1,67 @@
 <save>
 <map>DEFAULT_MAP</map>
-<armiesToPlace>0</armiesToPlace>
+<armiesToPlace>2</armiesToPlace>
 <turnStage>PLACEMENT</turnStage>
 <player>
-<name>Red player</name><isAi>true</isAi>
-<color>java.awt.Color[r=255,g=0,b=0]</color>
-<territory><name>Siam</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Peru</name><numArmies>1</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Yakutsk</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Western Europe</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>India</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Southern Europe</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Brazil</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Indonesia</name><numArmies>1</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Western United States</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Argentina</name><numArmies>1</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Middle East</name><numArmies>1</numArmies><tempArmies>0</tempArmies></territory>
+<name>Yellow player</name><isAi>false</isAi>
+<color>FFFF00</color>
+<territory><name>Ontario</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Northwest Territory</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Ural</name><numArmies>1</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Indonesia</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Peru</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
 <territory><name>Venezuela</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Afghanistan</name><numArmies>1</numArmies><tempArmies>0</tempArmies></territory>
-</player>
-<player>
-<name>Blue player</name><isAi>false</isAi>
-<color>java.awt.Color[r=0,g=0,b=255]</color>
-<territory><name>New Guinea</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Iceland</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Alberta</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Japan</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Quebec</name><numArmies>1</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>North Africa</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Ukraine</name><numArmies>2</numArmies><tempArmies>3</tempArmies></territory>
-<territory><name>Alaska</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Siberia</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Irkutsk</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
-</player>
-<player>
-<name>Yellow player</name><isAi>true</isAi>
-<color>java.awt.Color[r=255,g=255,b=0]</color>
-<territory><name>Mongolia</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Scandinavia</name><numArmies>5</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>South Africa</name><numArmies>1</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Northwest Territory</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Central America</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Northern Europe</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
 <territory><name>China</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>East Africa</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Northern Europe</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Greenland</name><numArmies>1</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Eastern United States</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Southern Europe</name><numArmies>5</numArmies><tempArmies>1</tempArmies></territory>
+</player>
+<player>
+<name>Magenta player</name><isAi>true</isAi>
+<color>FF00FF</color>
+<territory><name>Egypt</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>East Africa</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Siam</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Siberia</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Japan</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>India</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Ukraine</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Scandinavia</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Madagascar</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
 </player>
 <player>
 <name>Green player</name><isAi>false</isAi>
-<color>java.awt.Color[r=0,g=255,b=0]</color>
-<territory><name>Ontario</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Eastern Australia</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Western Australia</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Madagascar</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Kamchatka</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Congo</name><numArmies>1</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Ural</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<color>00FF00</color>
+<territory><name>Congo</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Afghanistan</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Iceland</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Quebec</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Alaska</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Western Europe</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Middle East</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Western United States</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
+</player>
+<player>
+<name>Red player</name><isAi>false</isAi>
+<color>FF0000</color>
+<territory><name>Central America</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Yakutsk</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
 <territory><name>Great Britain</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
-<territory><name>Egypt</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Eastern Australia</name><numArmies>5</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>South Africa</name><numArmies>1</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Argentina</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Eastern United States</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>North Africa</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+</player>
+<player>
+<name>Blue player</name><isAi>false</isAi>
+<color>0000FF</color>
+<territory><name>Irkutsk</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Greenland</name><numArmies>4</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Brazil</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Kamchatka</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Western Australia</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Mongolia</name><numArmies>5</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>Alberta</name><numArmies>2</numArmies><tempArmies>0</tempArmies></territory>
+<territory><name>New Guinea</name><numArmies>3</numArmies><tempArmies>0</tempArmies></territory>
 </player>
 </save>
