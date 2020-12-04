@@ -7,6 +7,7 @@ import org.xml.sax.SAXException;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -53,15 +54,68 @@ public class BoardConstructor {
         return red + green + blue;
     }
 
-    public boolean loadBoardFromFile(String filename, Board board){
-        if(validateXMLSchema("src/MAP.xsd","src/" + filename)) {
+    public boolean loadBoardFromSaveFile(String filename, Board board){
+        if(validateXMLSchema("src/SAVE.xsd","src/" + filename + ".xml")) {
+            try{
+                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                //an instance of builder to parse the specified xml file
+                DocumentBuilder db = dbf.newDocumentBuilder();
+                InputStream in = getClass().getResourceAsStream(filename + ".xml");
+                Document doc = db.parse(in);
+                doc.getDocumentElement().normalize();
+
+                String mapFile = doc.getElementsByTagName("map").item(0).getTextContent();
+                loadBoardFromMapFile(Board.MAP_FOLDER + mapFile, board);
+
+                NodeList playerList = doc.getElementsByTagName("player");
+
+                for (int j = 0; j < playerList.getLength(); j++) {
+                    Node playerNode = playerList.item(j);
+                    if (playerNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element playerElement = (Element) playerNode;
+                        String playerName = playerElement.getElementsByTagName("name").item(0).getTextContent();
+                        Color playerColor = hexToColor(playerElement.getElementsByTagName("color").item(0).getTextContent());
+                        boolean isAi = Boolean.parseBoolean(playerElement.getElementsByTagName("isAi").item(0).getTextContent());
+                        Player p = new Player(playerName, playerColor, isAi);
+                        NodeList territoryList = playerElement.getElementsByTagName("territory");
+                        for (int k = 0; k < territoryList.getLength(); k++) {
+                            Node territoryNode = playerList.item(k);
+                            if (territoryNode.getNodeType() == Node.ELEMENT_NODE) {
+                                Element territoryElement = (Element) territoryNode;
+                                String territoryName = territoryElement.getElementsByTagName("name").item(0).getTextContent();
+                                int numArmies = Integer.parseInt(territoryElement.getElementsByTagName("numArmies").item(0).getTextContent());
+                                int tempArmies = Integer.parseInt(territoryElement.getElementsByTagName("tempArmies").item(0).getTextContent());
+                                Territory t = board.findTerritoryByName(territoryName);
+                                t.setOwner(p);
+                                t.addArmies(numArmies);
+                                t.addTempArmies(tempArmies);
+                                p.gainTerritory(t);
+                            }
+                        }
+                        board.addPlayer(p);
+                    }
+                }
+
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SAXException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
+
+    public boolean loadBoardFromMapFile(String filename, Board board){
+        if(validateXMLSchema("src/MAP.xsd","src/" + filename + ".xml")) {
             try {
                 //an instance of factory that gives a document builder
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                 //an instance of builder to parse the specified xml file
                 DocumentBuilder db = dbf.newDocumentBuilder();
 
-                InputStream in = getClass().getResourceAsStream(filename);
+                InputStream in = getClass().getResourceAsStream(filename + ".xml");
 
                 Document doc = db.parse(in);
 

@@ -62,6 +62,10 @@ public class BoardController {
         board.nextTurnStage();
     }
 
+    public void save(){ if(board != null) board.saveGame();}
+
+    public void load(){ }
+
     /**
      * Displays a help message to the user
      */

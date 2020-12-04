@@ -38,6 +38,22 @@ public class Player {
         this.ai = isAi;
     }
 
+    public String toXML(){
+        String xml = "<player>\n";
+        xml += "<name>" + name + "</name>";
+        xml += "<isAi>" + ai + "</isAi>\n";
+        xml += "<color>" + BoardConstructor.colorToHex(color) + "</color>\n";
+        for(Territory t: controlledTerritories){
+            xml += "<territory>";
+            xml += "<name>" + t.getName() + "</name>";
+            xml += "<numArmies>" + t.getNumArmies() + "</numArmies>";
+            xml += "<tempArmies>" + t.getTempArmies() + "</tempArmies>";
+            xml += "</territory>\n";
+        }
+        xml += "</player>\n";
+        return xml;
+    }
+
     /**
      * Returns the color of the player
      * @return The color of the player

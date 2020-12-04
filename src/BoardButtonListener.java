@@ -39,5 +39,9 @@ public class BoardButtonListener implements ActionListener {
         else if(actionCommand.equals("Action")) boardController.doAction();
 
         else if(actionCommand.equals("Proceed")) boardController.proceed();
+
+        else if(actionCommand.equals("Save Game")) boardController.save();
+
+        else if(actionCommand.equals("Load Game")) boardController.load();
     }
 }

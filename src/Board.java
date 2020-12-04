@@ -11,12 +11,12 @@ public class Board {
     /**
      * The folder where saved games will be stored
      */
-    public static final String SAVE_GAME_FOLDER = "saves";
+    public static final String SAVE_GAME_FOLDER = "saves/";
 
     /**
      * The folder where custom maps will be stored, including the default map
      */
-    public static final String MAP_FOLDER = "maps";
+    public static final String MAP_FOLDER = "maps/";
 
     /**
      * The default game map
@@ -168,18 +168,19 @@ public class Board {
         gameHasStarted = false;
         gameIsWon = false;
         mapFileString = filename;
-
         BoardConstructor boardConstructor = new BoardConstructor();
-        isValid = boardConstructor.loadBoardFromFile(MAP_FOLDER + "/" + filename + ".xml", this) && validateMapBoarders();
+        isValid = boardConstructor.loadBoardFromMapFile(MAP_FOLDER + filename, this) && validateMapBoarders();
         //if the board is invalid then populating the board may cause an error
-        if(isValid) {
+        if (isValid) {
             shuffle(players);
-
             populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(players.size()));
-
             currentPlayer = (AIPlayer) players.get(players.size() - 1);
             turnStage = TurnStage.FORTIFY;
         }
+    }
+
+    public void addPlayer(Player p){
+        players.add(p);
     }
 
     /**
@@ -188,10 +189,10 @@ public class Board {
      */
     public void saveGameToFile(String filename){
         try{
-            File file = new File("src/" + SAVE_GAME_FOLDER + "/" + filename + ".xml");
+            File file = new File("src/" + SAVE_GAME_FOLDER + filename + ".xml");
             file.createNewFile();
 
-            FileOutputStream fileOutputStream = new FileOutputStream("src/" + SAVE_GAME_FOLDER + "/" + filename + ".xml");
+            FileOutputStream fileOutputStream = new FileOutputStream("src/" + SAVE_GAME_FOLDER + filename + ".xml");
             DataOutputStream out = new DataOutputStream(fileOutputStream);
             out.writeBytes(toXML());
             out.close();
@@ -208,22 +209,18 @@ public class Board {
         xml += "<map>" + mapFileString + "</map>\n";
         xml += "<armiesToPlace>" + armiesToPlace + "</armiesToPlace>\n";
         xml += "<turnStage>" + turnStage + "</turnStage>\n";
-        for(Player p: players){
-            xml += "<player>\n";
-            xml += "<name>" + p.getName() + "</name>";
-            xml += "<isAi>" + p.isAi() + "</isAi>\n";
-            xml += "<color>" + BoardConstructor.colorToHex(p.getColor()) + "</color>\n";
-            for(Territory t: p.getControlledTerritories()){
-                xml += "<territory>";
-                xml += "<name>" + t.getName() + "</name>";
-                xml += "<numArmies>" + t.getNumArmies() + "</numArmies>";
-                xml += "<tempArmies>" + t.getTempArmies() + "</tempArmies>";
-                xml += "</territory>\n";
-            }
-            xml += "</player>\n";
+        xml += currentPlayer.toXML();
+        int currentIndex = players.indexOf(currentPlayer);
+        for(int i = currentIndex + 1 ; i != currentIndex; i = (i+1) % players.size()){
+            xml += players.get(i).toXML();
         }
         xml += "</save>";
         return xml;
+    }
+
+    public void saveGame(){
+        String filename = userInputSource.getStringInput("Enter the file name to save this game as (no file extension)", null);
+        if (filename != null) saveGameToFile(filename);
     }
 
     /**

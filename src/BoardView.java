@@ -85,6 +85,14 @@ public class BoardView extends JFrame implements RiskView, RiskInput{
         button.addActionListener(new BoardButtonListener(this));
         buttonPanel.add(button);
 
+        button = new JButton("Load Game");
+        button.addActionListener(new BoardButtonListener(this));
+        buttonPanel.add(button);
+
+        button = new JButton("Save Game");
+        button.addActionListener(new BoardButtonListener(this));
+        buttonPanel.add(button);
+
         button = new JButton("Help");
         button.addActionListener(new BoardButtonListener(this));
         buttonPanel.add(button);
