@@ -163,7 +163,9 @@ public class AIPlayer extends Player{
      */
     private void AIFortify(){
         Territory source = getNonBorderTerritoryWithMostArmies();
-        if(source == null) source = getTerritoryByArmyRatio(null, true);
+        if(source == null) {
+            source = getTerritoryByArmyRatio(null, true);
+        }
         Territory destination = getTerritoryByArmyRatio(source, false);
         if(destination != null && source.getNumArmies() > 1){
             board.fortify(destination, source, source.getNumArmies() / 2);

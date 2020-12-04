@@ -187,8 +187,8 @@ public class BoardView extends JFrame implements RiskView, RiskInput{
     }
 
     public String getMapPath(){
-        return getStringInput("Please enter a path for the map file",
-                "DEFAULT_MAP.xml");
+        return getStringInput("Please enter the name of the map file (no file extension)",
+                "DEFAULT_MAP");
     }
 
     public boolean isPlayerAI(){

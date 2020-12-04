@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 
@@ -6,6 +7,21 @@ import java.util.List;
  * Models the RISK game board, including all players, continents, territories, armies, and turn phases.
  */
 public class Board {
+
+    /**
+     * The folder where saved games will be stored
+     */
+    public static final String SAVE_GAME_FOLDER = "saves";
+
+    /**
+     * The folder where custom maps will be stored, including the default map
+     */
+    public static final String MAP_FOLDER = "maps";
+
+    /**
+     * The default game map
+     */
+    public static final String DEFAULT_MAP = "DEFAULT_MAP";
 
     /**
      * The max number of dice rolls
@@ -137,6 +153,8 @@ public class Board {
      */
     private boolean isValid;
 
+    private String mapFileString;
+
     /**
      * Constructor for the board
      */
@@ -149,9 +167,10 @@ public class Board {
         this.userInputSource = userInputSource;
         gameHasStarted = false;
         gameIsWon = false;
+        mapFileString = filename;
 
         BoardConstructor boardConstructor = new BoardConstructor();
-        isValid = boardConstructor.loadBoardFromFile(filename, this) && validateMapBoarders();
+        isValid = boardConstructor.loadBoardFromFile(MAP_FOLDER + "/" + filename + ".xml", this) && validateMapBoarders();
         //if the board is invalid then populating the board may cause an error
         if(isValid) {
             shuffle(players);
@@ -164,7 +183,51 @@ public class Board {
     }
 
     /**
-     * Check if the map was succesfully loaded
+     * Saves the current game state to the specified file
+     * @param filename The name of the save file with no file extension
+     */
+    public void saveGameToFile(String filename){
+        try{
+            File file = new File("src/" + SAVE_GAME_FOLDER + "/" + filename + ".xml");
+            file.createNewFile();
+
+            FileOutputStream fileOutputStream = new FileOutputStream("src/" + SAVE_GAME_FOLDER + "/" + filename + ".xml");
+            DataOutputStream out = new DataOutputStream(fileOutputStream);
+            out.writeBytes(toXML());
+            out.close();
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String toXML(){
+        String xml = "<save>\n";
+        xml += "<map>" + mapFileString + "</map>\n";
+        xml += "<armiesToPlace>" + armiesToPlace + "</armiesToPlace>\n";
+        xml += "<turnStage>" + turnStage + "</turnStage>\n";
+        for(Player p: players){
+            xml += "<player>\n";
+            xml += "<name>" + p.getName() + "</name>";
+            xml += "<isAi>" + p.isAi() + "</isAi>\n";
+            xml += "<color>" + p.getColor().toString() + "</color>\n";
+            for(Territory t: p.getControlledTerritories()){
+                xml += "<territory>";
+                xml += "<name>" + t.getName() + "</name>";
+                xml += "<numArmies>" + t.getNumArmies() + "</numArmies>";
+                xml += "<tempArmies>" + t.getTempArmies() + "</tempArmies>";
+                xml += "</territory>\n";
+            }
+            xml += "</player>\n";
+        }
+        xml += "</save>";
+        return xml;
+    }
+
+    /**
+     * Check if the map was successfully loaded
      */
     public boolean isValid(){
         return isValid;
