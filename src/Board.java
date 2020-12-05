@@ -109,7 +109,7 @@ public class Board {
     /**
      * The player who's turn it is currently
      */
-    private AIPlayer currentPlayer;
+    private Player currentPlayer;
     /**
      * Number of armies the current player can place
      */
@@ -129,6 +129,10 @@ public class Board {
      * All views to be notified when the game state changes
      */
     private List<RiskView> views;
+
+    public void setTurnStage(TurnStage turnStage) {
+        this.turnStage = turnStage;
+    }
 
     /**
      * Returns the user input source of the Board
@@ -158,8 +162,8 @@ public class Board {
     /**
      * Constructor for the board
      */
-    public Board(String filename, RiskInput userInputSource, List<Player> players){
-        continents = new ArrayList<>();
+    public Board(){
+        /*continents = new ArrayList<>();
         this.players = players;
         selectedTerritories = new ArrayList<>();
         lines = new ArrayList<>();
@@ -176,11 +180,45 @@ public class Board {
             populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(players.size()));
             currentPlayer = (AIPlayer) players.get(players.size() - 1);
             turnStage = TurnStage.FORTIFY;
-        }
+        }*/
     }
 
-    public void addPlayer(Player p){
-        players.add(p);
+    public static Board boardFromSave(String filename, RiskInput userInputSource){
+        Board board = new Board();
+        board.continents = new ArrayList<>();
+        board.players = new ArrayList<>();
+        board.selectedTerritories = new ArrayList<>();
+        board.lines = new ArrayList<>();
+        board.views = new ArrayList<>();
+        board.userInputSource = userInputSource;
+        board.gameHasStarted = false;
+        board.gameIsWon = false;
+        BoardConstructor boardConstructor = new BoardConstructor();
+        board.isValid = boardConstructor.loadBoardFromSaveFile(filename, board) && board.validateMapBoarders();
+        return board;
+    }
+
+    public static Board boardFromMap(String filename, RiskInput userInputSource, List<Player> players){
+        Board board = new Board();
+        board.continents = new ArrayList<>();
+        board.players = players;
+        board.selectedTerritories = new ArrayList<>();
+        board.lines = new ArrayList<>();
+        board.views = new ArrayList<>();
+        board.userInputSource = userInputSource;
+        board.gameHasStarted = false;
+        board.gameIsWon = false;
+        board.mapFileString = filename;
+        BoardConstructor boardConstructor = new BoardConstructor();
+        board.isValid = boardConstructor.loadBoardFromMapFile(filename, board) && board.validateMapBoarders();
+        //if the board is invalid then populating the board may cause an error
+        if (board.isValid) {
+            shuffle(players);
+            board.populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(players.size()));
+            board.currentPlayer = (AIPlayer) players.get(players.size() - 1);
+            board.turnStage = TurnStage.FORTIFY;
+        }
+        return board;
     }
 
     /**
@@ -544,12 +582,11 @@ public class Board {
      * Moves the board to the next player's turn
      */
     private void nextTurn(){
-
-        currentPlayer = (AIPlayer) players.get((players.indexOf(currentPlayer) + 1) % players.size());
+        currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
         armiesToPlace = getArmyBonusForPlayer(currentPlayer);
-
+        AIPlayer p = (AIPlayer) currentPlayer;
         if(currentPlayer.isAi())
-            currentPlayer.takeTurn(this, currentPlayer);
+            p.takeTurn(this, p);
         else{
             sendMessageToViews("It is now " + currentPlayer.getName() + "'s turn");
         }
@@ -559,7 +596,6 @@ public class Board {
      * Moves the board to the next turn phase
      */
     public void nextTurnStage(){
-
         if(gameIsWon) return;
 
         turnStage = TurnStage.values()[(turnStage.ordinal() + 1) % TurnStage.values().length];
@@ -840,6 +876,18 @@ public class Board {
         if(turnStage == TurnStage.ATTACK) doAttack();
         else if(turnStage == TurnStage.FORTIFY) doFortify();
         else if(turnStage == TurnStage.PLACEMENT) doPlacement();
+    }
+
+    public void addPlayer(Player p) {
+        players.add(p);
+    }
+
+    public void setArmiesToPlace(int armiesToPlace) {
+        this.armiesToPlace = armiesToPlace;
+    }
+
+    public void setCurrentPlayer(Player p) {
+        currentPlayer = p;
     }
 }
 

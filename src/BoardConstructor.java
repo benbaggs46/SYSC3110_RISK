@@ -55,17 +55,24 @@ public class BoardConstructor {
     }
 
     public boolean loadBoardFromSaveFile(String filename, Board board){
-        if(validateXMLSchema("src/SAVE.xsd","src/" + filename + ".xml")) {
+        if(validateXMLSchema("src/SAVE.xsd","src/" + Board.SAVE_GAME_FOLDER + filename + ".xml")) {
             try{
+                //an instance of factory that gives a document builder
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                 //an instance of builder to parse the specified xml file
                 DocumentBuilder db = dbf.newDocumentBuilder();
-                InputStream in = getClass().getResourceAsStream(filename + ".xml");
+                InputStream in = getClass().getResourceAsStream(Board.SAVE_GAME_FOLDER + filename + ".xml");
                 Document doc = db.parse(in);
                 doc.getDocumentElement().normalize();
 
                 String mapFile = doc.getElementsByTagName("map").item(0).getTextContent();
-                loadBoardFromMapFile(Board.MAP_FOLDER + mapFile, board);
+                loadBoardFromMapFile(mapFile, board);
+
+                TurnStage turnStage = TurnStage.valueOf(doc.getElementsByTagName("turnStage").item(0).getTextContent());
+                board.setTurnStage(turnStage);
+
+                int armiesToPlace = Integer.parseInt(doc.getElementsByTagName("armiesToPlace").item(0).getTextContent());
+                board.setArmiesToPlace(armiesToPlace);
 
                 NodeList playerList = doc.getElementsByTagName("player");
 
@@ -77,9 +84,10 @@ public class BoardConstructor {
                         Color playerColor = hexToColor(playerElement.getElementsByTagName("color").item(0).getTextContent());
                         boolean isAi = Boolean.parseBoolean(playerElement.getElementsByTagName("isAi").item(0).getTextContent());
                         Player p = new Player(playerName, playerColor, isAi);
+                        if(j == 0) board.setCurrentPlayer(p);
                         NodeList territoryList = playerElement.getElementsByTagName("territory");
                         for (int k = 0; k < territoryList.getLength(); k++) {
-                            Node territoryNode = playerList.item(k);
+                            Node territoryNode = territoryList.item(k);
                             if (territoryNode.getNodeType() == Node.ELEMENT_NODE) {
                                 Element territoryElement = (Element) territoryNode;
                                 String territoryName = territoryElement.getElementsByTagName("name").item(0).getTextContent();
@@ -96,6 +104,7 @@ public class BoardConstructor {
                     }
                 }
 
+                return true;
             } catch (ParserConfigurationException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -104,18 +113,18 @@ public class BoardConstructor {
                 e.printStackTrace();
             }
         }
-        return true;
+        return false;
     }
 
     public boolean loadBoardFromMapFile(String filename, Board board){
-        if(validateXMLSchema("src/MAP.xsd","src/" + filename + ".xml")) {
+        if(validateXMLSchema("src/MAP.xsd","src/" + Board.MAP_FOLDER + filename + ".xml")) {
             try {
                 //an instance of factory that gives a document builder
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                 //an instance of builder to parse the specified xml file
                 DocumentBuilder db = dbf.newDocumentBuilder();
 
-                InputStream in = getClass().getResourceAsStream(filename + ".xml");
+                InputStream in = getClass().getResourceAsStream(Board.MAP_FOLDER + filename + ".xml");
 
                 Document doc = db.parse(in);
 

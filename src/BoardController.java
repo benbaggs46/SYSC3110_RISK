@@ -55,7 +55,7 @@ public class BoardController {
 
         //Get user input for the board to use then check if it is valid
         do {
-            board = new Board(boardView.getMapPath(), boardView, players);
+            board = Board.boardFromMap(boardView.getMapPath(), boardView, players);
         } while(!board.isValid());
 
         board.addRiskView(boardView);
@@ -64,7 +64,14 @@ public class BoardController {
 
     public void save(){ if(board != null) board.saveGame();}
 
-    public void load(){ }
+    public void load(){
+        do {
+            board = Board.boardFromSave("test", boardView);
+        } while(!board.isValid());
+
+        board.addRiskView(boardView);
+        board.nextTurnStage();
+    }
 
     /**
      * Displays a help message to the user
