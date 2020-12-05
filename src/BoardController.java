@@ -59,6 +59,9 @@ public class BoardController {
         } while(!board.isValid());
 
         board.addRiskView(boardView);
+        //
+        boardView.repaint();
+        //
         board.nextTurnStage();
     }
 
@@ -70,6 +73,9 @@ public class BoardController {
         } while(!board.isValid());
 
         board.addRiskView(boardView);
+        //
+        boardView.repaint();
+        //
         board.nextTurnStage();
     }
 
