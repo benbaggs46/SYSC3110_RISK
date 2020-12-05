@@ -67,8 +67,9 @@ public class BoardConstructor {
 
                 String mapFile = doc.getElementsByTagName("map").item(0).getTextContent();
                 loadBoardFromMapFile(mapFile, board);
+                board.setMapFile(mapFile);
 
-                TurnStage turnStage = TurnStage.valueOf(doc.getElementsByTagName("turnStage").item(0).getTextContent());
+                TurnStage turnStage = TurnStage.values()[(TurnStage.valueOf(doc.getElementsByTagName("turnStage").item(0).getTextContent()).ordinal() + TurnStage.values().length - 1) % TurnStage.values().length];
                 board.setTurnStage(turnStage);
 
                 int armiesToPlace = Integer.parseInt(doc.getElementsByTagName("armiesToPlace").item(0).getTextContent());
@@ -84,7 +85,7 @@ public class BoardConstructor {
                         Color playerColor = hexToColor(playerElement.getElementsByTagName("color").item(0).getTextContent());
                         boolean isAi = Boolean.parseBoolean(playerElement.getElementsByTagName("isAi").item(0).getTextContent());
                         Player p = new Player(playerName, playerColor, isAi);
-                        if(j == 0) board.setCurrentPlayer(p);
+                        if(j == playerList.getLength() - 1) board.setCurrentPlayer(p);
                         NodeList territoryList = playerElement.getElementsByTagName("territory");
                         for (int k = 0; k < territoryList.getLength(); k++) {
                             Node territoryNode = territoryList.item(k);

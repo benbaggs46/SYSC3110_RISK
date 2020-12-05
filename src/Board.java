@@ -583,10 +583,10 @@ public class Board {
      */
     private void nextTurn(){
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
-        armiesToPlace = getArmyBonusForPlayer(currentPlayer);
-        AIPlayer p = (AIPlayer) currentPlayer;
-        if(currentPlayer.isAi())
-            p.takeTurn(this, p);
+        if(armiesToPlace == 0) armiesToPlace = getArmyBonusForPlayer(currentPlayer);
+        if(currentPlayer.isAi()){
+            ((AIPlayer) currentPlayer).takeTurn(this, currentPlayer);
+        }
         else{
             sendMessageToViews("It is now " + currentPlayer.getName() + "'s turn");
         }
@@ -888,6 +888,10 @@ public class Board {
 
     public void setCurrentPlayer(Player p) {
         currentPlayer = p;
+    }
+
+    public void setMapFile(String mapFile) {
+        mapFileString = mapFile;
     }
 }
 

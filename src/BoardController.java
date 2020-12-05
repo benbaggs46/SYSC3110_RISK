@@ -66,7 +66,7 @@ public class BoardController {
 
     public void load(){
         do {
-            board = Board.boardFromSave("test", boardView);
+            board = Board.boardFromSave(boardView.getMapPath(), boardView);
         } while(!board.isValid());
 
         board.addRiskView(boardView);
