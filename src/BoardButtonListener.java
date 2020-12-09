@@ -30,7 +30,7 @@ public class BoardButtonListener implements ActionListener {
 
         BoardController boardController = boardView.getBoardController();
 
-        if(actionCommand.equals("New Game")) boardController.createNewGame();
+        if(actionCommand.equals("New Game")) boardController.createNewGame(true);
 
         else if(actionCommand.equals("Quit")) boardController.quit();
 
@@ -42,6 +42,6 @@ public class BoardButtonListener implements ActionListener {
 
         else if(actionCommand.equals("Save Game")) boardController.save();
 
-        else if(actionCommand.equals("Load Game")) boardController.load();
+        else if(actionCommand.equals("Load Game")) boardController.createNewGame(false);
     }
 }

@@ -158,52 +158,49 @@ public class Board {
 
     private String mapFileString;
 
-    public static Board boardFromSave(String filename, RiskInput userInputSource){
-        Board board = new Board();
-        board.continents = new ArrayList<>();
-        board.players = new ArrayList<>();
-        board.selectedTerritories = new ArrayList<>();
-        board.lines = new ArrayList<>();
-        board.views = new ArrayList<>();
-        board.userInputSource = userInputSource;
-        board.gameHasStarted = false;
-        board.gameIsWon = false;
-        BoardConstructor boardConstructor = new BoardConstructor();
-        board.isValid = boardConstructor.loadBoardFromSaveFile(filename, board) && board.validateMapBoarders();
-
-        for(Player p: board.players){
-            if(p.isAi()) ((AIPlayer) p).setBoard(board);
-        }
-
-        return board;
+    public Board(RiskInput userInputSource){
+        this.continents = new ArrayList<>();
+        this.selectedTerritories = new ArrayList<>();
+        this.lines = new ArrayList<>();
+        this.views = new ArrayList<>();
+        this.userInputSource = userInputSource;
+        this.gameHasStarted = false;
+        this.gameIsWon = false;
     }
 
-    public static Board boardFromMap(String filename, RiskInput userInputSource, List<Player> players){
-        Board board = new Board();
-        board.continents = new ArrayList<>();
-        board.players = players;
-
-        board.selectedTerritories = new ArrayList<>();
-        board.lines = new ArrayList<>();
-        board.views = new ArrayList<>();
-        board.userInputSource = userInputSource;
-        board.gameHasStarted = false;
-        board.gameIsWon = false;
-        board.mapFileString = filename;
+    public static Board newBoard(String filename, RiskInput userInputSource, boolean gameIsNew){
+        Board board = new Board(userInputSource);
         BoardConstructor boardConstructor = new BoardConstructor();
-        board.isValid = boardConstructor.loadBoardFromMapFile(filename, board) && board.validateMapBoarders();
-        //if the board is invalid then populating the board may cause an error
-        if (board.isValid) {
-            shuffle(players);
-            board.populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(players.size()));
-            board.currentPlayer = players.get(players.size() - 1);
-            board.turnStage = TurnStage.FORTIFY;
+
+        if(gameIsNew){
+            int numPlayers = userInputSource.getIntInput("num players", MIN_PLAYERS, MAX_PLAYERS);
+            List<Player> players = new ArrayList<>();
+            Object[] options = {"Human", "AI"};
+            for(int i = 0; i < numPlayers; i++){
+                players.add(Player.newPlayer(userInputSource.getStringInput("player name " + PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getName(),
+                        Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getName() + " player"),
+                        Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getColor(),
+                        userInputSource.getOption("Please enter the player type:", options) == 1
+                ));
+            }
+            board.players = players;
+            board.mapFileString = filename;
+            board.isValid = boardConstructor.loadBoardFromMapFile(filename, board) && board.validateMapBoarders();
+            if (board.isValid) {
+                shuffle(players);
+                board.populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(players.size()));
+                board.currentPlayer = players.get(players.size() - 1);
+                board.turnStage = TurnStage.FORTIFY;
+            }
+        }
+        else{
+            board.players = new ArrayList<>();
+            board.isValid = boardConstructor.loadBoardFromSaveFile(filename, board) && board.validateMapBoarders();
         }
 
         for(Player p: board.players){
-            if(p.isAi()) ((AIPlayer) p).setBoard(board);
+            if(p instanceof AIPlayer) ((AIPlayer) p).setBoard(board);
         }
-
         return board;
     }
 

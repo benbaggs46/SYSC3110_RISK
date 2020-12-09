@@ -43,41 +43,17 @@ public class BoardController {
     /**
      * Constructs a new RISK board from the default map file and registers it with the BoardController and BoardView
      */
-    public void createNewGame(){
-        int numPlayers = boardView.getNumPlayers();
-        List<Player> players = new ArrayList<>();
-        for(int i = 0; i < numPlayers; i++){
-            players.add(Player.newPlayer(boardView.getPlayerName(i),
-                    Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getColor(),
-                    boardView.isPlayerAI()
-            ));
-        }
-
-        //Get user input for the board to use then check if it is valid
+    public void createNewGame(boolean gameIsNew){
         do {
-            board = Board.boardFromMap(boardView.getMapPath(), boardView, players);
+            board = Board.newBoard(boardView.getMapPath(), boardView, gameIsNew);
         } while(!board.isValid());
 
         board.addRiskView(boardView);
-        //
         boardView.repaint();
-        //
         board.nextTurnStage();
     }
 
     public void save(){ if(board != null) board.saveGame();}
-
-    public void load(){
-        do {
-            board = Board.boardFromSave(boardView.getMapPath(), boardView);
-        } while(!board.isValid());
-
-        board.addRiskView(boardView);
-        //
-        boardView.repaint();
-        //
-        board.nextTurnStage();
-    }
 
     /**
      * Displays a help message to the user
