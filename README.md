@@ -1,5 +1,5 @@
 # SYSC3110 RISK
-### Version: 3.0.0
+### Version: 4.0.0
 ### Authors:
 - Ben Baggs: @benbaggs46
 - Liam Ballantyne: @ljjb97
