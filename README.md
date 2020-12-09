@@ -121,7 +121,7 @@ Territories on the game board can be selected or deselected by clicking on them.
 - When a player ends their turn, the new player's turn will begin with no territories selected.
 
 #### Buttons
-There are 5 buttons at the bottom of the window for the player to use. From left to right they are as follows:
+There are 7 buttons at the bottom of the window for the player to use. From left to right they are as follows:
 
 ```
 New Game
