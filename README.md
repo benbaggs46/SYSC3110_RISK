@@ -10,6 +10,7 @@
 ### Changelog:
 - 2.0.0 - Removed text-based interface and replaced it with new GUI.
 - 3.0.0 - Added AI Players, reworked MVC structure, UI and gameplay changes.
+- 4.0.0 - Added support for multiple maps, game saving and loading. Restructured AI players.
 
 ### Table of Contents:
 - [Quick Start](#quick-start)
