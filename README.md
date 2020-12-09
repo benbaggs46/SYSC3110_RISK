@@ -40,7 +40,7 @@ New Game
 The game will then prompt you for the number of players you want, the names of those players, and whether they are human or AI players. After that, the game will begin at the start of the first player's turn.
 
 ### Deliverables:
-SYSC3110_RISK_UML - Milestone 3.png gives a detailed uml diagram
+SYSC3110_RISK_UML - Milestone 4.png gives a detailed uml diagram
 The src directory contains all the source files for the project.
 The test directory contains all the JUnit test files for the project.
 The diagram directory contains the class and sequence diagrams.
@@ -53,6 +53,8 @@ The diagram directory contains the class and sequence diagrams.
 - Added sequence diagrams that model the events that occur over a turn for both the console and GUI based verions. 
 - Removed the ability to place or retract 0 armies from a territory during the PLACEMENT phase.
 - The RISK model was too tightly coupled to the game view.
+- Changed AIPlayer from a static class into a dynamic one that extends Player
+- Removed all view strings from BoardController. All the functionality in Board is now self contained.
 
 ### Complete User Manual:
 To play RISK run the main function in BoardView.java, or if running from the jar file type:
@@ -63,7 +65,15 @@ java -jar risk.jar
 The game will then start! 
 
 #### Playing the Game
-When the application is opened initially, the user must press the NEW GAME button to start a game of RISK.
+When the application is opened initially, the user must press the NEW GAME button to start a game of RISK. The will then be prompted to enter a map file name corresponding to an XML file in the /src/maps folder of the jar file. If the specified map file is unplayable, the user will be prompted for a map file name again. There are three provided maps:
+
+- A standard RISK map, named DEFAULT_MAP
+- A standard RISK map with an added territory, named HAWAII_MAP
+- An invalid map with a group of territories cut off from the rest of the map, named INVALID_MAP
+
+The user will then be prompted to enter the number of players, the names of those players, and whether each player is human or AI controlled. After this, the game will begin with a randomized turn order.
+
+If the user has previously saved a game of RISK, ,they may intead use the LOAD GAME button to continue where they left off.
 
 Every player will begin their turn in the PLACEMENT phase. They will have been given a certain amount of armies, indicated at the top of the screen. They must place all of these armies on territories that they control by selecting the territory they wish to place armies in and using the ACTION BUTTON. Once armies are placed, they are not there permanently, and can be retracted in a similar manner. Once they player has placed all of their new armies to their satisfaction, they may move to the next phase of their turn using the PROCEED button.
 
@@ -75,7 +85,11 @@ After this, the next player's turn will begin. If they are also a human player, 
 
 At any time, a help menu may be opened using the HELP button.
 
-The player may start a new game or close the application at any time using the NEW GAME and QUIT buttons respectively.
+At any time, the game may be saved using the SAVE GAME button.
+
+The player may start or continue a new game or close the application at any time using the NEW GAME, LOAD GAME and QUIT buttons respectively.
+
+Human players will be notified when their turn begins.
 
 During any placement, retraction, attack, or fortification, the player will be propmted to enter any additional directions via dialog boxes when applicable.
 
@@ -111,7 +125,17 @@ There are 5 buttons at the bottom of the window for the player to use. From left
 ```
 New Game
 ```
-This button starts a new game of RISK. After being pressed, the user will be prompted to enter the desired number of players and then names for those players. After that, the new game will begin on the first player's turn. If this button is pressed while a game is in progress, a new game will begin and the current one will be lost.
+This button starts a new game of RISK. After being pressed, the user will be prompted to enter a map file name, the desired number of players and then names for those players. After that, the new game will begin on a random player's turn. If this button is pressed while a game is in progress, a new game will begin and the current one will be lost.
+
+```
+Load Game
+```
+This button continues a RISK game from an XML save file stored in the /src/saves folder. After being pressed, the user will be prompted to enter a save file name. After that, the saved game will continue where it left off. If this button is pressed while a game is in progress, the saved game will open and the current one will be lost.
+
+```
+Save Game
+```
+This button saves the current game state to an XML save file in the /src/saves folder. After being pressed, the user will be prompted to enter a name for the new save file. If a save file already exists with the same name, it will be overwritten.
 
 ```
 Help
@@ -180,12 +204,8 @@ When deciding the territory they intend to attack, AI players value five things,
 - Preventing an opponent from recieving a continent bonus (Preventing opponents from conquering continents).
 
 ### Important Design Decisions:
-- Adding event classes and decoupling the model from views to more closely follow the MVC pattern.
-- Choosing to have a RiskInput interface separate from the RiskView interface. When the model needs to recieve a user input during an action that affects how the model changes (asking number of armies to attack/defend with, direction to fortify, etc.) it does not make sense to poll multiple listeners for potentially different responses. Therefore, the Board model holds a reference to exactly one user input source.
-- Choosing to implement the AI players as a static method in a class outside the model. Every AI player would follow the same procedure for every turn, and would completely re-evaluate the state of the board each turn regardless of how they were implemented. Therefore, the AI players were implemented as a static method called by the board model and given the current board state whenever required.
-- Disabling some pop-up messages while AI players are taking their turns. This was done to make the gameplay faster, especially in a gme with only AI players.
-- AI player turn structure. Since the game has to wait for input when a human player is taking their turn, but continously progress through potentially multiple AI turns without stopping, the following was implmented. After any human player ends their turn, or it is the start of the game, the game will calculate how many consecutive AI players are set to take their turns next. A for loop will then be used to call the takeTurn() method in AIPlayer (performing an AI turn) exactly that many times. The game will then pause before the next human turn. If the game has only AI players, there is a special case where the game will loop through turns until the game is won.
+- Making the AIPlayer class a dynamic class that extends Player. This means that the AI player does not have to be passed the current Player and Board as parameters each turn.
+- Adding a factory contructor method to Player. This means that players will not have to be explicitly assigned the concrete classes of Player or AIPlayer.
+- Adding factory contructor methods to Board. This was done so that all prompts for user input, such as asking for new player names, would be done by the model to reduce coupling. Because some input (number/names of players, map file name, save file name) must be recieved before the Board is initially constructed, the controller cannot call the contructor method of Board directly, and instead uses two static factory methods.
+- Choosing the XML save game format. Because the information about how territories and continents are connected are already stored in the map files, each save game file only needs to store the name of the map file that the game was played on. The save game file also stores every player, written in their turn order, starting with the current player. For each player, the file stores the names of every territory they control, and the number of armies they have on it. Along with some player independent information, such as the turn stage, the save game XML files hold all the information needed to reconstruct the saved game when combined with the corresponding map file.
 
-### Roadmap:
-- Enable loading and saving the game.
-- Add interface for using custom game boards.
