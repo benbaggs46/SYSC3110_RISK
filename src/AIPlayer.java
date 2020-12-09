@@ -21,13 +21,16 @@ public class AIPlayer extends Player{
      * Constructor for the Player object
      *
      * @param name  sets the players name to this parameter
-     * @param color
-     * @param isAi
+     * @param color the color of the AI player
      */
-    public AIPlayer(String name, Color color, Boolean isAi) {
-        super(name, color, isAi);
+    public AIPlayer(String name, Color color) {
+        super(name, color, true);
     }
 
+    /**
+     * Assigns a Board to the AI Player
+     * @param board The board that the AI player is playing on
+     */
     public void setBoard(Board board){
         this.board = board;
     }

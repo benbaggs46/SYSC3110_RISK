@@ -47,6 +47,11 @@ public class BoardConstructor {
                 Integer.valueOf( colorString.substring( 4, 6 ), 16 ) );
     }
 
+    /**
+     * Creates a hexadecimal string from a Color object
+     * @param color The color object to be converted
+     * @return The corresponding hexadecimal string
+     */
     public static String colorToHex(Color color){
         String red = String.format("%02X", color.getRed());
         String green = String.format("%02X", color.getGreen());
@@ -54,6 +59,12 @@ public class BoardConstructor {
         return red + green + blue;
     }
 
+    /**
+     * Reads a save file and loads its state into the specified Board
+     * @param filename The name of the save file
+     * @param board The Board that the saved game is to be loaded into
+     * @return True if the process was successful, false otherwise
+     */
     public boolean loadBoardFromSaveFile(String filename, Board board){
         if(validateXMLSchema("src/SAVE.xsd","src/" + Board.SAVE_GAME_FOLDER + filename + ".xml")) {
             try{
@@ -117,6 +128,12 @@ public class BoardConstructor {
         return false;
     }
 
+    /**
+     * Reads a map file and loads a new game using that map into the specified Board
+     * @param filename The name of the map file
+     * @param board The Board that the new game is to be loaded into
+     * @return True if the process was successful, false otherwise
+     */
     public boolean loadBoardFromMapFile(String filename, Board board){
         if(validateXMLSchema("src/MAP.xsd","src/" + Board.MAP_FOLDER + filename + ".xml")) {
             try {

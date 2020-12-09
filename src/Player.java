@@ -38,11 +38,22 @@ public class Player {
         this.ai = isAi;
     }
 
+    /**
+     * Creates a new Player
+     * @param name The player name
+     * @param color The player color
+     * @param isAi Indicates whether the player is AI controlled
+     * @return
+     */
     public static Player newPlayer(String name, Color color, Boolean isAi){
-        if(isAi) return new AIPlayer(name, color, true);
+        if(isAi) return new AIPlayer(name, color);
         return new Player(name, color, false);
     }
 
+    /**
+     * Converts the player to an XML string
+     * @return The XML representation of the player
+     */
     public String toXML(){
         String xml = "<player>\n";
         xml += "<name>" + name + "</name>";

@@ -50,6 +50,9 @@ public class BoardController {
         board.nextTurnStage();
     }
 
+    /**
+     * Saves the current game state
+     */
     public void save(){ if(board != null) board.saveGame();}
 
     /**

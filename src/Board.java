@@ -151,8 +151,15 @@ public class Board {
      */
     private boolean isValid;
 
+    /**
+     * The name of the map file used to generate the board
+     */
     private String mapFileString;
 
+    /**
+     * Constructor for Board
+     * @param userInputSource the RiskInput that the Board will ask for user input when needed
+     */
     public Board(RiskInput userInputSource){
         this.continents = new ArrayList<>();
         this.selectedTerritories = new ArrayList<>();
@@ -162,6 +169,12 @@ public class Board {
         this.gameIsWon = false;
     }
 
+    /**
+     * Creates a new Board using either a map or save file
+     * @param userInputSource the RiskInput that the Board will ask for user input when needed
+     * @param gameIsNew If true, the Board will be generated from a map file. If false, it will be generated from a save file
+     * @return The newly created Board
+     */
     public static Board newBoard(RiskInput userInputSource, boolean gameIsNew){
         Board board = new Board(userInputSource);
         BoardConstructor boardConstructor = new BoardConstructor();
@@ -221,6 +234,10 @@ public class Board {
         }
     }
 
+    /**
+     * Converts the state of the Board to an XML string
+     * @return The XML representation of the Board
+     */
     private String toXML(){
         String xml = "<save>\n";
         xml += "<map>" + mapFileString + "</map>\n";
@@ -235,6 +252,9 @@ public class Board {
         return xml;
     }
 
+    /**
+     * Asks the user for a filename and saves the game in XML format to a save file with that name
+     */
     public void saveGame(){
         String filename = userInputSource.getStringInput("Enter the file name to save this game as (no file extension)", null);
         if (filename != null) saveGameToFile(filename);
@@ -857,18 +877,34 @@ public class Board {
         else if(turnStage == TurnStage.PLACEMENT) doPlacement();
     }
 
+    /**
+     * Adds a player to the Board
+     * @param p The player to be added
+     */
     public void addPlayer(Player p) {
         players.add(p);
     }
 
+    /**
+     * Sets the number of armies to place for the Board
+     * @param armiesToPlace The number of armies to place
+     */
     public void setArmiesToPlace(int armiesToPlace) {
         this.armiesToPlace = armiesToPlace;
     }
 
+    /**
+     * Sets the player currently taking their turn
+     * @param p The player whose turn it is
+     */
     public void setCurrentPlayer(Player p) {
         currentPlayer = p;
     }
 
+    /**
+     * Stores the name of the map file used for the Board
+     * @param mapFile The name of the map file
+     */
     public void setMapFile(String mapFile) {
         mapFileString = mapFile;
     }
