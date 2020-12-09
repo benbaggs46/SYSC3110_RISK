@@ -184,26 +184,6 @@ public class BoardView extends JFrame implements RiskView, RiskInput{
         showMessage(HELP_MESSAGE);
     }
 
-    public int getNumPlayers(){
-        return getIntInput("Enter the number of players:", Board.MIN_PLAYERS, Board.MAX_PLAYERS);
-    }
-
-    public String getPlayerName(int i){
-        return getStringInput("Please enter a name for the " +
-                Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getName().toLowerCase() +
-                " player:", Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getName() + " player");
-    }
-
-    public String getMapPath(){
-        return getStringInput("Please enter the name of the map file (no file extension)",
-                "DEFAULT_MAP");
-    }
-
-    public boolean isPlayerAI(){
-        Object[] options = {"Human", "AI"};
-        return getOption("Please enter the player type:", options) == 1;
-    }
-
     @Override
     public void showMessage(String message) {
         JOptionPane.showMessageDialog(null, message);

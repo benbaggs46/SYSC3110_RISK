@@ -86,11 +86,6 @@ public class Board {
     private static final int NUM_STARTING_ARMIES = 1;
 
     /**
-     * Indicates whether the game has been started
-     */
-    private boolean gameHasStarted;
-
-    /**
      * A list of continents that belong to the board
      */
     private List<Continent> continents;
@@ -164,20 +159,21 @@ public class Board {
         this.lines = new ArrayList<>();
         this.views = new ArrayList<>();
         this.userInputSource = userInputSource;
-        this.gameHasStarted = false;
         this.gameIsWon = false;
     }
 
-    public static Board newBoard(String filename, RiskInput userInputSource, boolean gameIsNew){
+    public static Board newBoard(RiskInput userInputSource, boolean gameIsNew){
         Board board = new Board(userInputSource);
         BoardConstructor boardConstructor = new BoardConstructor();
 
+        String filename = userInputSource.getStringInput("Enter the name of the " + (gameIsNew? "map": "save") + " file (no file extension)", gameIsNew? DEFAULT_MAP: null);
+
         if(gameIsNew){
-            int numPlayers = userInputSource.getIntInput("num players", MIN_PLAYERS, MAX_PLAYERS);
+            int numPlayers = userInputSource.getIntInput("Enter the number of players", MIN_PLAYERS, MAX_PLAYERS);
             List<Player> players = new ArrayList<>();
             Object[] options = {"Human", "AI"};
             for(int i = 0; i < numPlayers; i++){
-                players.add(Player.newPlayer(userInputSource.getStringInput("player name " + PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getName(),
+                players.add(Player.newPlayer(userInputSource.getStringInput("Enter a name for the " + PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getName().toLowerCase() + " player",
                         Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getName() + " player"),
                         Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getColor(),
                         userInputSource.getOption("Please enter the player type:", options) == 1
@@ -185,7 +181,7 @@ public class Board {
             }
             board.players = players;
             board.mapFileString = filename;
-            board.isValid = boardConstructor.loadBoardFromMapFile(filename, board) && board.validateMapBoarders();
+            board.isValid = boardConstructor.loadBoardFromMapFile(filename, board) && board.validateMapBorders();
             if (board.isValid) {
                 shuffle(players);
                 board.populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(players.size()));
@@ -195,7 +191,7 @@ public class Board {
         }
         else{
             board.players = new ArrayList<>();
-            board.isValid = boardConstructor.loadBoardFromSaveFile(filename, board) && board.validateMapBoarders();
+            board.isValid = boardConstructor.loadBoardFromSaveFile(filename, board) && board.validateMapBorders();
         }
 
         for(Player p: board.players){
@@ -256,7 +252,7 @@ public class Board {
      * number of players (can't have more players than territories)
      * @return true if each territory can be reached
      */
-    private boolean validateMapBoarders(){
+    private boolean validateMapBorders(){
         Territory start = continents.get(0).getTerritoryList().get(0);
         ArrayList<Territory> toVisit = new ArrayList<>();
         ArrayList<Territory> visited = new ArrayList<>();
@@ -567,7 +563,7 @@ public class Board {
     private void nextTurn(){
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
         if(armiesToPlace == 0) armiesToPlace = getArmyBonusForPlayer(currentPlayer);
-        if(currentPlayer.isAi()){
+        if(currentPlayer instanceof AIPlayer){
             ((AIPlayer) currentPlayer).takeTurn();
         }
         else{

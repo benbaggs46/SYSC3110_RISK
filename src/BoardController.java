@@ -1,6 +1,3 @@
-import java.util.*;
-import java.util.List;
-
 /**
  * BoardController receives user input from the BoardView, updates the Board model accordingly, and updates the BoardView to reflect the changes to the model
  */
@@ -45,7 +42,7 @@ public class BoardController {
      */
     public void createNewGame(boolean gameIsNew){
         do {
-            board = Board.newBoard(boardView.getMapPath(), boardView, gameIsNew);
+            board = Board.newBoard(boardView, gameIsNew);
         } while(!board.isValid());
 
         board.addRiskView(boardView);
