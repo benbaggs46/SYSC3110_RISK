@@ -230,7 +230,7 @@ public class BoardConstructor {
      * @param xmlPath path to the xml file
      * @return true if the xml is valid
      */
-    public boolean validateXMLSchema(String xsdPath, String xmlPath){
+    public static boolean validateXMLSchema(String xsdPath, String xmlPath){
 
         try {
             SchemaFactory factory =

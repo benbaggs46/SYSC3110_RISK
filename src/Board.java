@@ -217,7 +217,7 @@ public class Board {
      * Saves the current game state to the specified file
      * @param filename The name of the save file with no file extension
      */
-    public void saveGameToFile(String filename){
+    private void saveGameToFile(String filename){
         try{
             File file = new File("src/" + SAVE_GAME_FOLDER + filename + ".xml");
             file.createNewFile();
