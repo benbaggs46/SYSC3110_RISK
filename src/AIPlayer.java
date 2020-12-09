@@ -8,14 +8,9 @@ import java.util.List;
 public class AIPlayer extends Player{
 
     /**
-     * The current player who the AI is making decisions for
-     */
-    private Player player;
-
-    /**
      * The board that the AI Player is playing on
      */
-    private static Board board;
+    private Board board;
 
     /**
      * The minimum utility score for a possible attack required for the AI Player to do it
@@ -33,6 +28,10 @@ public class AIPlayer extends Player{
         super(name, color, isAi);
     }
 
+    public void setBoard(Board board){
+        this.board = board;
+    }
+
     /**
      * Gets the best territory to attack based on the current board state
      * @return The attackable territory with the highest utility score, or null if there are no options good enough
@@ -40,7 +39,7 @@ public class AIPlayer extends Player{
     private Territory getTargetTerritory(){
 
         //create list of all possible territories to attack and an array of their corresponding utility scores
-        List<Territory> attackableTerritories = getAttackableTerritories(player.getControlledTerritories());
+        List<Territory> attackableTerritories = getAttackableTerritories(this.getControlledTerritories());
 
         if(attackableTerritories.isEmpty()) return null;
 
@@ -52,7 +51,7 @@ public class AIPlayer extends Player{
             if(maxIndex == -1) maxIndex = i;
             Territory t = attackableTerritories.get(i);
             float utilityScore = 0;
-            utilityScore += getAmountOfBordersRemoved(t, player.getControlledTerritories());
+            utilityScore += getAmountOfBordersRemoved(t, this.getControlledTerritories());
             utilityScore += percentOfOpponentTerritoriesRemoved(t);
             utilityScore += percentOfUnconqueredContinentRemoved(t) * 10;
             utilityScore += opponentContinentBonusPrevented(t);
@@ -100,7 +99,7 @@ public class AIPlayer extends Player{
         List<Territory> territoriesInContinent = t.getContinent().getTerritoryList();
         float unconqueredContinentSize = 0;
         for(Territory t2: territoriesInContinent){
-            if(t2.getOwner() != player) unconqueredContinentSize++;
+            if(t2.getOwner() != this) unconqueredContinentSize++;
         }
         return 1 / unconqueredContinentSize;
     }
@@ -116,12 +115,8 @@ public class AIPlayer extends Player{
 
     /**
      * Performs a RISK turn for the current player on the current board state
-     * @param currentBoard The current board
-     * @param currentPlayer The player who the AI is acting for
      */
-    public void takeTurn(Board currentBoard, Player currentPlayer){
-        player = currentPlayer;
-        board = currentBoard;
+    public void takeTurn(){
         AIPlacement();
         AIAttack();
         AIFortify();
@@ -181,7 +176,7 @@ public class AIPlayer extends Player{
      * @return Returns the non-border territory of the current player with the most moveable armies, null if no such territory exists
      */
     private Territory getNonBorderTerritoryWithMostArmies(){
-        List<Territory> nonBorderTerritories = player.getControlledTerritories();
+        List<Territory> nonBorderTerritories = this.getControlledTerritories();
         List<Territory> borderTerritories = getBorderTerritories(nonBorderTerritories);
 
         int maxIndex = -1;
@@ -206,7 +201,7 @@ public class AIPlayer extends Player{
      * the specified territory
      */
     private Territory getTerritoryByArmyRatio(Territory connectedTerritory, boolean lookingForMax){
-        List<Territory> borderTerritories = player.getControlledTerritories();
+        List<Territory> borderTerritories = this.getControlledTerritories();
         int bestIndex = -1;
         float[] armyRatios = new float[borderTerritories.size()];
         for(int i = 0; i < borderTerritories.size(); i++){
@@ -236,7 +231,7 @@ public class AIPlayer extends Player{
     private float getArmyRatio(Territory t, boolean attacking){
         float availableAttackingArmies = 0;
         for(Territory t2: t.getNeighbours()){
-            if((t2.getOwner() != player) == attacking) continue;
+            if((t2.getOwner() != this) == attacking) continue;
             availableAttackingArmies += t2.getNumArmies() - 1;
         }
         float armyRatio = availableAttackingArmies - t.getNumArmies();
@@ -251,7 +246,7 @@ public class AIPlayer extends Player{
     private Territory getControlledNeighbourWithMostArmies(Territory t){
         Territory neighbourWithMostArmies = null;
         for(Territory t2: t.getNeighbours()){
-            if(t2.getOwner() != player) continue;
+            if(t2.getOwner() != this) continue;
             if(neighbourWithMostArmies == null) neighbourWithMostArmies = t2;
             if(neighbourWithMostArmies.getNumArmies() < t2.getNumArmies()) neighbourWithMostArmies = t2;
         }

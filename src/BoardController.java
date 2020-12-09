@@ -47,10 +47,10 @@ public class BoardController {
         int numPlayers = boardView.getNumPlayers();
         List<Player> players = new ArrayList<>();
         for(int i = 0; i < numPlayers; i++){
-            players.add(new AIPlayer(boardView.getPlayerName(i),
+            players.add(Player.newPlayer(boardView.getPlayerName(i),
                     Board.PLAYER_COLOR_FOR_PLAYER_NUM.get(i).getColor(),
                     boardView.isPlayerAI()
-                    ));
+            ));
         }
 
         //Get user input for the board to use then check if it is valid

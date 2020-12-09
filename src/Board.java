@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -159,30 +158,6 @@ public class Board {
 
     private String mapFileString;
 
-    /**
-     * Constructor for the board
-     */
-    public Board(){
-        /*continents = new ArrayList<>();
-        this.players = players;
-        selectedTerritories = new ArrayList<>();
-        lines = new ArrayList<>();
-        views = new ArrayList<>();
-        this.userInputSource = userInputSource;
-        gameHasStarted = false;
-        gameIsWon = false;
-        mapFileString = filename;
-        BoardConstructor boardConstructor = new BoardConstructor();
-        isValid = boardConstructor.loadBoardFromMapFile(MAP_FOLDER + filename, this) && validateMapBoarders();
-        //if the board is invalid then populating the board may cause an error
-        if (isValid) {
-            shuffle(players);
-            populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(players.size()));
-            currentPlayer = (AIPlayer) players.get(players.size() - 1);
-            turnStage = TurnStage.FORTIFY;
-        }*/
-    }
-
     public static Board boardFromSave(String filename, RiskInput userInputSource){
         Board board = new Board();
         board.continents = new ArrayList<>();
@@ -195,6 +170,11 @@ public class Board {
         board.gameIsWon = false;
         BoardConstructor boardConstructor = new BoardConstructor();
         board.isValid = boardConstructor.loadBoardFromSaveFile(filename, board) && board.validateMapBoarders();
+
+        for(Player p: board.players){
+            if(p.isAi()) ((AIPlayer) p).setBoard(board);
+        }
+
         return board;
     }
 
@@ -202,6 +182,7 @@ public class Board {
         Board board = new Board();
         board.continents = new ArrayList<>();
         board.players = players;
+
         board.selectedTerritories = new ArrayList<>();
         board.lines = new ArrayList<>();
         board.views = new ArrayList<>();
@@ -215,9 +196,14 @@ public class Board {
         if (board.isValid) {
             shuffle(players);
             board.populateBoard(STARTING_ARMIES_FOR_NUM_PLAYERS.get(players.size()));
-            board.currentPlayer = (AIPlayer) players.get(players.size() - 1);
+            board.currentPlayer = players.get(players.size() - 1);
             board.turnStage = TurnStage.FORTIFY;
         }
+
+        for(Player p: board.players){
+            if(p.isAi()) ((AIPlayer) p).setBoard(board);
+        }
+
         return board;
     }
 
@@ -585,7 +571,7 @@ public class Board {
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
         if(armiesToPlace == 0) armiesToPlace = getArmyBonusForPlayer(currentPlayer);
         if(currentPlayer.isAi()){
-            ((AIPlayer) currentPlayer).takeTurn(this, currentPlayer);
+            ((AIPlayer) currentPlayer).takeTurn();
         }
         else{
             sendMessageToViews("It is now " + currentPlayer.getName() + "'s turn");
@@ -777,7 +763,7 @@ public class Board {
         int result = attackResult(attackDice, defendDice);
 
         if(!t1.getOwner().isAi() || !t2.getOwner().isAi())
-        sendMessageToViews(result == 0 ? "Both players lost an army" : (result > 0) ? t1.getOwner().getName() + " lost " + result + " armies" : t2.getOwner().getName() + " lost " + (-result) + " armies");
+            sendMessageToViews(result == 0 ? "Both players lost an army" : (result > 0) ? t1.getOwner().getName() + " lost " + result + " armies" : t2.getOwner().getName() + " lost " + (-result) + " armies");
 
         if(result == 0){ //both players lose one army
             t2.addArmies(-1);
@@ -855,7 +841,7 @@ public class Board {
             for(RiskView boardView: views) {
                 boardView.updateMap(new MapEvent(this, territoriesToUpdate));
             }
-           if(!currentPlayer.isAi())
+            if(!currentPlayer.isAi())
                 sendMessageToViews("Moved " + armiesToMove + " armies into " + t1.getName());
         }
     }
@@ -894,4 +880,3 @@ public class Board {
         mapFileString = mapFile;
     }
 }
-

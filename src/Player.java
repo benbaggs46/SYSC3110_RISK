@@ -38,6 +38,11 @@ public class Player {
         this.ai = isAi;
     }
 
+    public static Player newPlayer(String name, Color color, Boolean isAi){
+        if(isAi) return new AIPlayer(name, color, true);
+        return new Player(name, color, false);
+    }
+
     public String toXML(){
         String xml = "<player>\n";
         xml += "<name>" + name + "</name>";
